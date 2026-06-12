@@ -1,9 +1,10 @@
 <script lang="ts">
 	let email = $state('');
 	let submitted = $state(false);
+	let submitting = $state(false);
 	let error = $state('');
 
-	function handleSubmit(event: SubmitEvent) {
+	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
 		error = '';
 
@@ -13,8 +14,28 @@
 			return;
 		}
 
-		// TODO: wire to backend / mailing list
-		submitted = true;
+		submitting = true;
+
+		try {
+			const response = await fetch('/api/waitlist', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email: trimmed })
+			});
+
+			const data = (await response.json()) as { error?: string };
+
+			if (!response.ok) {
+				error = data.error ?? 'Could not join the waitlist. Please try again.';
+				return;
+			}
+
+			submitted = true;
+		} catch {
+			error = 'Could not join the waitlist. Please try again.';
+		} finally {
+			submitting = false;
+		}
 	}
 </script>
 
@@ -56,7 +77,9 @@
 							bind:value={email}
 							required
 						/>
-						<button type="submit" class="btn btn-light notify__submit">Join waitlist</button>
+						<button type="submit" class="btn btn-light notify__submit" disabled={submitting}>
+							{submitting ? 'Joining…' : 'Join waitlist'}
+						</button>
 					</div>
 					{#if error}
 						<p class="notify__error" role="alert">{error}</p>

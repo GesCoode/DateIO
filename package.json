@@ -26,6 +26,7 @@
 		"vite": "^7.2.6"
 	},
 	"dependencies": {
-		"cropperjs": "^2.1.0"
+		"cropperjs": "^2.1.0",
+		"postgres": "^3.4.7"
 	}
 }
