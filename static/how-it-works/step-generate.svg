@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 72" fill="none" aria-hidden="true">
+  <defs>
+    <clipPath id="conveyor-window">
+      <rect x="10" y="14" width="100" height="38" rx="4"/>
+    </clipPath>
+    <g id="conveyor-photo">
+      <rect width="26" height="32" rx="4" fill="#141414" stroke="#22c55e" stroke-width="1.2"/>
+      <rect width="26" height="32" rx="4" fill="url(#photo-shine)"/>
+      <circle cx="13" cy="12" r="4.5" fill="#222" stroke="#4ade80" stroke-width="0.8"/>
+      <path d="M7 24c2-3 4.5-4 6-4s4 1 6 4" stroke="#4ade80" stroke-width="0.85" stroke-linecap="round"/>
+    </g>
+    <linearGradient id="photo-shine" x1="0" y1="0" x2="26" y2="32" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1a2e1f" stop-opacity="0.5"/><stop offset="1" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="6" y="10" width="108" height="48" rx="6" fill="#0a0a0a" stroke="#262626" stroke-width="1"/>
+  <rect x="10" y="14" width="100" height="38" rx="4" fill="#080808"/>
+
+  <circle cx="14" cy="56" r="5" fill="#111" stroke="#333" stroke-width="1"/>
+  <circle cx="14" cy="56" r="2" fill="#1a1a1a"/>
+  <circle cx="106" cy="56" r="5" fill="#111" stroke="#333" stroke-width="1"/>
+  <circle cx="106" cy="56" r="2" fill="#1a1a1a"/>
+
+  <path d="M14 56h92" stroke="#1f1f1f" stroke-width="5" stroke-linecap="round"/>
+  <path
+    d="M14 56h92"
+    stroke="#22c55e"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-dasharray="8 8"
+    stroke-opacity="0.45"
+  >
+    <animate attributeName="stroke-dashoffset" values="0;-16" dur="0.8s" repeatCount="indefinite"/>
+  </path>
+
+  <g clip-path="url(#conveyor-window)">
+    <g>
+      <use href="#conveyor-photo"/>
+      <animateTransform
+        attributeName="transform"
+        type="translate"
+        values="-28 17; 112 17"
+        dur="3.6s"
+        repeatCount="indefinite"
+      />
+    </g>
+    <g>
+      <use href="#conveyor-photo"/>
+      <animateTransform
+        attributeName="transform"
+        type="translate"
+        values="-28 17; 112 17"
+        dur="3.6s"
+        begin="0.9s"
+        repeatCount="indefinite"
+      />
+    </g>
+    <g>
+      <use href="#conveyor-photo"/>
+      <animateTransform
+        attributeName="transform"
+        type="translate"
+        values="-28 17; 112 17"
+        dur="3.6s"
+        begin="1.8s"
+        repeatCount="indefinite"
+      />
+    </g>
+    <g>
+      <use href="#conveyor-photo"/>
+      <animateTransform
+        attributeName="transform"
+        type="translate"
+        values="-28 17; 112 17"
+        dur="3.6s"
+        begin="2.7s"
+        repeatCount="indefinite"
+      />
+    </g>
+  </g>
+
+  <path d="M10 14h100" stroke="#22c55e" stroke-width="1" stroke-opacity="0.2"/>
+  <path d="M10 52h100" stroke="#22c55e" stroke-width="1" stroke-opacity="0.15"/>
+</svg>

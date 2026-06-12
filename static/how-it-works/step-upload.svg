@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 72" fill="none" aria-hidden="true">
+  <defs>
+    <symbol id="selfie-card" viewBox="0 0 28 36">
+      <rect width="28" height="36" rx="4" fill="#141414" stroke="#22c55e" stroke-width="1.2"/>
+      <circle cx="14" cy="13" r="5.5" fill="#1f1f1f" stroke="#4ade80" stroke-width="0.9"/>
+      <path d="M8 28c2.5-4 5-5.5 6-5.5s3.5 1.5 6 5.5" stroke="#4ade80" stroke-width="1" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+
+  <!-- back → front: row 3, row 2, row 1 -->
+
+  <!-- row 3: single (bottom) -->
+  <use
+    href="#selfie-card"
+    width="28"
+    height="36"
+    transform="translate(44 34) rotate(5 14 18)"
+    opacity="0.88"
+  />
+
+  <!-- row 2: pair -->
+  <use
+    href="#selfie-card"
+    width="28"
+    height="36"
+    transform="translate(24 22) rotate(-13 14 18)"
+    opacity="0.92"
+  />
+  <use
+    href="#selfie-card"
+    width="28"
+    height="36"
+    transform="translate(58 20) rotate(11 14 18)"
+  />
+
+  <!-- row 1: single (top) -->
+  <use
+    href="#selfie-card"
+    width="28"
+    height="36"
+    transform="translate(42 6) rotate(-7 14 18)"
+  />
+</svg>
