@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440, initial-scale=1" />
+<title>Visagely — Sitemap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0E0E10;--charcoal:#17171B;--panel:#1E1E24;--panel2:#23232A;
+    --line:#2C2C34;--gold:#C8A15A;--sand:#E8DFD0;--teal:#2E7D8C;
+    --offwhite:#F5F1EA;--muted:#928E86;
+    --serif:'Playfair Display',Georgia,serif;--sans:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:var(--ink);}
+  body{width:1440px;font-family:var(--sans);color:var(--offwhite);padding:60px 72px 76px;-webkit-font-smoothing:antialiased;}
+  .eyebrow{font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);font-weight:500;}
+  .brand{font-family:var(--serif);font-weight:700;font-size:52px;margin-top:12px;}
+  .brand .dot{color:var(--gold);}
+  .masthead{border-bottom:1px solid var(--line);padding-bottom:30px;margin-bottom:44px;
+    display:flex;justify-content:space-between;align-items:flex-end;}
+  .masthead .sub{font-family:var(--serif);font-style:italic;color:var(--sand);font-size:18px;}
+  .entry{display:flex;justify-content:center;margin-bottom:14px;}
+  .node-entry{background:var(--gold);color:#20170A;font-weight:600;font-size:16px;letter-spacing:.06em;
+    padding:14px 30px;border-radius:3px;}
+  .spine{width:1px;height:26px;background:var(--line);margin:0 auto;}
+  .lanes{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start;}
+  .lane{background:var(--charcoal);border:1px solid var(--line);border-radius:8px;padding:26px 26px 30px;}
+  .lane-title{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:4px;}
+  .lane-note{font-size:12.5px;color:var(--muted);margin-bottom:20px;letter-spacing:.03em;}
+  .node{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:13px 16px;margin-bottom:12px;}
+  .node .n{font-size:15px;font-weight:500;}
+  .node .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.45;}
+  .node.value{border-left:3px solid var(--gold);}
+  .node.util{border-left:3px solid var(--teal);}
+  .children{margin:10px 0 4px 14px;padding-left:16px;border-left:1px dashed var(--line);}
+  .leaf{font-size:13px;color:var(--sand);padding:6px 0;letter-spacing:.02em;}
+  .leaf .k{color:var(--muted);}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 2px 0;}
+  .step{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12px;color:var(--sand);}
+  .step.pay{border-color:var(--gold);color:var(--gold);}
+  .arrow{color:var(--muted);align-self:center;font-size:13px;}
+  .group-label{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin:22px 0 12px;}
+  .group-label.t{color:var(--teal);}
+  footer{margin-top:52px;border-top:1px solid var(--line);padding-top:20px;display:flex;justify-content:space-between;
+    font-size:12px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;}
+  .legend{display:flex;gap:20px;font-size:12px;color:var(--muted);}
+  .legend span{display:inline-flex;align-items:center;gap:7px;}
+  .dot-g{width:10px;height:10px;border-radius:2px;background:var(--gold);}
+  .dot-t{width:10px;height:10px;border-radius:2px;background:var(--teal);}
+</style>
+</head>
+<body>
+  <div class="masthead">
+    <div>
+      <div class="eyebrow">Information Architecture · Sitemap</div>
+      <div class="brand">Visagely<span class="dot">.</span></div>
+    </div>
+    <div class="sub">visagely.com</div>
+  </div>
+
+  <div class="entry"><div class="node-entry">visagely.com</div></div>
+  <div class="spine"></div>
+
+  <div class="lanes">
+    <!-- PUBLIC -->
+    <div class="lane">
+      <div class="lane-title">Public site</div>
+      <div class="lane-note">Unauthenticated · marketing &amp; trust · SEO surface</div>
+
+      <div class="node"><div class="n">Home / Landing</div><div class="d">Hero, promise (“best real version of you”), social proof, CTA</div></div>
+      <div class="node"><div class="n">How it works</div><div class="d">Train → Generate → Download; verification-safe explainer</div></div>
+      <div class="node"><div class="n">Sample gallery</div><div class="d">Before/after and curated example scenes</div></div>
+      <div class="node"><div class="n">Pricing — Tokens</div><div class="d">Bundles, no subscription, tokens don’t expire</div></div>
+      <div class="node"><div class="n">FAQ</div><div class="d">Privacy, Face Check, realism, refunds</div></div>
+
+      <div class="node"><div class="n">Privacy &amp; Legal</div>
+        <div class="children">
+          <div class="leaf">Privacy Policy</div>
+          <div class="leaf">Terms &amp; Conditions</div>
+          <div class="leaf">AI &amp; Data Use <span class="k">(Art. 50 disclosure)</span></div>
+          <div class="leaf">Cookie Policy</div>
+        </div>
+      </div>
+
+      <div class="node value" style="border-left-color:var(--sand);"><div class="n">Sign up / Log in</div>
+        <div class="d">Hard 18+ age gate · explicit consent capture · OAuth + email</div>
+      </div>
+    </div>
+
+    <!-- PORTAL -->
+    <div class="lane">
+      <div class="lane-title">Portal</div>
+      <div class="lane-note">Authenticated · value actions front-and-center</div>
+
+      <div class="node"><div class="n">Portal Home / Dashboard</div><div class="d">Free starter tokens + base LoRA on first entry</div></div>
+
+      <div class="group-label">Value actions</div>
+
+      <div class="node value"><div class="n">1 · Train a LoRA</div>
+        <div class="flow">
+          <span class="step">Upload photos</span><span class="arrow">→</span>
+          <span class="step">QC: fidelity/size + NSFW/underage block</span><span class="arrow">→</span>
+          <span class="step">“It’s me” checkbox</span><span class="arrow">→</span>
+          <span class="step pay">Choose tier (tokens)</span><span class="arrow">→</span>
+          <span class="step">Consent</span><span class="arrow">→</span>
+          <span class="step">Start</span>
+        </div>
+      </div>
+
+      <div class="node value"><div class="n">2 · My Models → Generate</div>
+        <div class="d">Trained + in-progress models with ETA · email/push on completion</div>
+        <div class="flow">
+          <span class="step">Template / keywords / free prompt</span><span class="arrow">→</span>
+          <span class="step">Generate 4 previews</span><span class="arrow">→</span>
+          <span class="step">Pick favorite</span><span class="arrow">→</span>
+          <span class="step pay">Upres (pay tokens)</span><span class="arrow">→</span>
+          <span class="step">Refine / Generate similar</span><span class="arrow">→</span>
+          <span class="step">Download</span>
+        </div>
+      </div>
+
+      <div class="node value"><div class="n">3 · Library</div>
+        <div class="flow">
+          <span class="step">All images</span><span class="arrow">·</span>
+          <span class="step">Favorite</span><span class="arrow">·</span>
+          <span class="step">Delete</span><span class="arrow">·</span>
+          <span class="step">Download</span>
+        </div>
+      </div>
+
+      <div class="group-label t">Utility</div>
+
+      <div class="node util"><div class="n">Buy Tokens</div>
+        <div class="d">Stripe checkout · EU VAT · iDEAL / SEPA / cards · non-expiring</div>
+      </div>
+      <div class="node util"><div class="n">Account &amp; Settings</div>
+        <div class="children">
+          <div class="leaf">Profile</div>
+          <div class="leaf">Notifications <span class="k">(email / push)</span></div>
+          <div class="leaf">Data controls <span class="k">— export · delete model · delete all · withdraw consent</span></div>
+        </div>
+      </div>
+      <div class="node util"><div class="n">Privacy &amp; Legal</div><div class="d">Shared with public policies + consent records</div></div>
+    </div>
+  </div>
+
+  <footer>
+    <span class="legend">
+      <span><span class="dot-g"></span> Value action</span>
+      <span><span class="dot-t"></span> Utility</span>
+    </span>
+    <span>Sitemap v1 · post-MVP: Packs · Video · Profile builder · Coaching</span>
+  </footer>
+</body>
+</html>
