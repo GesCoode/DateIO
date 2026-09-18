@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440, initial-scale=1" />
+<title>Visagely — Moodboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0E0E10;
+    --charcoal:#17171B;
+    --panel:#1E1E24;
+    --line:#2C2C34;
+    --gold:#C8A15A;
+    --gold-soft:#D8BE8A;
+    --sand:#E8DFD0;
+    --teal:#2E7D8C;
+    --offwhite:#F5F1EA;
+    --muted:#9A968E;
+    --serif:'Playfair Display',Georgia,'Times New Roman',serif;
+    --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:var(--ink);}
+  body{
+    width:1440px;
+    font-family:var(--sans);
+    color:var(--offwhite);
+    padding:64px 72px 80px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .eyebrow{
+    font-size:12px;letter-spacing:.42em;text-transform:uppercase;
+    color:var(--gold);font-weight:500;
+  }
+  .masthead{display:flex;justify-content:space-between;align-items:flex-end;
+    border-bottom:1px solid var(--line);padding-bottom:34px;margin-bottom:48px;}
+  .brand{font-family:var(--serif);font-weight:700;font-size:64px;letter-spacing:.02em;line-height:1;}
+  .brand .dot{color:var(--gold);}
+  .masthead .tag{font-family:var(--serif);font-style:italic;font-size:22px;color:var(--sand);
+    max-width:420px;text-align:right;line-height:1.4;}
+  .section-title{font-family:var(--serif);font-size:26px;font-weight:600;margin:8px 0 24px;}
+  .grid-block{margin-bottom:56px;}
+
+  /* imagery */
+  .imagery{display:grid;grid-template-columns:2fr 1fr;gap:16px;}
+  .imagery .stack{display:grid;grid-template-rows:1fr 1fr;gap:16px;}
+  .imagery .row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .frame{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:4px;background:var(--panel);}
+  .frame img{display:block;width:100%;height:100%;object-fit:cover;}
+  .frame .cap{position:absolute;left:16px;bottom:14px;font-size:11px;letter-spacing:.28em;
+    text-transform:uppercase;color:var(--offwhite);background:rgba(14,14,16,.55);
+    padding:6px 10px;border-radius:2px;backdrop-filter:blur(4px);}
+  .hero-frame{height:430px;}
+  .portrait-frame{height:100%;}
+  .sq{height:207px;}
+
+  /* palette */
+  .palette{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;}
+  .swatch{border:1px solid var(--line);border-radius:4px;overflow:hidden;}
+  .swatch .chip{height:120px;}
+  .swatch .meta{padding:12px 14px;background:var(--charcoal);}
+  .swatch .name{font-size:13px;font-weight:500;}
+  .swatch .hex{font-size:12px;color:var(--muted);letter-spacing:.08em;margin-top:3px;}
+
+  /* type + ui two-column */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+  .card{background:var(--charcoal);border:1px solid var(--line);border-radius:6px;padding:32px 34px;}
+  .type-aa{font-family:var(--serif);font-size:110px;font-weight:700;line-height:.9;}
+  .type-aa .g{color:var(--gold);}
+  .type-label{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin-top:18px;}
+  .type-head{font-family:var(--serif);font-size:30px;font-weight:600;margin-top:22px;line-height:1.2;}
+  .type-body{font-family:var(--sans);font-weight:300;font-size:15px;color:#CFCabf;line-height:1.7;margin-top:14px;max-width:440px;}
+  .divider{height:1px;background:var(--line);margin:26px 0;}
+
+  /* ui elements */
+  .ui-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:22px;}
+  .btn{font-family:var(--sans);font-size:14px;font-weight:500;letter-spacing:.04em;
+    padding:14px 26px;border-radius:2px;border:1px solid transparent;cursor:pointer;}
+  .btn-primary{background:var(--gold);color:#20170A;}
+  .btn-ghost{background:transparent;border-color:var(--offwhite);color:var(--offwhite);}
+  .btn-quiet{background:var(--panel);border-color:var(--line);color:var(--sand);}
+  .pill{display:inline-flex;align-items:center;gap:8px;background:var(--panel);
+    border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:13px;}
+  .pill .coin{width:14px;height:14px;border-radius:50%;background:var(--gold);}
+  .input{background:var(--ink);border:1px solid var(--line);border-radius:2px;color:var(--offwhite);
+    padding:13px 16px;font-family:var(--sans);font-size:14px;width:100%;}
+  .tcard{margin-top:22px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--panel);}
+  .tcard img{width:100%;height:150px;object-fit:cover;display:block;}
+  .tcard .body{padding:16px 18px;display:flex;justify-content:space-between;align-items:center;}
+  .tcard .t{font-family:var(--serif);font-size:18px;}
+  .tcard .s{font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:.06em;text-transform:uppercase;}
+
+  /* keywords */
+  .chips{display:flex;flex-wrap:wrap;gap:12px;}
+  .chip-tag{border:1px solid var(--line);border-radius:999px;padding:10px 20px;font-size:14px;
+    color:var(--sand);letter-spacing:.05em;}
+  .chip-tag.accent{border-color:var(--gold);color:var(--gold);}
+  footer{margin-top:60px;border-top:1px solid var(--line);padding-top:22px;
+    display:flex;justify-content:space-between;font-size:12px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;}
+</style>
+</head>
+<body>
+  <div class="masthead">
+    <div>
+      <div class="eyebrow">Visual Direction · Moodboard</div>
+      <div class="brand" style="margin-top:14px;">Visagely<span class="dot">.</span></div>
+    </div>
+    <div class="tag">“Look like the best real version of you.”</div>
+  </div>
+
+  <div class="grid-block">
+    <div class="eyebrow">01 — Imagery</div>
+    <div class="section-title">Editorial, warm, cinematic — aspirational but real</div>
+    <div class="imagery">
+      <div class="stack">
+        <div class="frame hero-frame"><img src="assets/mood_hero.png" alt="hero mood" /><span class="cap">Atmosphere · light &amp; shadow</span></div>
+        <div class="row">
+          <div class="frame sq"><img src="assets/mood_texture.png" alt="texture" /><span class="cap">Material · matte &amp; gold</span></div>
+          <div class="frame sq"><img src="assets/mood_environment.png" alt="environment" /><span class="cap">Scene · evening warmth</span></div>
+        </div>
+      </div>
+      <div class="frame portrait-frame"><img src="assets/mood_portrait.png" alt="portrait" /><span class="cap">Subject · confident, natural</span></div>
+    </div>
+  </div>
+
+  <div class="grid-block">
+    <div class="eyebrow">02 — Palette</div>
+    <div class="section-title">Ink &amp; warm gold, grounded by sand and teal</div>
+    <div class="palette">
+      <div class="swatch"><div class="chip" style="background:#0E0E10;"></div><div class="meta"><div class="name">Ink</div><div class="hex">#0E0E10</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#17171B;"></div><div class="meta"><div class="name">Charcoal</div><div class="hex">#17171B</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#C8A15A;"></div><div class="meta"><div class="name">Warm Gold</div><div class="hex">#C8A15A</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#E8DFD0;"></div><div class="meta"><div class="name">Sand</div><div class="hex">#E8DFD0</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#2E7D8C;"></div><div class="meta"><div class="name">Sea Teal</div><div class="hex">#2E7D8C</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#F5F1EA;"></div><div class="meta"><div class="name">Off-white</div><div class="hex">#F5F1EA</div></div></div>
+    </div>
+  </div>
+
+  <div class="grid-block">
+    <div class="cols">
+      <div>
+        <div class="eyebrow">03 — Typography</div>
+        <div class="section-title">Playfair Display × Inter</div>
+        <div class="card">
+          <div class="type-aa">Aa<span class="g">Aa</span></div>
+          <div class="type-label">Playfair Display · Display serif — headlines, brand</div>
+          <div class="type-head">Stop losing matches to average photos.</div>
+          <div class="divider"></div>
+          <div class="type-label">Inter · Sans — UI &amp; body</div>
+          <div class="type-body">Train a private model of your own face, then generate realistic, well-composed photos built for Tinder, Hinge and Bumble. Your model stays in the EU and you can delete it anytime.</div>
+        </div>
+      </div>
+      <div>
+        <div class="eyebrow">04 — UI Elements</div>
+        <div class="section-title">Quiet, tactile, confident</div>
+        <div class="card">
+          <div class="ui-row">
+            <button class="btn btn-primary">Generate</button>
+            <button class="btn btn-ghost">See a sample</button>
+            <button class="btn btn-quiet">Adjust prompt</button>
+          </div>
+          <div class="ui-row">
+            <span class="pill"><span class="coin"></span> 240 tokens</span>
+            <span class="pill">Upres · 10 tokens</span>
+          </div>
+          <input class="input" value="golden hour beach, linen shirt, subtle smile" />
+          <div class="tcard">
+            <img src="assets/mood_environment.png" alt="template" />
+            <div class="body">
+              <div><div class="t">Golden Hour Beach</div><div class="s">Full body · verification-safe</div></div>
+              <button class="btn btn-primary" style="padding:10px 18px;">Use</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-block">
+    <div class="eyebrow">05 — Tone</div>
+    <div class="section-title">How it should feel</div>
+    <div class="chips">
+      <span class="chip-tag accent">Editorial</span>
+      <span class="chip-tag accent">Premium</span>
+      <span class="chip-tag">Confident</span>
+      <span class="chip-tag">Private</span>
+      <span class="chip-tag">Warm</span>
+      <span class="chip-tag">Minimal</span>
+      <span class="chip-tag">Trustworthy</span>
+      <span class="chip-tag">Real, not fake</span>
+      <span class="chip-tag">Non-judgmental</span>
+    </div>
+  </div>
+
+  <footer>
+    <span>Visagely — Premium AI Dating Photo Studio</span>
+    <span>EU-first · Verification-safe · Moodboard v1</span>
+  </footer>
+</body>
+</html>
