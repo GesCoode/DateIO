@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://visagely.com/schemas/template.schema.json",
+  "title": "Visagely Scene Template",
+  "description": "A reusable, rights-clean dating-photo template. A template is NOT a normal photo: it pairs one or more black-and-white composition control maps (pose/depth/edges/luminance) with a structured scene recipe. At generation time it is combined with a per-user identity LoRA and compiled into a positive/negative prompt plus a ControlNet configuration.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "version", "category", "control", "scene", "subject", "promptTemplate", "generation", "provenance", "safety"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable unique identifier (kebab-case).",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable template name shown in the UI.",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version of this template definition.",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "status": {
+      "type": "string",
+      "description": "Lifecycle state.",
+      "enum": ["draft", "review", "published", "archived"],
+      "default": "draft"
+    },
+    "category": {
+      "type": "string",
+      "description": "Primary scene category (also used to build post-MVP packs).",
+      "enum": ["beach", "restaurant", "urban", "outdoor", "cafe", "travel", "sport", "studio", "home", "nightlife", "nature", "formal"]
+    },
+    "tags": {
+      "type": "array",
+      "description": "Free-form discovery tags.",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "datingContext": {
+      "type": "object",
+      "description": "How this template is meant to be used on dating apps.",
+      "additionalProperties": false,
+      "properties": {
+        "appSlots": {
+          "type": "array",
+          "description": "Which profile slot(s) this shot is designed to fill.",
+          "items": { "type": "string", "enum": ["lead", "full_body", "candid", "social", "hobby"] },
+          "uniqueItems": true
+        },
+        "verificationSafe": {
+          "type": "boolean",
+          "description": "True when the composition preserves the subject's real identity/body so it is expected to pass biometric Face Check and not misrepresent the user.",
+          "default": true
+        }
+      }
+    },
+    "control": {
+      "type": "array",
+      "description": "The black-and-white composition control map(s). Each entry is one ControlNet conditioning input. Use multiple entries when a template needs both structure (e.g. depth for placement) and pose (openpose).",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/controlMap" }
+    },
+    "scene": {
+      "type": "object",
+      "description": "Semantic description of the environment.",
+      "additionalProperties": false,
+      "required": ["setting", "locationType", "timeOfDay"],
+      "properties": {
+        "setting": { "type": "string", "description": "Short scene summary, e.g. 'sunlit sandy beach at the waterline'." },
+        "locationType": { "type": "string", "enum": ["indoor", "outdoor"] },
+        "timeOfDay": { "type": "string", "enum": ["sunrise", "morning", "midday", "afternoon", "golden_hour", "dusk", "night"] },
+        "season": { "type": "string", "enum": ["spring", "summer", "autumn", "winter", "any"], "default": "any" },
+        "environmentDetails": {
+          "type": "array",
+          "description": "Concrete background elements to include.",
+          "items": { "type": "string" }
+        },
+        "background": { "type": "string", "description": "Background treatment, e.g. 'soft bokeh ocean horizon'." }
+      }
+    },
+    "palette": {
+      "type": "object",
+      "description": "Color and tonal direction.",
+      "additionalProperties": false,
+      "properties": {
+        "tone": { "type": "string", "enum": ["warm", "cool", "neutral"] },
+        "mood": { "type": "string", "description": "Overall mood, e.g. 'relaxed, aspirational'." },
+        "colors": {
+          "type": "array",
+          "description": "Key colors of the scene.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "hex": { "type": "string", "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$" }
+            }
+          }
+        }
+      }
+    },
+    "lighting": {
+      "type": "object",
+      "description": "Lighting design for the shot.",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "enum": ["natural", "golden_hour", "soft", "hard", "studio", "backlit", "ambient", "neon"] },
+        "direction": { "type": "string", "enum": ["front", "side", "back", "top", "rim", "diffuse"] },
+        "intensity": { "type": "string", "enum": ["low", "medium", "high"] },
+        "quality": { "type": "string", "description": "Free-form nuance, e.g. 'warm, low-contrast'." }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "description": "How the subject sits in the frame.",
+      "additionalProperties": false,
+      "required": ["framing"],
+      "properties": {
+        "framing": { "type": "string", "enum": ["full_body", "three_quarter", "medium", "close_up"] },
+        "placement": {
+          "type": "string",
+          "description": "Where the subject sits in the frame.",
+          "enum": ["center", "left_third", "right_third", "lower_third", "upper_third"]
+        },
+        "cameraAngle": { "type": "string", "enum": ["eye_level", "low_angle", "high_angle", "three_quarter"] },
+        "distance": { "type": "string", "enum": ["close", "medium", "far"] },
+        "gazeDirection": { "type": "string", "enum": ["to_camera", "away", "off_camera", "down"] },
+        "bodyLanguage": { "type": "string", "description": "e.g. 'relaxed, hands in pockets, confident stance'." }
+      }
+    },
+    "pose": {
+      "type": "object",
+      "description": "Pose specification. When a pose control map is provided, controlRef points to it; the label/description caption the prompt.",
+      "additionalProperties": false,
+      "properties": {
+        "label": { "type": "string", "description": "Short pose name, e.g. 'walking, mid-stride'." },
+        "description": { "type": "string" },
+        "controlRef": { "type": "string", "description": "id of the control entry (in `control`) that encodes this pose." }
+      }
+    },
+    "clothing": {
+      "type": "object",
+      "description": "Wardrobe direction.",
+      "additionalProperties": false,
+      "properties": {
+        "style": { "type": "string", "description": "e.g. 'smart casual'." },
+        "formality": { "type": "string", "enum": ["casual", "smart_casual", "business", "formal", "athletic"] },
+        "items": { "type": "array", "items": { "type": "string" } },
+        "colors": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "expression": {
+      "type": "object",
+      "description": "Facial expression / emotion of the subject.",
+      "additionalProperties": false,
+      "properties": {
+        "label": { "type": "string", "enum": ["warm_smile", "subtle_smile", "confident", "relaxed", "serious", "laughing", "thoughtful"] },
+        "intensity": { "type": "number", "minimum": 0, "maximum": 1, "description": "0 = neutral, 1 = full expression." }
+      }
+    },
+    "camera": {
+      "type": "object",
+      "description": "Photographic characteristics.",
+      "additionalProperties": false,
+      "properties": {
+        "lens": { "type": "string", "description": "e.g. '85mm', '35mm'." },
+        "aperture": { "type": "string", "description": "e.g. 'f/1.8'." },
+        "depthOfField": { "type": "string", "enum": ["shallow", "medium", "deep"] },
+        "shotType": { "type": "string", "enum": ["portrait", "environmental", "candid", "editorial"] },
+        "aspectRatios": {
+          "type": "array",
+          "description": "Recommended output aspect ratios, optionally tagged per dating app.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["ratio"],
+            "properties": {
+              "ratio": { "type": "string", "pattern": "^\\d+:\\d+$" },
+              "app": { "type": "string", "enum": ["tinder", "hinge", "bumble", "generic"] }
+            }
+          }
+        }
+      }
+    },
+    "promptTemplate": {
+      "type": "object",
+      "description": "How the recipe compiles into text. Placeholders in braces are substituted at generation time: {trigger} = the user's LoRA trigger word (identity), and any editable field path (e.g. {clothing.style}, {expression.label}).",
+      "additionalProperties": false,
+      "required": ["positive"],
+      "properties": {
+        "positive": { "type": "string", "minLength": 1, "description": "Positive prompt template with placeholders." },
+        "negative": { "type": "string", "description": "Negative prompt (artifact/quality guards)." }
+      }
+    },
+    "generation": {
+      "type": "object",
+      "description": "Recommended generation parameters.",
+      "additionalProperties": false,
+      "required": ["baseModel"],
+      "properties": {
+        "baseModel": { "type": "string", "description": "Base checkpoint family this template was authored against, e.g. 'flux.1-dev' or 'sdxl'." },
+        "steps": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "guidanceScale": { "type": "number", "minimum": 0 },
+        "recommendedAspectRatio": { "type": "string", "pattern": "^\\d+:\\d+$" }
+      }
+    },
+    "editableFields": {
+      "type": "array",
+      "description": "JSON paths the end user may override via UI controls (dropdowns/sliders). This is what turns the recipe into flexible, controllable generation without free-form prompting.",
+      "items": {
+        "type": "string",
+        "enum": ["clothing", "clothing.style", "clothing.formality", "expression", "expression.label", "expression.intensity", "lighting", "lighting.type", "pose", "scene.timeOfDay", "palette.tone", "camera.aspectRatios"]
+      },
+      "uniqueItems": true
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Origin and licensing of the template (rights hygiene).",
+      "additionalProperties": false,
+      "required": ["source"],
+      "properties": {
+        "source": { "type": "string", "enum": ["ai_generated", "regenerated_from_reference", "original_authored"] },
+        "license": { "type": "string", "description": "License covering the control assets and recipe." },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "description": "Content-safety flags. All templates are SFW-only.",
+      "additionalProperties": false,
+      "required": ["sfwOnly"],
+      "properties": {
+        "sfwOnly": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "controlMap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "assetUri", "strength"],
+      "properties": {
+        "id": { "type": "string", "description": "Local id for referencing (e.g. from pose.controlRef)." },
+        "type": {
+          "type": "string",
+          "description": "Kind of black-and-white control map. openpose=pose skeleton, depth=3D placement/geometry, canny=edges/architecture, segmentation=region layout, luminance=tonal/lighting blocking.",
+          "enum": ["openpose", "depth", "canny", "segmentation", "luminance"]
+        },
+        "assetUri": { "type": "string", "description": "URI of the B&W control image asset (EU object storage)." },
+        "strength": { "type": "number", "minimum": 0, "maximum": 2, "description": "ControlNet conditioning strength." },
+        "startPercent": { "type": "number", "minimum": 0, "maximum": 1, "default": 0, "description": "Denoising fraction at which control begins." },
+        "endPercent": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.6, "description": "Denoising fraction at which control is released so identity/skin/hair form naturally (typically 0.5-0.65)." }
+      }
+    }
+  }
+}
