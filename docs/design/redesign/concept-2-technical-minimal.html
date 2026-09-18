@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440, initial-scale=1" />
+<title>Visagely — Concept 2 · Technical Minimal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#FBFBFA; --panel:#FFFFFF; --ink:#0F1012; --ink-2:#54565B; --line:#E7E7E4;
+    --line-2:#ECECEA; --accent:#B8752B; --accent-soft:#F2E7D6;
+    --sans:'Inter',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:var(--bg);}
+  body{width:1440px;font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 64px;}
+  a{color:inherit;text-decoration:none;}
+  .mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);}
+  .mono .a{color:var(--accent);}
+  .btn{display:inline-block;font-size:14px;font-weight:500;padding:12px 22px;border-radius:6px;letter-spacing:.01em;}
+  .btn-dark{background:var(--ink);color:#fff;}
+  .btn-line{border:1px solid var(--line);color:var(--ink);background:var(--panel);}
+
+  nav{display:flex;align-items:center;justify-content:space-between;padding:22px 64px;border-bottom:1px solid var(--line);position:relative;}
+  .logo{font-weight:700;font-size:21px;letter-spacing:-.02em;}
+  .logo b{color:var(--accent);}
+  .navlinks{display:flex;gap:34px;font-size:14px;color:var(--ink-2);}
+  .navright{display:flex;gap:14px;align-items:center;}
+
+  /* hero */
+  .hero{padding:96px 0 72px;display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:center;}
+  .hero h1{font-size:60px;line-height:1.04;letter-spacing:-.03em;font-weight:600;margin:20px 0 0;}
+  .hero p{font-size:17px;line-height:1.65;color:var(--ink-2);max-width:30em;margin-top:22px;}
+  .hero .cta{display:flex;gap:12px;margin-top:30px;}
+  .hero .meta{margin-top:30px;display:flex;gap:26px;}
+  .hero .meta div .n{font-size:22px;font-weight:600;letter-spacing:-.02em;}
+  .hero .meta div .l{margin-top:3px;}
+  .shot{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel);}
+  .shot .img{aspect-ratio:4/5;overflow:hidden;} .shot img{width:100%;height:100%;object-fit:cover;display:block;}
+  .shot .card{position:absolute;left:14px;bottom:14px;right:14px;background:rgba(255,255,255,.94);border:1px solid var(--line);
+    border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(6px);}
+  .shot .card .t{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-2);}
+  .shot .card .b{font-family:var(--mono);font-size:11px;color:var(--accent);}
+
+  .logos{border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .logos .row{display:flex;align-items:center;justify-content:space-between;padding:22px 0;}
+  .logos .apps{display:flex;gap:40px;font-weight:600;font-size:16px;color:var(--ink);}
+
+  section{padding:88px 0;}
+  .kicker{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+  .kicker .bar{width:26px;height:1px;background:var(--accent);}
+  h2{font-size:38px;font-weight:600;letter-spacing:-.025em;line-height:1.1;}
+  .lead{color:var(--ink-2);font-size:16px;line-height:1.65;max-width:42em;margin-top:14px;}
+
+  /* how - technical list */
+  .steps{margin-top:44px;border-top:1px solid var(--line);}
+  .stp{display:grid;grid-template-columns:120px 1fr 1fr;gap:32px;padding:30px 0;border-bottom:1px solid var(--line);align-items:baseline;}
+  .stp h3{font-size:22px;font-weight:600;letter-spacing:-.01em;}
+  .stp p{color:var(--ink-2);font-size:15px;line-height:1.6;}
+
+  /* comparison */
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:44px;}
+  .col{border:1px solid var(--line);border-radius:12px;padding:32px 30px;background:var(--panel);}
+  .col.you{border-color:var(--ink);box-shadow:0 20px 50px -30px rgba(15,16,18,.35);}
+  .col .tag{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);}
+  .col.you .tag{color:var(--accent);}
+  .col h3{font-size:22px;font-weight:600;margin:8px 0 20px;letter-spacing:-.01em;}
+  .col ul{list-style:none;display:flex;flex-direction:column;gap:14px;}
+  .col li{display:flex;gap:12px;font-size:15px;color:var(--ink-2);line-height:1.5;}
+  .col li .m{font-family:var(--mono);flex:none;width:14px;color:var(--ink);} .col.you li .m{color:var(--accent);}
+  .col.you li{color:var(--ink);}
+
+  /* gallery uniform grid */
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px;}
+  .g{border:1px solid var(--line);border-radius:10px;overflow:hidden;aspect-ratio:4/5;background:var(--panel);}
+  .g img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* spec sheet privacy */
+  .spec{margin-top:40px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel);}
+  .spec .r{display:grid;grid-template-columns:220px 1fr;border-bottom:1px solid var(--line-2);}
+  .spec .r:last-child{border-bottom:0;}
+  .spec .r .k{padding:20px 26px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);border-right:1px solid var(--line-2);}
+  .spec .r .v{padding:20px 26px;font-size:15px;color:var(--ink);}
+
+  /* faq */
+  .faq{margin-top:40px;border-top:1px solid var(--line);}
+  .qa{display:grid;grid-template-columns:0.9fr 1.1fr;gap:40px;padding:26px 0;border-bottom:1px solid var(--line);}
+  .qa h4{font-size:18px;font-weight:600;letter-spacing:-.01em;}
+  .qa p{color:var(--ink-2);font-size:15px;line-height:1.6;}
+
+  .final{margin:20px 0 0;background:var(--ink);color:#fff;border-radius:16px;padding:72px 60px;text-align:center;}
+  .final h2{font-size:46px;letter-spacing:-.03em;}
+  .final p{color:#B9BBC0;font-size:17px;margin:16px auto 30px;max-width:34em;line-height:1.6;}
+  .final .btn-dark{background:#fff;color:var(--ink);}
+
+  footer{padding:40px 64px;display:flex;justify-content:space-between;color:var(--ink-2);font-size:13px;border-top:1px solid var(--line);margin-top:80px;}
+</style>
+</head>
+<body>
+  <nav>
+    <div class="logo">Visage<b>l</b>y</div>
+    <div class="navlinks"><a href="#">Product</a><a href="#">How it works</a><a href="#">Privacy</a><a href="#">Pricing</a></div>
+    <div class="navright"><a href="#" style="font-size:14px;color:var(--ink-2)">Sign in</a><a class="btn btn-dark" href="#">Start your studio</a></div>
+  </nav>
+
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <div class="mono"><span class="a">◆</span>&nbsp; Personal AI photo model</div>
+        <h1>Dating photos that are unmistakably you.</h1>
+        <p>Visagely trains a private model on your own selfies, then generates realistic, high-quality photos for Tinder, Hinge and Bumble. Precise. Private. Built to look real — not “AI”.</p>
+        <div class="cta"><a class="btn btn-dark" href="#">Start your studio</a><a class="btn btn-line" href="#">View sample gallery</a></div>
+        <div class="meta">
+          <div><div class="n">~5</div><div class="l mono">selfies to start</div></div>
+          <div><div class="n">Minutes</div><div class="l mono">to a trained model</div></div>
+          <div><div class="n">EU</div><div class="l mono">hosted &amp; private</div></div>
+        </div>
+      </div>
+      <div class="shot">
+        <div class="img"><img src="assets/gen_studio.png" alt="Generated portrait"/></div>
+        <div class="card"><span class="t">MODEL · PRIVATE</span><span class="b">IDENTITY LOCKED</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="logos"><div class="wrap"><div class="row">
+    <span class="mono">Made for the apps that matter</span>
+    <span class="apps"><span>Tinder</span><span>Hinge</span><span>Bumble</span><span>OkCupid</span></span>
+  </div></div></div>
+
+  <div class="wrap">
+    <section>
+      <div class="kicker"><span class="bar"></span><span class="mono">How it works</span></div>
+      <h2>A studio, reduced to three steps.</h2>
+      <div class="steps">
+        <div class="stp"><div class="mono">Step 01</div><h3>Upload a few selfies</h3><p>Around five photos. Visagely learns your face, features and natural style from your own images.</p></div>
+        <div class="stp"><div class="mono">Step 02</div><h3>Train your model</h3><p>A private model of you is trained in minutes — capturing how you look across angles, light and expression.</p></div>
+        <div class="stp"><div class="mono">Step 03</div><h3>Generate &amp; refine</h3><p>Pick a template or describe a vibe. Generate drafts, then refine your favourites until they’re right.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="kicker"><span class="bar"></span><span class="mono">Why it’s different</span></div>
+      <h2>Most AI photo tools guess. Visagely learns.</h2>
+      <p class="lead">Generic tools inject a face into a stock image and hope. A dedicated model of you preserves real identity and detail across every scene.</p>
+      <div class="cmp">
+        <div class="col">
+          <div class="tag">Generic AI generators</div>
+          <h3>One-shot face injection</h3>
+          <ul>
+            <li><span class="m">—</span>Drifts from your real features; often “off”.</li>
+            <li><span class="m">—</span>Plastic skin, repeated poses, tell-tale AI look.</li>
+            <li><span class="m">—</span>Little control over scene, light or styling.</li>
+            <li><span class="m">—</span>Unclear data handling.</li>
+          </ul>
+        </div>
+        <div class="col you">
+          <div class="tag">Visagely private model</div>
+          <h3>A trained model of you</h3>
+          <ul>
+            <li><span class="m">＋</span>High identity fidelity across angles and light.</li>
+            <li><span class="m">＋</span>Natural skin and detail — realism, not render.</li>
+            <li><span class="m">＋</span>Full control of scene, mood and styling.</li>
+            <li><span class="m">＋</span>EU-hosted, private, deletable anytime.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="kicker"><span class="bar"></span><span class="mono">One model · many scenes</span></div>
+      <h2>Generated from a single set of selfies.</h2>
+      <div class="grid">
+        <div class="g"><img src="assets/gen_studio.png" alt="studio"/></div>
+        <div class="g"><img src="assets/gen_outdoor.png" alt="park"/></div>
+        <div class="g"><img src="assets/gen_city.png" alt="restaurant"/></div>
+        <div class="g"><img src="assets/gen_street.png" alt="street"/></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="kicker"><span class="bar"></span><span class="mono">Privacy &amp; data</span></div>
+      <h2>Handled like it’s your face — because it is.</h2>
+      <div class="spec">
+        <div class="r"><div class="k">Model scope</div><div class="v">Trained only for you. Never shared or used to train other users’ models.</div></div>
+        <div class="r"><div class="k">Data residency</div><div class="v">Photos and model are hosted within the EU.</div></div>
+        <div class="r"><div class="k">Deletion</div><div class="v">Erase your uploads and trained model at any time — one click.</div></div>
+        <div class="r"><div class="k">Transparency</div><div class="v">Generated images are marked as AI-generated.</div></div>
+        <div class="r"><div class="k">Consent</div><div class="v">Explicit, purpose-limited consent before any training begins.</div></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="kicker"><span class="bar"></span><span class="mono">FAQ</span></div>
+      <h2>Straight answers.</h2>
+      <div class="faq">
+        <div class="qa"><h4>Will it look like me, or like AI?</h4><p>Like you. Your model is trained to preserve your identity and natural features. Realism is the goal, not a synthetic look.</p></div>
+        <div class="qa"><h4>Is my face used to train other models?</h4><p>No. Your data only ever creates your personal model, and is never used for anyone else.</p></div>
+        <div class="qa"><h4>Is it allowed on dating apps &amp; verification?</h4><p>Yes. Because photos stay recognisably you, they’re built to pass biometric Face Check and represent you honestly.</p></div>
+      </div>
+    </section>
+
+    <div class="final">
+      <h2>Build your studio in minutes.</h2>
+      <p>Create an account, get free starter tokens and a base model, and see your first results before you pay.</p>
+      <a class="btn btn-dark" href="#" style="padding:15px 32px;font-size:15px;">Start your studio</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="logo">Visage<b>l</b>y</div>
+    <div>Personal AI photo model · EU-first · Verification-safe</div>
+    <div>© Visagely</div>
+  </footer>
+</body>
+</html>
