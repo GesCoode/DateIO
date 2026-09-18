@@ -1,0 +1,96 @@
+{
+  "id": "city-evening-restaurant",
+  "name": "City Evening Restaurant",
+  "version": "1.0.0",
+  "status": "published",
+  "category": "restaurant",
+  "tags": ["night", "indoor", "smart", "warm", "medium-shot"],
+  "datingContext": {
+    "appSlots": ["lead", "social"],
+    "verificationSafe": true
+  },
+  "control": [
+    {
+      "id": "seated-composition",
+      "type": "depth",
+      "assetUri": "s3://visagely-eu-templates/city-evening-restaurant/depth.png",
+      "strength": 0.55,
+      "startPercent": 0,
+      "endPercent": 0.6
+    }
+  ],
+  "scene": {
+    "setting": "warm upscale restaurant interior, seated at a table",
+    "locationType": "indoor",
+    "timeOfDay": "night",
+    "season": "any",
+    "environmentDetails": ["soft pendant lights", "blurred patrons", "wine glass on table"],
+    "background": "warm bokeh restaurant interior"
+  },
+  "palette": {
+    "tone": "warm",
+    "mood": "sophisticated, inviting",
+    "colors": [
+      { "name": "amber light", "hex": "#d99a4e" },
+      { "name": "deep espresso", "hex": "#3b2a20" }
+    ]
+  },
+  "lighting": {
+    "type": "ambient",
+    "direction": "side",
+    "intensity": "low",
+    "quality": "warm, cozy, low-key"
+  },
+  "subject": {
+    "framing": "medium",
+    "placement": "center",
+    "cameraAngle": "eye_level",
+    "distance": "medium",
+    "gazeDirection": "to_camera",
+    "bodyLanguage": "leaning slightly forward, engaged, relaxed shoulders"
+  },
+  "pose": {
+    "label": "seated, leaning in",
+    "description": "seated at a restaurant table, leaning slightly forward with a relaxed posture"
+  },
+  "clothing": {
+    "style": "smart casual",
+    "formality": "smart_casual",
+    "items": ["dark button-down shirt"],
+    "colors": ["charcoal"]
+  },
+  "expression": {
+    "label": "warm_smile",
+    "intensity": 0.6
+  },
+  "camera": {
+    "lens": "85mm",
+    "aperture": "f/1.8",
+    "depthOfField": "shallow",
+    "shotType": "portrait",
+    "aspectRatios": [
+      { "ratio": "4:5", "app": "hinge" },
+      { "ratio": "1:1", "app": "bumble" }
+    ]
+  },
+  "promptTemplate": {
+    "positive": "photorealistic medium portrait of {trigger}, {clothing.style} {clothing.colors} shirt, seated at a warm upscale restaurant at night, soft amber pendant lighting, warm bokeh background, {expression.label}, natural skin texture, shot on 85mm f/1.8",
+    "negative": "plastic skin, over-smoothed, extra fingers, deformed hands, warped face, harsh flash, oversaturated, cartoon, cgi, watermark, text"
+  },
+  "generation": {
+    "baseModel": "flux.1-dev",
+    "steps": 30,
+    "guidanceScale": 3.5,
+    "recommendedAspectRatio": "4:5"
+  },
+  "editableFields": ["clothing.style", "clothing.formality", "expression.label", "expression.intensity", "lighting.type"],
+  "provenance": {
+    "source": "ai_generated",
+    "license": "visagely-internal",
+    "createdBy": "visagely-template-team",
+    "createdAt": "2026-09-18T00:00:00Z"
+  },
+  "safety": {
+    "sfwOnly": true
+  }
+}

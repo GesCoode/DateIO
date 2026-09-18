@@ -1,0 +1,106 @@
+{
+  "id": "golden-hour-beach",
+  "name": "Golden Hour Beach Walk",
+  "version": "1.0.0",
+  "status": "published",
+  "category": "beach",
+  "tags": ["summer", "outdoor", "candid", "warm", "full-body"],
+  "datingContext": {
+    "appSlots": ["full_body", "lead"],
+    "verificationSafe": true
+  },
+  "control": [
+    {
+      "id": "placement-depth",
+      "type": "depth",
+      "assetUri": "s3://visagely-eu-templates/golden-hour-beach/depth.png",
+      "strength": 0.6,
+      "startPercent": 0,
+      "endPercent": 0.6
+    },
+    {
+      "id": "walk-pose",
+      "type": "openpose",
+      "assetUri": "s3://visagely-eu-templates/golden-hour-beach/openpose.png",
+      "strength": 0.65,
+      "startPercent": 0,
+      "endPercent": 0.55
+    }
+  ],
+  "scene": {
+    "setting": "sunlit sandy beach at the waterline",
+    "locationType": "outdoor",
+    "timeOfDay": "golden_hour",
+    "season": "summer",
+    "environmentDetails": ["gentle waves", "distant coastline", "footprints in wet sand"],
+    "background": "soft bokeh ocean horizon"
+  },
+  "palette": {
+    "tone": "warm",
+    "mood": "relaxed, aspirational",
+    "colors": [
+      { "name": "golden sunlight", "hex": "#f4c26b" },
+      { "name": "sea teal", "hex": "#2e7d8c" },
+      { "name": "warm sand", "hex": "#e4d2a8" }
+    ]
+  },
+  "lighting": {
+    "type": "golden_hour",
+    "direction": "back",
+    "intensity": "medium",
+    "quality": "warm, low-contrast rim light"
+  },
+  "subject": {
+    "framing": "full_body",
+    "placement": "right_third",
+    "cameraAngle": "eye_level",
+    "distance": "medium",
+    "gazeDirection": "off_camera",
+    "bodyLanguage": "relaxed, walking, sleeves rolled up, easy confidence"
+  },
+  "pose": {
+    "label": "walking, mid-stride",
+    "description": "casual mid-stride walk along the waterline, looking off to the side",
+    "controlRef": "walk-pose"
+  },
+  "clothing": {
+    "style": "smart casual",
+    "formality": "smart_casual",
+    "items": ["linen shirt", "rolled chinos"],
+    "colors": ["white", "sand"]
+  },
+  "expression": {
+    "label": "subtle_smile",
+    "intensity": 0.4
+  },
+  "camera": {
+    "lens": "50mm",
+    "aperture": "f/2.0",
+    "depthOfField": "shallow",
+    "shotType": "environmental",
+    "aspectRatios": [
+      { "ratio": "4:5", "app": "hinge" },
+      { "ratio": "9:16", "app": "tinder" }
+    ]
+  },
+  "promptTemplate": {
+    "positive": "candid full-body photo of {trigger}, {clothing.style} outfit, {pose.description}, on a sunlit sandy beach at golden hour, warm backlight, soft bokeh ocean horizon, {expression.label}, natural skin texture, shot on 50mm f/2.0, photorealistic",
+    "negative": "plastic skin, over-smoothed, extra fingers, deformed hands, warped face, harsh flash, oversaturated, cartoon, cgi, watermark, text"
+  },
+  "generation": {
+    "baseModel": "flux.1-dev",
+    "steps": 28,
+    "guidanceScale": 3.5,
+    "recommendedAspectRatio": "4:5"
+  },
+  "editableFields": ["clothing.style", "expression.label", "expression.intensity", "scene.timeOfDay", "camera.aspectRatios"],
+  "provenance": {
+    "source": "ai_generated",
+    "license": "visagely-internal",
+    "createdBy": "visagely-template-team",
+    "createdAt": "2026-09-18T00:00:00Z"
+  },
+  "safety": {
+    "sfwOnly": true
+  }
+}
