@@ -47,7 +47,8 @@ apply_t5_attn_mask = true
 
 sdpa = true
 highvram = true
-gradient_checkpointing = false
+# 96 GB Blackwell still OOMs FLUX LoRA at 1024 / batch 2 without this.
+gradient_checkpointing = true
 full_bf16 = true
 
 cache_latents = true
