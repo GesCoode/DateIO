@@ -6,7 +6,7 @@ generation**. Hardware is split on purpose.
 | Machine | GPU | Use it for | Do not use it for |
 | --- | --- | --- | --- |
 | Local | RTX 2070 **8 GB**, Turing, **32 GB RAM** | Dataset prep, GGUF FLUX generation, LoRA *inference*, ControlNet *preprocess* | Serious FLUX LoRA **training**, 1024² + ControlNet + LoRA together |
-| vast.ai | **24 GB** (RTX 4090 / 3090 24 GB / A5000) | FLUX LoRA training, ControlNet generation, quality iteration | Leaving it running overnight empty (you still pay) |
+| vast.ai | **RTX 6000 Ada 48 GB** (or 4090 24 GB) | FLUX LoRA training, ControlNet generation, fidelity + reference experiments | Leaving it running overnight empty (you still pay) |
 
 The 2070 is Turing: **no native bfloat16**. Always use **fp16 / fp8 / GGUF**. Community reports
 confirm FLUX LoRA *can* train on a 2070 at ~7.5 s/it, but it is overnight-slow and OOM-fragile.
@@ -142,23 +142,42 @@ A filled example caption set lives in [`datasets/identity-v1/README.md`](dataset
 
 ## 4. vast.ai — train the LoRA (first paid session)
 
-Budget: a 4090 is often ~$0.30–0.50/hr on-demand. A character LoRA is **30–90 minutes** of
-training plus download time. First session should cost a few dollars if you destroy the instance
-when done.
+Budget: a 4090 is often ~$0.30–0.50/hr on-demand; **RTX 6000 Ada 48 GB** listings in this range
+are ~$0.60/hr. A character LoRA is **30–90 minutes** of training plus download time. First
+session should cost a few dollars if you destroy the instance when done.
 
-### 4.1 Rent
+**VRAM vs download speed:** pick VRAM (and GPU generation). A full FLUX stack is ~30–40 GB of
+downloads. At ~500 Mbps that is ~10 minutes (~$0.10). At ~5 Gbps it is ~1 minute. Experimentation
+hours dominate; one OOM or a 7× slower Turing card costs more than a slow download ever will.
+
+### 4.1 Which GPU (from the current listings)
+
+| Listing | Pick? | Why |
+| --- | --- | --- |
+| **RTX 6000 Ada · 48 GB · ~81 TFLOPS · ~$0.60/hr** | **Yes — default** | Ada (bf16), 48 GB so FLUX fp16 + LoRA train + Union ControlNet + 1024² without swapping. This is “experiment freely.” Downlink ~0.5 Gbps is fine. |
+| Q RTX 8000 · 48 GB · ~12 TFLOPS · ~$0.27/hr | Budget backup only | Same 48 GB but **Turing** (no bf16, ~7× less compute). Cheap overnight jobs, not a playground. |
+| CMP 170HX · 64 GB · ~14 TFLOPS | No | Mining SKU, weak PCIe (~6 GB/s), flaky CUDA/ML support. |
+| GB10 · 119 GB unified · ARM Cortex | No | NVIDIA GB10 / DIGITS-class **ARM**. ComfyUI custom nodes and PyTorch wheels will fight you. |
+
+If a **24 GB Ada 4090** appears cheaper than the 6000, it is enough for LoRA train + one ControlNet.
+Prefer the **48 GB 6000 Ada** while you are still changing graphs every ten minutes.
+
+### 4.2 Rent
 
 1. [vast.ai console](https://cloud.vast.ai/) → **Templates** → official **ComfyUI** *or* **FluxGym**.
-2. GPU: **24 GB+** (RTX 4090, RTX 3090 24 GB, RTX A5000). Filter **On-Demand** for the first run
+2. GPU: **RTX 6000 Ada 48 GB** (or 4090 24 GB). Filter **On-Demand** for the first run
    (interruptible is cheaper but can kill a train).
 3. Disk: **80–120 GB** is enough for FLUX fp8 + one LoRA train. 200 GB if you also want Union
    ControlNet + upscaler.
 4. Open the instance portal → ComfyUI / Jupyter / FluxGym.
 
+Existing work on the laptop (`…\Desktop\Visagely\Laptop`) — zip the dataset (not the whole
+OneDrive tree), upload to the instance. Do not train off a live OneDrive folder.
+
 **EU note:** vast.ai hosts are worldwide. Fine for personal prototyping. Production later needs
 **EU-region GPUs** for the privacy promise — do not bake “any host” into the product.
 
-### 4.2 Train (FluxGym is the fastest path)
+### 4.3 Train (FluxGym is the fastest path)
 
 FluxGym = Kohya `sd-scripts` with a Gradio UI. Upload `datasets/identity-v1/images/`, set:
 
@@ -176,12 +195,12 @@ FluxGym = Kohya `sd-scripts` with a Gradio UI. Upload `datasets/identity-v1/imag
 Download the `.safetensors` the moment training finishes. Copy it to local
 `ComfyUI/models/loras/`.
 
-### 4.3 Alternative: ComfyUI-FluxTrainer on the same box
+### 4.4 Alternative: ComfyUI-FluxTrainer on the same box
 
 Use the settings in [`training/fluxtrainer-24gb.json`](training/fluxtrainer-24gb.json). Same
 numbers as above; `blocks_to_swap` can stay **0** on 24 GB.
 
-### 4.4 Generate with ControlNet (vast, not 2070)
+### 4.5 Generate with ControlNet (vast, not 2070)
 
 On 24 GB, load
 [`workflows/vast-flux-lora-union-controlnet.json`](workflows/vast-flux-lora-union-controlnet.json):
@@ -200,14 +219,24 @@ vast.ai.
 
 ---
 
-## 5. Suggested order this weekend
+## 5. Phased plan (agreed)
 
-1. **Tonight, local:** FLUX GGUF generates *anything* on the 2070.
-2. **Tonight, local:** shoot / cull 15–25 photos, write captions.
-3. **Next session, vast.ai:** train `vsgly_id` LoRA, download it, **destroy the instance**.
-4. **Back local:** generate 4 previews with the LoRA (no ControlNet).
-5. **Second vast session:** ControlNet pose/depth + LoRA, save 4 + 1 upscale. That is the MVP
-   generate loop.
+This is the product order. Do not skip identity lock to chase story prompts.
+
+1. **Identity LoRA** — cull the `Visagely\Laptop` set (plus new shots if needed) to 15–25
+   photos, caption, train `vsgly_id` on vast. Download the `.safetensors` immediately.
+2. **Fidelity workflows** — same person, new clothes/light/background. Close-up + unseen
+   scene tests (section 6). Tune LoRA strength, Union ControlNet `end_percent`, guidance.
+   Stay here until a stranger would still say it is you.
+3. **Story / “special sauce”** — great date photos as *structure* (pose/depth/composition
+   maps) plus the identity LoRA. The reference picture supplies the scene grammar; the LoRA
+   supplies the face. This is not IP-Adapter FaceID.
+4. **Narrow the stack** — keep only what survived: likely FLUX + identity LoRA + Union
+   ControlNet (pose/depth) + JSON template. Drop InstantID / IP-Adapter unless a specific
+   shot type still needs them.
+5. **Try the 2070 again** — LoRA *inference* and dataset work belong on the laptop.
+   Training + ControlNet + 1024² together probably stay rented. Re-test after the stack is
+   frozen; if GGUF + LoRA (no CN) is good enough for previews, only rent for train/upres.
 
 Do not start with video, packs, or IP-Adapter.
 
