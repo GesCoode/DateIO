@@ -150,13 +150,15 @@ bash kohya-flux-48gb.sh retrain
 
 `retrain` = **retag** (captions → `vsgly_id`) + **clean** + **train**. Old `zpd person` / `ohwx` tokens are rewritten first. Checkpoints and caches go; photos stay. No `--resume`.
 
-On the **laptop** (this VM cannot see `C:\Users\jeroe\...`):
+On the **laptop**:
 
 ```powershell
-python docs\comfyui\training\retag-captions.py "C:\Users\jeroe\OneDrive\Desktop\Visagely\Laptop\TrainingSets\TrainingSix\zdp"
+python change_zdp_to_vsgly.py "C:\Users\jeroe\OneDrive\Desktop\Visagely\Laptop\TrainingSets\TrainingSix\zdp"
 ```
 
-Then re-upload `zdp` to `/workspace/flux_train/zdp/` **or** run `retag` on the box if that copy is the one you will train.
+Copy `docs/comfyui/training/change_zdp_to_vsgly.py` next to the photos if the repo is not cloned there. It walks every `.txt`, replaces `zdp person` then `zdp` (and `zpd` spellings) with `vsgly_id`, and prints each edit.
+
+Then re-upload `zdp` to `/workspace/flux_train/zdp/` **or** run the same script on the box.
 
 If setup already ran and you only want to wipe: `bash kohya-flux-48gb.sh clean`.
 

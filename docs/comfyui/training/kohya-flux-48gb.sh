@@ -234,7 +234,7 @@ cmd_train() {
 
 cmd_retag() {
   detect_images
-  python3 "$SCRIPT_DIR/retag-captions.py" "$IMAGES"
+  python3 "$SCRIPT_DIR/change_zdp_to_vsgly.py" "$IMAGES"
   echo "==> recache next: captions changed, so wipe .npz before train ($0 retrain)"
 }
 
