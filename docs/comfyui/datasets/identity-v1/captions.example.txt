@@ -1,0 +1,4 @@
+vsgly_id, a man with short dark wavy hair and a short beard, brown eyes, looking at camera, extreme close-up, indoor window light
+vsgly_id, a man with short dark wavy hair and a short beard, brown eyes, three-quarter view, head and shoulders, warm indoor light
+vsgly_id, a man with short dark wavy hair and a short beard, slight smile, chest-up, overcast outdoor light
+vsgly_id, a man with short dark wavy hair and a short beard, standing full body, facing camera, daylight street

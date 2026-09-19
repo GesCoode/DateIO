@@ -1,0 +1,16 @@
+# kohya / FluxTrainer dataset config for identity-v1
+# Point [[datasets]] image_dir at the absolute path of the images/ folder on the training box.
+
+[general]
+shuffle_caption = false
+keep_tokens = 1
+caption_extension = ".txt"
+
+[[datasets]]
+resolution = 768
+batch_size = 1
+enable_bucket = true
+min_bucket_reso = 512
+max_bucket_reso = 1024
+image_dir = "./images"
+num_repeats = 10
