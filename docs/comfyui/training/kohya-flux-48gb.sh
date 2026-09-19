@@ -30,7 +30,7 @@ detect_images() {
     return
   fi
   local d
-  for d in "$TRAIN/zdp" "$TRAIN/zpd" "$TRAIN/images"; do
+  for d in "$TRAIN/vsgly_id" "$TRAIN/zdp" "$TRAIN/zpd" "$TRAIN/images"; do
     [[ -d "$d" ]] || continue
     shopt -s nullglob nocaseglob
     local hits=( "$d"/*.png "$d"/*.jpg "$d"/*.jpeg "$d"/*.webp )
@@ -41,7 +41,7 @@ detect_images() {
       return
     fi
   done
-  IMAGES="$TRAIN/zdp"
+  IMAGES="$TRAIN/vsgly_id"
   echo "==> no photos found yet; expecting $IMAGES/photo_##.png + .txt"
 }
 

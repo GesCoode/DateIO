@@ -1,5 +1,6 @@
 # Kohya dataset config. Live copy on the box: /workspace/flux_train/dataset.toml
 # Point image_dir at the folder that actually holds photo_##.png + photo_##.txt.
+# Current layout: /workspace/flux_train/vsgly_id/
 
 [general]
 shuffle_caption = false
@@ -16,5 +17,5 @@ max_bucket_reso = 1280
 bucket_reso_steps = 64
 
   [[datasets.subsets]]
-  image_dir = "/workspace/flux_train/zdp"
+  image_dir = "/workspace/flux_train/vsgly_id"
   num_repeats = 10
