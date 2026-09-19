@@ -97,13 +97,17 @@ nvidia-smi
 
 # 1) Get the script from this repo (or scp the training/ folder)
 # 2) Put photos in /workspace/flux_train/images/
-# 3) Setup once (~20–40 min)
+# 3) Setup once (~20–40 min) — skip if sd-scripts + FLUX weights already exist
 bash kohya-flux-48gb.sh setup
 
-# 4) Train (~3–4.5 h). tmux/screen so an SSH drop does not kill it.
+# 4) From-scratch train (~3–4.5 h). Wipes old LoRAs/caches. No resume.
 tmux new -s lora
-bash kohya-flux-48gb.sh train
+bash kohya-flux-48gb.sh retrain
 ```
+
+`retrain` = `clean` + `train`. It deletes previous checkpoints, sample folders, and latent/text-encoder `.npz` caches. Photos and the FLUX base weights stay. There is no `--resume` and no `--network_weights`; step 0 is a new LoRA.
+
+If setup already ran and you only want to wipe: `bash kohya-flux-48gb.sh clean`.
 
 When a sample at 1000–1500 looks right you can Ctrl+C, copy the matching `.safetensors` off the box, and destroy the instance. Leaving it idle still bills.
 

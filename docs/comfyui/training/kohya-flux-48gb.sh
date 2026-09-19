@@ -3,9 +3,11 @@
 # This is kohya-ss/sd-scripts. Do NOT apt-upgrade or install NVIDIA drivers on vast.ai.
 #
 #   bash kohya-flux-48gb.sh setup    # venv, clone, weights (~20–40 min)
-#   bash kohya-flux-48gb.sh train    # 2000 steps (~3–4.5 h on 6000 Ada)
+#   bash kohya-flux-48gb.sh clean    # wipe old LoRAs, samples, latent/TE caches
+#   bash kohya-flux-48gb.sh train    # 2000 steps from step 0 (no resume)
+#   bash kohya-flux-48gb.sh retrain  # clean + train
 #
-# Env overrides: ROOT, HF_TOKEN, TRIGGER, DIM, MAX_STEPS
+# Env overrides: ROOT, HF_TOKEN, TRIGGER, DIM, MAX_STEPS, OUTPUT_NAME
 set -euo pipefail
 
 ROOT="${ROOT:-/workspace}"
@@ -21,6 +23,7 @@ ALPHA="${ALPHA:-$DIM}"
 MAX_STEPS="${MAX_STEPS:-2000}"
 SAVE_EVERY="${SAVE_EVERY:-250}"
 SAMPLE_EVERY="${SAMPLE_EVERY:-250}"
+OUTPUT_NAME="${OUTPUT_NAME:-${TRIGGER}_flux_v1}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -97,7 +100,25 @@ PY
     cp "$SCRIPT_DIR/sample-prompts.txt" "$TRAIN/sample-prompts.txt"
   fi
 
-  echo "==> setup done. Put 15–25 jpg+txt pairs in $IMAGES then: $0 train"
+  echo "==> setup done. Put 15–25 jpg+txt pairs in $IMAGES then: $0 retrain"
+}
+
+cmd_clean() {
+  echo "==> wiping previous LoRA runs (photos and FLUX base weights stay)"
+  rm -rf "$OUT"
+  mkdir -p "$OUT"
+  # Old paths from the SDXL / first FLUX notes
+  rm -rf /home/user/kohya_output /workspace/kohya_output
+  rm -rf /home/user/dataset/.cache "$TRAIN/.cache" "$IMAGES/.cache"
+  # kohya disk caches sit next to the images; they must go or a recaption is ignored
+  if [[ -d "$IMAGES" ]]; then
+    find "$IMAGES" -maxdepth 2 \( -name '*.npz' -o -name '*_te.safetensors' -o -name '*_te.npz' \) -delete
+  fi
+  if [[ -d /home/user/dataset ]]; then
+    find /home/user/dataset -name '*.npz' -delete
+    find /home/user/dataset -type d -name '.cache' -prune -exec rm -rf {} +
+  fi
+  echo "==> clean. Next: $0 train  (starts at step 0, no --resume, no old LoRA loaded)"
 }
 
 write_dataset_toml() {
@@ -160,7 +181,8 @@ cmd_train() {
     cp "$SCRIPT_DIR/sample-prompts.txt" "$TRAIN/sample-prompts.txt"
   fi
 
-  echo "==> $n images, dim=$DIM alpha=$ALPHA steps=$MAX_STEPS"
+  echo "==> FROM SCRATCH  $n images  dim=$DIM alpha=$ALPHA  steps=$MAX_STEPS  name=$OUTPUT_NAME"
+  echo "    no --resume, no --network_weights, caches rebuilt"
   echo "    expect ~5–8 s/it on RTX 6000 Ada → ~3–4.5 h for 2000 steps"
   cd "$SD_SCRIPTS"
 
@@ -172,7 +194,7 @@ cmd_train() {
     --ae="$MODELS/ae.safetensors" \
     --dataset_config="$TRAIN/dataset.toml" \
     --output_dir="$OUT" \
-    --output_name="${TRIGGER}_flux_v1" \
+    --output_name="$OUTPUT_NAME" \
     --logging_dir="$OUT/log" \
     --save_model_as=safetensors \
     --save_precision=bf16 \
@@ -209,13 +231,20 @@ cmd_train() {
   echo "    Copy the 1000/1250/1500-step files off the box before you destroy the instance."
 }
 
+cmd_retrain() {
+  cmd_clean
+  cmd_train
+}
+
 usage() {
-  echo "usage: $0 setup|train"
+  echo "usage: $0 setup|clean|train|retrain"
   exit 2
 }
 
 case "${1:-}" in
   setup) cmd_setup ;;
+  clean) cmd_clean ;;
   train) cmd_train ;;
+  retrain) cmd_retrain ;;
   *) usage ;;
 esac

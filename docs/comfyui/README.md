@@ -192,7 +192,7 @@ Full recipe, time/quality table, and the audit of the old SDXL/LoKR/InstantID no
 # after photos are in /workspace/flux_train/images/  (jpg + txt, trigger first)
 bash docs/comfyui/training/kohya-flux-48gb.sh setup
 tmux new -s lora
-bash docs/comfyui/training/kohya-flux-48gb.sh train
+bash docs/comfyui/training/kohya-flux-48gb.sh retrain   # wipe old runs, start at step 0
 ```
 
 | Setting | Value |
