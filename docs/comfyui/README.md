@@ -273,7 +273,7 @@ Generate 8 seeds of a **close-up** and 8 of a **new scene the dataset never show
 
 | Path | What |
 | --- | --- |
-| [`models.md`](models.md) | Exact files + Hugging Face URLs |
+| [`WORKFLOW.md`](WORKFLOW.md) | Slow command checklist (this week’s order) |
 | [`datasets/identity-v1/`](datasets/identity-v1/) | Dataset layout + caption rules |
 | [`training/`](training/) | Kohya FLUX script + identity recipe; FluxTrainer JSON fallback |
 | [`workflows/`](workflows/) | Importable ComfyUI API-format graphs |
