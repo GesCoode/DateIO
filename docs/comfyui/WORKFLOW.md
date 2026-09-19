@@ -46,7 +46,7 @@ You want CUDA visible and a lot of VRAM. Then stop. Do not apt-upgrade.
 
 ## 2. Captions (can be laptop or the box)
 
-Photos: `/workspace/flux_train/zdp/photo_##.png` + `photo_##.txt`.
+Photos: `/workspace/flux_train/vsgly_id/photo_##.png` + `photo_##.txt`.
 
 If captions still say `zdp` / `zdp person` / `zpd person`:
 
@@ -141,7 +141,7 @@ nano /workspace/flux_train/dataset.toml
 | File | Meaning |
 | --- | --- |
 | `kohya-flux.toml` | rank 16/16, AdamW, 1e-4, 1500 steps, save every 250, Flux flags |
-| `dataset.toml` | `image_dir = "/workspace/flux_train/zdp"`, batch 2, 1024, repeats 10 |
+| `dataset.toml` | `image_dir = "/workspace/flux_train/vsgly_id"`, batch 2, 1024, repeats 10 |
 
 `keep_tokens = 1` because `vsgly_id` is one token.
 
