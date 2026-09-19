@@ -189,10 +189,11 @@ Full recipe, time/quality table, and the audit of the old SDXL/LoKR/InstantID no
 - paste-ready: [`training/kohya-flux-48gb.sh`](training/kohya-flux-48gb.sh)
 
 ```bash
-# after photos are in /workspace/flux_train/images/  (jpg + txt, trigger first)
+# after photos are in /workspace/flux_train/zdp/  (photo_##.png + photo_##.txt)
 bash docs/comfyui/training/kohya-flux-48gb.sh setup
+bash docs/comfyui/training/kohya-flux-48gb.sh config   # the two TOML files
 tmux new -s lora
-bash docs/comfyui/training/kohya-flux-48gb.sh retrain   # wipe old runs, start at step 0
+bash docs/comfyui/training/kohya-flux-48gb.sh retrain
 ```
 
 | Setting | Value |

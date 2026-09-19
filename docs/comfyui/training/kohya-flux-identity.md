@@ -62,16 +62,59 @@ Pass: a stranger still says it is you on the unseen scene. Fail: every image is 
 
 If close-ups are still soft at 1500–2000: **dim 32 / alpha 16**, more eye-level close-ups, same LR. Do not crank LR.
 
+## Dataset (your layout)
+
+Photos can live in `/workspace/flux_train/zdp/` as `photo_##.png` + `photo_##.txt` (same number).
+The script auto-detects `zdp/`, `zpd/`, or `images/`. `photo_01.png` / `photo_01.txt` is a valid pair.
+
+Open the first caption and use **that** trigger in `sample-prompts.txt` (`zpd person` from the old run, or `vsgly_id`). Do not mix triggers.
+
+## Config files (this is what you edit)
+
+Kohya does not use the old GUI JSON on this path. Two TOML files:
+
+| File on the rented box | What it controls |
+| --- | --- |
+| **`/workspace/flux_train/kohya-flux.toml`** | Rank, alpha, LR, optimiser, steps, precision, Flux flags |
+| **`/workspace/flux_train/dataset.toml`** | `image_dir`, `batch_size`, `num_repeats`, resolution, buckets |
+
+Repo copies (source of truth before setup copies them onto the box):
+
+- [`kohya-flux.toml`](kohya-flux.toml)
+- [`dataset.toml`](dataset.toml)
+
+```bash
+bash kohya-flux-48gb.sh config    # prints both files
+nano /workspace/flux_train/kohya-flux.toml
+nano /workspace/flux_train/dataset.toml
+```
+
+## 120 GB VRAM
+
+You will not OOM at rank 16 / 1024 / batch 2. Extra VRAM is **not** a reason to jump to dim 64 or batch 8 — that overfits a 15–40 image face set.
+
+This profile spends the memory on **speed and stability**:
+
+- full **AdamW** (not 8-bit)
+- **`gradient_checkpointing = false`**
+- **`full_bf16 = true`**, no fp8, no block swap
+- **batch 2** in `dataset.toml`
+- **1500 steps** (batch 2 sees each image about as often as 2000 × batch 1)
+
+If you want maximum identity quality over speed, set `batch_size = 1` and `max_train_steps = 2000`.
+
+Expect faster than the 48 GB estimate (often ~3–6 s/it). If it is 20+ s/it, something is still offloading.
+
 ## Dataset (do this before `train`)
 
-From `C:\Users\jeroe\OneDrive\Desktop\Visagely\Laptop`: zip **images + captions only**, upload, unzip to `/workspace/flux_train/images/`.
+From `C:\Users\jeroe\OneDrive\Desktop\Visagely\Laptop`: zip **images + captions only**, upload, unzip to `/workspace/flux_train/zdp/` (or `images/`).
 
 ```
-/workspace/flux_train/images/
-  001.jpg
-  001.txt
-  002.jpg
-  002.txt
+/workspace/flux_train/zdp/
+  photo_01.png
+  photo_01.txt
+  photo_02.png
+  photo_02.txt
   ...
 ```
 
@@ -85,22 +128,26 @@ vsgly_id, a man with short dark wavy hair and a short beard, brown eyes, looking
 
 Caption **stable identity** (hair, beard, eyes) and **this shot’s** framing/light. Leave clothing and place out if you want them to vary. Rewrite any old WD14 tag dumps.
 
-20 images × 10 repeats × batch 1 → 200 steps/epoch → **2000 steps = 10 epochs**. That is the intended math. If you have 16 images, set `num_repeats = 12` in `dataset.toml` so you still land near 2000.
+20 images × 10 repeats × batch 2 → 100 steps/epoch → **1500 steps ≈ 15 epochs**. Edit `num_repeats` / `max_train_steps` in the two TOML files if your `zdp` folder is much larger.
 
 ## Commands on the rented box
 
 Hugging Face: accept [FLUX.1-dev](https://huggingface.co/black-forest-labs/FLUX.1-dev), then `huggingface-cli login` (or export `HF_TOKEN`).
 
 ```bash
-# 0) GPU must be Ada / Ampere, ~48 GB, CUDA visible. Do not apt-upgrade.
+# 0) GPU must be CUDA visible. 120 GB is plenty. Do not apt-upgrade.
 nvidia-smi
 
-# 1) Get the script from this repo (or scp the training/ folder)
-# 2) Put photos in /workspace/flux_train/images/
-# 3) Setup once (~20–40 min) — skip if sd-scripts + FLUX weights already exist
+# 1) Photos already in /workspace/flux_train/zdp/photo_##.png +.txt
+# 2) Setup once if weights/venv are missing
 bash kohya-flux-48gb.sh setup
 
-# 4) From-scratch train (~3–4.5 h). Wipes old LoRAs/caches. No resume.
+# 3) Inspect / edit the two TOML files
+bash kohya-flux-48gb.sh config
+nano /workspace/flux_train/kohya-flux.toml
+nano /workspace/flux_train/dataset.toml
+
+# 4) From-scratch train. tmux so an SSH drop does not kill it.
 tmux new -s lora
 bash kohya-flux-48gb.sh retrain
 ```
