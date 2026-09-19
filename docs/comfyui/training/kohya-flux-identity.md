@@ -67,7 +67,7 @@ If close-ups are still soft at 1500–2000: **dim 32 / alpha 16**, more eye-leve
 Photos can live in `/workspace/flux_train/zdp/` as `photo_##.png` + `photo_##.txt` (same number).
 The script auto-detects `zdp/`, `zpd/`, or `images/`. `photo_01.png` / `photo_01.txt` is a valid pair.
 
-Open the first caption and use **that** trigger in `sample-prompts.txt` (`zpd person` from the old run, or `vsgly_id`). Do not mix triggers.
+Open the first caption: it must start with **`vsgly_id`**. Run `bash kohya-flux-48gb.sh retag` (or `retag-captions.py` on the laptop) before training so old `zpd person` tokens are gone.
 
 ## Config files (this is what you edit)
 
@@ -142,17 +142,21 @@ nvidia-smi
 # 2) Setup once if weights/venv are missing
 bash kohya-flux-48gb.sh setup
 
-# 3) Inspect / edit the two TOML files
-bash kohya-flux-48gb.sh config
-nano /workspace/flux_train/kohya-flux.toml
-nano /workspace/flux_train/dataset.toml
-
-# 4) From-scratch train. tmux so an SSH drop does not kill it.
+# 3) Rewrite old zpd/ohwx triggers → vsgly_id, then train
+bash kohya-flux-48gb.sh retag
 tmux new -s lora
 bash kohya-flux-48gb.sh retrain
 ```
 
-`retrain` = `clean` + `train`. It deletes previous checkpoints, sample folders, and latent/text-encoder `.npz` caches. Photos and the FLUX base weights stay. There is no `--resume` and no `--network_weights`; step 0 is a new LoRA.
+`retrain` = **retag** (captions → `vsgly_id`) + **clean** + **train**. Old `zpd person` / `ohwx` tokens are rewritten first. Checkpoints and caches go; photos stay. No `--resume`.
+
+On the **laptop** (this VM cannot see `C:\Users\jeroe\...`):
+
+```powershell
+python docs\comfyui\training\retag-captions.py "C:\Users\jeroe\OneDrive\Desktop\Visagely\Laptop\TrainingSets\TrainingSix\zdp"
+```
+
+Then re-upload `zdp` to `/workspace/flux_train/zdp/` **or** run `retag` on the box if that copy is the one you will train.
 
 If setup already ran and you only want to wipe: `bash kohya-flux-48gb.sh clean`.
 

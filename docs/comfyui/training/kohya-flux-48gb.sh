@@ -4,6 +4,7 @@
 #
 #   bash kohya-flux-48gb.sh setup     # venv, clone, weights
 #   bash kohya-flux-48gb.sh config    # print where to edit settings
+#   bash kohya-flux-48gb.sh retag     # rewrite captions → vsgly_id
 #   bash kohya-flux-48gb.sh clean     # wipe old LoRAs + latent caches
 #   bash kohya-flux-48gb.sh train     # uses /workspace/flux_train/*.toml
 #   bash kohya-flux-48gb.sh retrain   # clean + train
@@ -231,19 +232,27 @@ cmd_train() {
   echo "    Copy the 750/1000/1250-step files off the box before you destroy the instance."
 }
 
+cmd_retag() {
+  detect_images
+  python3 "$SCRIPT_DIR/retag-captions.py" "$IMAGES"
+  echo "==> recache next: captions changed, so wipe .npz before train ($0 retrain)"
+}
+
 cmd_retrain() {
+  cmd_retag
   cmd_clean
   cmd_train
 }
 
 usage() {
-  echo "usage: $0 setup|config|clean|train|retrain"
+  echo "usage: $0 setup|config|retag|clean|train|retrain"
   exit 2
 }
 
 case "${1:-}" in
   setup) cmd_setup ;;
   config) cmd_config ;;
+  retag) cmd_retag ;;
   clean) cmd_clean ;;
   train) cmd_train ;;
   retrain) cmd_retrain ;;

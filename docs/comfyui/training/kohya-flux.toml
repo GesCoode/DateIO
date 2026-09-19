@@ -18,7 +18,7 @@ ae = "/workspace/models/flux/ae.safetensors"
 dataset_config = "/workspace/flux_train/dataset.toml"
 output_dir = "/workspace/flux_train/output"
 logging_dir = "/workspace/flux_train/output/log"
-output_name = "zdp_flux_v1"
+output_name = "vsgly_id_flux_v1"
 sample_prompts = "/workspace/flux_train/sample-prompts.txt"
 
 save_model_as = "safetensors"
