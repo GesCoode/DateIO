@@ -65,58 +65,55 @@ First line of `photo_01.txt` must start with `vsgly_id`. Then stop.
 
 ---
 
-## 3. Hugging Face login (once)
+## 3. Install libraries (Hugging Face is a pip package — install it before login)
 
-Accept the license: https://huggingface.co/black-forest-labs/FLUX.1-dev
-
-```bash
-pip install -U "huggingface_hub[cli]"
-huggingface-cli login
-```
-
-Then stop.
-
----
-
-## 4. Libraries + FLUX weights — this is the long download
-
-Either run the helper and **let it sit**:
+Every `pip` / `huggingface-cli` line below must run **after** `source /workspace/kohya_env/bin/activate`.
+If that venv is not active, `huggingface-cli` will not exist.
 
 ```bash
-bash kohya-flux-48gb.sh setup
-```
-
-That is the whole install. It will, in order:
-
-1. create `/workspace/kohya_env`
-2. `pip install torch torchvision` (CUDA wheel) if needed
-3. `git clone https://github.com/kohya-ss/sd-scripts.git /workspace/sd-scripts`
-4. `pip install -r /workspace/sd-scripts/requirements.txt`
-5. download four files into `/workspace/models/flux/`
-   - `flux1-dev.safetensors`
-   - `ae.safetensors`
-   - `clip_l.safetensors`
-   - `t5xxl_fp16.safetensors`
-6. copy configs to `/workspace/flux_train/kohya-flux.toml` and `dataset.toml`
-
-Do **not** start training until this finishes. Expect **20–40+ minutes**.
-
-Same thing by hand, if you prefer to watch each line:
-
-```bash
+# 3.1 venv
 python3 -m venv /workspace/kohya_env
 source /workspace/kohya_env/bin/activate
 pip install -U pip wheel
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
-git clone --depth 1 --recurse-submodules https://github.com/kohya-ss/sd-scripts.git /workspace/sd-scripts
-pip install -r /workspace/sd-scripts/requirements.txt
-pip install -U "huggingface_hub[cli]"
 
+# 3.2 PyTorch with CUDA (large)
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+python -c "import torch; print(torch.__version__, torch.cuda.is_available(), torch.cuda.get_device_name(0))"
+
+# 3.3 Hugging Face CLI  ← this is the missing piece
+pip install -U "huggingface_hub[cli]"
+huggingface-cli --help
+
+# 3.4 Kohya sd-scripts + its Python deps (also installs huggingface-hub, accelerate, transformers, …)
+git clone --depth 1 --recurse-submodules https://github.com/kohya-ss/sd-scripts.git /workspace/sd-scripts
+cd /workspace/sd-scripts
+pip install -r requirements.txt
+```
+
+`requirements.txt` pulls in at least: `accelerate`, `transformers`, `diffusers`, `safetensors`, `bitsandbytes`, `toml`, `einops`, `opencv-python`, `sentencepiece`, `huggingface-hub`, `tensorboard`, `rich`, plus `-e .` (the kohya library itself).
+
+Accept https://huggingface.co/black-forest-labs/FLUX.1-dev then:
+
+```bash
+source /workspace/kohya_env/bin/activate
+huggingface-cli login
+```
+
+---
+
+## 4. Download FLUX weights (only after 3.3 + login)
+
+```bash
+source /workspace/kohya_env/bin/activate
+mkdir -p /workspace/models/flux
 huggingface-cli download black-forest-labs/FLUX.1-dev flux1-dev.safetensors --local-dir /workspace/models/flux
 huggingface-cli download black-forest-labs/FLUX.1-dev ae.safetensors --local-dir /workspace/models/flux
 huggingface-cli download comfyanonymous/flux_text_encoders clip_l.safetensors --local-dir /workspace/models/flux
 huggingface-cli download comfyanonymous/flux_text_encoders t5xxl_fp16.safetensors --local-dir /workspace/models/flux
+ls -lh /workspace/models/flux
 ```
+
+`bash kohya-flux-48gb.sh setup` is the same sequence in one script. It still needs the venv active for later steps, and it will `pip install -U "huggingface_hub[cli]"` before any download. Do not start training until the four files are on disk.
 
 Check before moving on:
 
