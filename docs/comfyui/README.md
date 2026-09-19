@@ -143,8 +143,9 @@ A filled example caption set lives in [`datasets/identity-v1/README.md`](dataset
 ## 4. vast.ai — train the LoRA (first paid session)
 
 Budget: a 4090 is often ~$0.30–0.50/hr on-demand; **RTX 6000 Ada 48 GB** listings in this range
-are ~$0.60/hr. A character LoRA is **30–90 minutes** of training plus download time. First
-session should cost a few dollars if you destroy the instance when done.
+are ~$0.60/hr. A FLUX identity LoRA is **~3–4.5 hours of training** plus ~20–40 min setup
+(~$2.50–$3.50 if you destroy the instance when done). SDXL jobs from the old notes were faster;
+do not use those time estimates.
 
 **VRAM vs download speed:** pick VRAM (and GPU generation). A full FLUX stack is ~30–40 GB of
 downloads. At ~500 Mbps that is ~10 minutes (~$0.10). At ~5 Gbps it is ~1 minute. Experimentation
@@ -177,23 +178,37 @@ OneDrive tree), upload to the instance. Do not train off a live OneDrive folder.
 **EU note:** vast.ai hosts are worldwide. Fine for personal prototyping. Production later needs
 **EU-region GPUs** for the privacy promise — do not bake “any host” into the product.
 
-### 4.3 Train (FluxGym is the fastest path)
+### 4.3 Train (Kohya sd-scripts — this is the path)
 
-FluxGym = Kohya `sd-scripts` with a Gradio UI. Upload `datasets/identity-v1/images/`, set:
+Do **not** `apt upgrade` or install NVIDIA drivers; the vast template already has CUDA.
+
+Full recipe, time/quality table, and the audit of the old SDXL/LoKR/InstantID notes:
+
+- [`training/kohya-flux-identity.md`](training/kohya-flux-identity.md)
+- [`training/prior-notes-audit.md`](training/prior-notes-audit.md)
+- paste-ready: [`training/kohya-flux-48gb.sh`](training/kohya-flux-48gb.sh)
+
+```bash
+# after photos are in /workspace/flux_train/images/  (jpg + txt, trigger first)
+bash docs/comfyui/training/kohya-flux-48gb.sh setup
+tmux new -s lora
+bash docs/comfyui/training/kohya-flux-48gb.sh train
+```
 
 | Setting | Value |
 | --- | --- |
-| Base | FLUX.1-dev (fp8 is fine) |
-| Repeat / epochs | ~15 images × 10–15 repeats, or **1500–2000 steps** |
-| Resolution | 512 or 768 (1024 if 24 GB is comfortable) |
-| Network dim / alpha | **16 / 16** to start; 32/16 if faces are still soft |
-| LR | `1e-4` AdamW8bit, **cosine** scheduler |
-| Batch | 1 |
+| Script | `flux_train_network.py` (`networks.lora_flux`) |
+| Base | FLUX.1-dev **bf16** (48 GB — no fp8, no block swap) |
+| dim / alpha | **16 / 16** (not kohya’s example alpha=1) |
+| Steps | **2000**, save / sample every **250** |
+| LR | `1e-4` AdamW8bit, warmup 100, `flux_shift` |
+| Batch / reso | 1 / **1024** buckets |
+| TE | unet-only + cached T5/CLIP (do not train T5) |
 | Trigger | `vsgly_id` |
-| Precision | fp16 if the host GPU is Turing; bf16 on 30-series / 40-series |
 
-Download the `.safetensors` the moment training finishes. Copy it to local
-`ComfyUI/models/loras/`.
+Expect **5–8 s/it** and likeness around **step 500–750**; keep the **1000–1500** checkpoint more often than 2000. Download `.safetensors` before destroying the instance.
+
+FluxGym is the same trainer with a UI if you would rather click than paste. Ostris AI-Toolkit is the fallback (that is the run that already hit likeness at 500).
 
 ### 4.4 Alternative: ComfyUI-FluxTrainer on the same box
 
@@ -259,6 +274,6 @@ Generate 8 seeds of a **close-up** and 8 of a **new scene the dataset never show
 | --- | --- |
 | [`models.md`](models.md) | Exact files + Hugging Face URLs |
 | [`datasets/identity-v1/`](datasets/identity-v1/) | Dataset layout + caption rules |
-| [`training/`](training/) | FluxTrainer / FluxGym settings |
+| [`training/`](training/) | Kohya FLUX script + identity recipe; FluxTrainer JSON fallback |
 | [`workflows/`](workflows/) | Importable ComfyUI API-format graphs |
 | [`vastai/provision.sh`](vastai/provision.sh) | Optional first-boot downloads on a ComfyUI instance |

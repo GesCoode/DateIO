@@ -45,5 +45,6 @@ Change `vsgly_id` in `dataset.toml` if you pick a different trigger — keep it 
 
 ## Training pointer
 
-On vast.ai / FluxGym: point the dataset folder at `images/` (the folder that contains both jpg and
-txt). On FluxTrainer, load `dataset.toml`.
+On the rented box, put jpg+txt into `/workspace/flux_train/images/` and run
+[`../../training/kohya-flux-48gb.sh`](../../training/kohya-flux-48gb.sh). FluxGym / FluxTrainer can
+still load this folder; use the same 16/16, 1e-4, 2000-step numbers.

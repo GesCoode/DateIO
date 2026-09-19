@@ -1,5 +1,5 @@
-# kohya / FluxTrainer dataset config for identity-v1
-# Point [[datasets]] image_dir at the absolute path of the images/ folder on the training box.
+# kohya-ss/sd-scripts FLUX dataset config for identity-v1
+# On the rented box, kohya-flux-48gb.sh rewrites image_dir to the absolute path.
 
 [general]
 shuffle_caption = false
@@ -7,10 +7,14 @@ keep_tokens = 1
 caption_extension = ".txt"
 
 [[datasets]]
-resolution = 768
+resolution = 1024
 batch_size = 1
 enable_bucket = true
-min_bucket_reso = 512
-max_bucket_reso = 1024
-image_dir = "./images"
-num_repeats = 10
+bucket_no_upscale = true
+min_bucket_reso = 640
+max_bucket_reso = 1280
+bucket_reso_steps = 64
+
+  [[datasets.subsets]]
+  image_dir = "./images"
+  num_repeats = 10
