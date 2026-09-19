@@ -1,0 +1,60 @@
+# Kohya sd-scripts training config for flux_train_network.py
+# Edit this, then: bash kohya-flux-48gb.sh train
+#
+# On the rented box the live copy is:
+#   /workspace/flux_train/kohya-flux.toml
+# Dataset path / batch / repeats:
+#   /workspace/flux_train/dataset.toml
+#
+# 120 GB VRAM: you will not OOM at rank 16 / 1024. Do not raise dim to 64+.
+# Extra VRAM is spent on full AdamW and no gradient checkpointing (faster).
+# Batch 2 is enough; batch 8 on a 20-image face set just overfits faster.
+
+pretrained_model_name_or_path = "/workspace/models/flux/flux1-dev.safetensors"
+clip_l = "/workspace/models/flux/clip_l.safetensors"
+t5xxl = "/workspace/models/flux/t5xxl_fp16.safetensors"
+ae = "/workspace/models/flux/ae.safetensors"
+
+dataset_config = "/workspace/flux_train/dataset.toml"
+output_dir = "/workspace/flux_train/output"
+logging_dir = "/workspace/flux_train/output/log"
+output_name = "vsgly_id_flux_v1"
+sample_prompts = "/workspace/flux_train/sample-prompts.txt"
+
+save_model_as = "safetensors"
+save_precision = "bf16"
+mixed_precision = "bf16"
+
+network_module = "networks.lora_flux"
+network_dim = 16
+network_alpha = 16
+network_train_unet_only = true
+
+learning_rate = 1e-4
+optimizer_type = "AdamW"
+lr_scheduler = "constant_with_warmup"
+lr_warmup_steps = 100
+max_train_steps = 1500
+save_every_n_steps = 250
+sample_every_n_steps = 250
+seed = 42
+max_grad_norm = 1.0
+
+guidance_scale = 1.0
+timestep_sampling = "flux_shift"
+model_prediction_type = "raw"
+apply_t5_attn_mask = true
+
+sdpa = true
+highvram = true
+# 96 GB Blackwell still OOMs FLUX LoRA at 1024 / batch 2 without this.
+gradient_checkpointing = true
+full_bf16 = true
+
+cache_latents = true
+cache_latents_to_disk = true
+cache_text_encoder_outputs = true
+cache_text_encoder_outputs_to_disk = true
+
+persistent_data_loader_workers = true
+max_data_loader_n_workers = 2
