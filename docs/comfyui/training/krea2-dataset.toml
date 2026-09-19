@@ -1,0 +1,14 @@
+# Musubi-tuner dataset config for Krea 2 Raw.
+# Live copy on the box: /workspace/krea2_train/dataset.toml
+
+[general]
+resolution = [1024, 1024]
+caption_extension = ".txt"
+batch_size = 1
+enable_bucket = true
+bucket_no_upscale = true
+
+[[datasets]]
+image_directory = "/workspace/flux_train/vsgly_id"
+cache_directory = "/workspace/krea2_train/cache"
+num_repeats = 6

@@ -1,0 +1,7 @@
+# Trigger is always vsgly_id. Turbo samples: --s 8 steps, --l 1 (CFG off), --d seed.
+
+vsgly_id, a man with short dark wavy hair and a short beard, brown eyes, close-up portrait, window light, looking at camera, photorealistic --w 1024 --h 1024 --s 8 --l 1 --d 42
+
+vsgly_id, a man with short dark wavy hair and a short beard, standing outdoors in a navy overshirt, golden hour, medium shot, photorealistic --w 1024 --h 1024 --s 8 --l 1 --d 43
+
+vsgly_id, a man sitting at a cafe table, cinematic lighting, chest-up, photorealistic --w 1024 --h 1024 --s 8 --l 1 --d 44

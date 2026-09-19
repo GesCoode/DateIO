@@ -178,18 +178,31 @@ OneDrive tree), upload to the instance. Do not train off a live OneDrive folder.
 **EU note:** vast.ai hosts are worldwide. Fine for personal prototyping. Production later needs
 **EU-region GPUs** for the privacy promise — do not bake “any host” into the product.
 
-### 4.3 Train (Kohya sd-scripts — this is the path)
+### 4.3 Train (Kohya)
 
 Do **not** `apt upgrade` or install NVIDIA drivers; the vast template already has CUDA.
 
-Full recipe, time/quality table, and the audit of the old SDXL/LoKR/InstantID notes:
+**FLUX identity LoRA** uses `kohya-ss/sd-scripts`:
 
 - [`training/kohya-flux-identity.md`](training/kohya-flux-identity.md)
 - [`training/prior-notes-audit.md`](training/prior-notes-audit.md)
 - paste-ready: [`training/kohya-flux-48gb.sh`](training/kohya-flux-48gb.sh)
 
+**Krea 2 identity LoRA** uses `kohya-ss/musubi-tuner` (not sd-scripts). Train on Raw, run on Turbo:
+
+- [`training/kohya-krea2-raw.md`](training/kohya-krea2-raw.md)
+- paste-ready: [`training/kohya-krea2-raw.sh`](training/kohya-krea2-raw.sh)
+
+On a box that is already set up:
+
 ```bash
-# after photos are in /workspace/flux_train/zdp/  (photo_##.png + photo_##.txt)
+bash /workspace/krea2_train/start.sh
+```
+
+FLUX on a fresh box:
+
+```bash
+# after photos are in /workspace/flux_train/vsgly_id/  (photo_##.png + photo_##.txt)
 bash docs/comfyui/training/kohya-flux-48gb.sh setup
 bash docs/comfyui/training/kohya-flux-48gb.sh config   # the two TOML files
 tmux new -s lora
