@@ -291,3 +291,4 @@ Generate 8 seeds of a **close-up** and 8 of a **new scene the dataset never show
 | [`training/`](training/) | Kohya FLUX script + identity recipe; FluxTrainer JSON fallback |
 | [`workflows/`](workflows/) | Importable ComfyUI API-format graphs |
 | [`vastai/provision.sh`](vastai/provision.sh) | Optional first-boot downloads on a ComfyUI instance |
+| [`vastai/krea2_server_init/`](vastai/krea2_server_init/) | Laptop script: SSH in, check GPU/disk, install musubi, download Krea 2 (does not train) |

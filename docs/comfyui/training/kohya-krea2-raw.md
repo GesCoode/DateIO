@@ -5,6 +5,10 @@ Train on **Krea 2 Raw**. Run the LoRA on **Turbo** in ComfyUI.
 
 Paste-ready launcher: [`kohya-krea2-raw.sh`](kohya-krea2-raw.sh).
 
+From the laptop, a one-shot provisioner that SSHs into vast.ai, checks GPU/disk, and installs this stack (it does **not** start training):
+
+- [`../vastai/krea2_server_init/krea2_server_init.py`](../vastai/krea2_server_init/krea2_server_init.py)
+
 On the rented box, after setup:
 
 ```bash
