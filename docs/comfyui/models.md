@@ -62,7 +62,7 @@ CivitAI redirects anonymous downloads to login. BF16 (SHA256 `956C3A9AFE…`) is
 | `qwen3vl_4b_fp8_scaled.safetensors` | `models/text_encoders/` | CLIPLoader **type must be `krea2`**. `stable_diffusion` / `qwen_image` emit 2560 features; Krea2 needs 12×2560=30720. |
 | `qwen_image_vae.safetensors` | `models/vae/` | Comfy-Org/Krea-2 |
 
-Sampler (author): 1440×1920, Euler, Beta, CFG **1**, 9 steps. Workflows: [`workflows/text-to-image-sick-ollie.json`](workflows/text-to-image-sick-ollie.json), [`workflows/image2image-sick-ollie.json`](workflows/image2image-sick-ollie.json), [`workflows/inpaint-replace-character-krea2.json`](workflows/inpaint-replace-character-krea2.json) (SAM3 mask + inpaint, keep background). Custom nodes: `ComfyUI-SickOllie` + `rgthree-comfy` + `comfyui-rmbg`.
+Sampler (author): 1440×1920, Euler, Beta, CFG **1**, 9 steps. Workflows: [`workflows/text-to-image-sick-ollie.json`](workflows/text-to-image-sick-ollie.json), [`workflows/image2image-sick-ollie.json`](workflows/image2image-sick-ollie.json), [`workflows/inpaint-replace-character-krea2.json`](workflows/inpaint-replace-character-krea2.json) (SAM3 mask + DWPose + Krea2 OpenPose Control LoRA + inpaint). Custom nodes: `ComfyUI-SickOllie`, `rgthree-comfy`, `comfyui-rmbg`, `comfyui_controlnet_aux`, `comfyui-krea2-ostris-edit`. Pose LoRA: `thedeoxen/Krea-2-pose-controlnet`.
 
 ## Disk budget
 
