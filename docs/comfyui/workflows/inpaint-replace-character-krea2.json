@@ -1,8 +1,8 @@
 {
   "id": "krea2-inpaint-replace-character",
   "revision": 2,
-  "last_node_id": 24,
-  "last_link_id": 33,
+  "last_node_id": 25,
+  "last_link_id": 34,
   "nodes": [
     {
       "id": 1,
@@ -453,8 +453,7 @@
           "type": "MASK",
           "slot_index": 1,
           "links": [
-            15,
-            16
+            34
           ]
         },
         {
@@ -476,8 +475,8 @@
         0.5,
         0,
         0,
-        6,
-        12,
+        0,
+        0,
         "Auto",
         false,
         false,
@@ -490,13 +489,76 @@
         "confidence_threshold": 0.5,
         "max_segments": 0,
         "segment_pick": 0,
-        "mask_blur": 6,
-        "mask_offset": 12,
+        "mask_blur": 0,
+        "mask_offset": 0,
         "device": "Auto",
         "invert_output": false,
         "unload_model": false,
         "background": "Alpha",
         "background_color": "#222222"
+      }
+    },
+    {
+      "id": 25,
+      "type": "GrowMaskWithBlur",
+      "pos": [
+        -40,
+        1040
+      ],
+      "size": [
+        320,
+        250
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 34
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": [
+            15,
+            16
+          ]
+        },
+        {
+          "name": "mask_inverted",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": null
+        }
+      ],
+      "title": "Fill holes + feather (not SAM offset)",
+      "properties": {
+        "Node name for S&R": "GrowMaskWithBlur"
+      },
+      "widgets_values": [
+        8,
+        0.0,
+        true,
+        false,
+        10.0,
+        1.0,
+        1.0,
+        true
+      ],
+      "widgets_values_named": {
+        "expand": 8,
+        "incremental_expandrate": 0.0,
+        "tapered_corners": true,
+        "flip_input": false,
+        "blur_radius": 10.0,
+        "lerp_alpha": 1.0,
+        "decay_factor": 1.0,
+        "fill_holes": true
       }
     },
     {
@@ -1373,18 +1435,26 @@
     ],
     [
       15,
-      10,
-      1,
+      25,
+      0,
       14,
       0,
       "MASK"
     ],
     [
       16,
-      10,
-      1,
+      25,
+      0,
       20,
       4,
+      "MASK"
+    ],
+    [
+      34,
+      10,
+      1,
+      25,
+      0,
       "MASK"
     ],
     [
@@ -1571,7 +1641,7 @@
     "frontendVersion": "1.52.7",
     "visagely": {
       "title": "Visagely \u00b7 Krea2 replace character + pose",
-      "notes": "Hard-refresh Comfy after the restart. Load this from Workflows, do not keep an old canvas. Nodes needed: comfyui-krea2-ostris-edit, comfyui_controlnet_aux, comfyui-rmbg. kv_cache is OFF (tooltip: leave off unless the LoRA was trained for it)."
+      "notes": "SAM3 mask_offset stays 0. GrowMaskWithBlur fill_holes + expand 8 + blur 10. Black spots were holes in the person mask that InpaintModelConditioning punched to empty latents. If the person is still cut off, raise expand to 10-12, not SAM offset. If the kitchen gets eaten, lower expand. If black remains, try noise_mask false."
     }
   },
   "version": 0.4
