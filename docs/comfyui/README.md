@@ -192,7 +192,7 @@ Do **not** `apt upgrade` or install NVIDIA drivers; the vast template already ha
 
 - [`training/kohya-krea2-raw.md`](training/kohya-krea2-raw.md)
 - paste-ready: [`training/kohya-krea2-raw.sh`](training/kohya-krea2-raw.sh)
-- generate: Load [`workflows/text-to-image-krea2-turbo.json`](workflows/text-to-image-krea2-turbo.json) (vanilla T2I), [`workflows/image2image-krea2.json`](workflows/image2image-krea2.json), [`workflows/text-to-image-sick-ollie.json`](workflows/text-to-image-sick-ollie.json), or [`workflows/image2image-sick-ollie.json`](workflows/image2image-sick-ollie.json)
+- generate: Load [`workflows/text-to-image-krea2-turbo.json`](workflows/text-to-image-krea2-turbo.json) (vanilla T2I), [`workflows/image2image-krea2.json`](workflows/image2image-krea2.json), [`workflows/text-to-image-sick-ollie.json`](workflows/text-to-image-sick-ollie.json), [`workflows/image2image-sick-ollie.json`](workflows/image2image-sick-ollie.json), or [`workflows/inpaint-replace-character-krea2.json`](workflows/inpaint-replace-character-krea2.json) (keep background, swap person)
 
 The official **Text to Image (Krea-2 Turbo)** template is a subgraph with empty `widgets_values`. Comfy then puts Refine Prompt's boolean `true` into `vae_name`. Load the vanilla JSON instead.
 
