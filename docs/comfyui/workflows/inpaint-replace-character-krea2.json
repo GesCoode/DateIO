@@ -1,7 +1,7 @@
 {
   "id": "krea2-inpaint-replace-character",
-  "revision": 2,
-  "last_node_id": 25,
+  "revision": 3,
+  "last_node_id": 26,
   "last_link_id": 34,
   "nodes": [
     {
@@ -107,10 +107,9 @@
           "type": "VAE",
           "slot_index": 0,
           "links": [
+            3,
             4,
-            5,
-            6,
-            7
+            5
           ]
         }
       ],
@@ -154,7 +153,7 @@
           "type": "MODEL",
           "slot_index": 0,
           "links": [
-            8
+            6
           ]
         }
       ],
@@ -190,7 +189,7 @@
         {
           "name": "model",
           "type": "MODEL",
-          "link": 8
+          "link": 6
         },
         {
           "name": "clip",
@@ -204,7 +203,7 @@
           "type": "MODEL",
           "slot_index": 0,
           "links": [
-            9
+            7
           ]
         },
         {
@@ -212,8 +211,8 @@
           "type": "CLIP",
           "slot_index": 1,
           "links": [
-            32,
-            33
+            8,
+            9
           ]
         }
       ],
@@ -252,7 +251,7 @@
         {
           "name": "model",
           "type": "MODEL",
-          "link": 9
+          "link": 7
         }
       ],
       "outputs": [
@@ -273,61 +272,17 @@
       },
       "widgets_values": [
         "krea2_turbo_openpose_controlnet.safetensors",
-        0.85
+        1.0
       ],
       "widgets_values_named": {
         "lora_name": "krea2_turbo_openpose_controlnet.safetensors",
-        "strength_model": 0.85
+        "strength_model": 1.0
       },
       "color": "#323",
       "bgcolor": "#535"
     },
     {
       "id": 7,
-      "type": "DifferentialDiffusion",
-      "pos": [
-        -640,
-        450
-      ],
-      "size": [
-        360,
-        58
-      ],
-      "flags": {},
-      "order": 6,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 10
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "slot_index": 0,
-          "links": [
-            11
-          ]
-        }
-      ],
-      "title": "Inpaint blend",
-      "properties": {
-        "Node name for S&R": "DifferentialDiffusion",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      },
-      "widgets_values": [
-        1.0
-      ],
-      "widgets_values_named": {
-        "strength": 1.0
-      }
-    },
-    {
-      "id": 8,
       "type": "LoadImage",
       "pos": [
         -1100,
@@ -338,7 +293,7 @@
         314
       ],
       "flags": {},
-      "order": 7,
+      "order": 6,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -347,7 +302,7 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            12
+            11
           ]
         },
         {
@@ -372,24 +327,24 @@
       }
     },
     {
-      "id": 9,
+      "id": 8,
       "type": "ImageScaleToTotalPixels",
       "pos": [
         -720,
-        580
+        560
       ],
       "size": [
         300,
         106
       ],
       "flags": {},
-      "order": 8,
+      "order": 7,
       "mode": 0,
       "inputs": [
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 12
+          "link": 11
         }
       ],
       "outputs": [
@@ -398,8 +353,10 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
+            12,
             13,
-            14
+            14,
+            34
           ]
         }
       ],
@@ -421,152 +378,122 @@
       }
     },
     {
-      "id": 10,
-      "type": "SAM3Segment",
+      "id": 9,
+      "type": "GetImageSize",
       "pos": [
-        -400,
-        760
+        -380,
+        40
       ],
       "size": [
-        360,
-        340
+        240,
+        86
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 12
+        }
+      ],
+      "outputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "slot_index": 0,
+          "links": [
+            15
+          ]
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "slot_index": 1,
+          "links": [
+            16
+          ]
+        },
+        {
+          "name": "batch_size",
+          "type": "INT",
+          "slot_index": 2,
+          "links": null
+        }
+      ],
+      "title": "Match scene size",
+      "properties": {
+        "Node name for S&R": "GetImageSize",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 10,
+      "type": "EmptyLatentImage",
+      "pos": [
+        -380,
+        160
+      ],
+      "size": [
+        240,
+        106
       ],
       "flags": {},
       "order": 9,
       "mode": 0,
       "inputs": [
         {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 13
+          "name": "width",
+          "type": "INT",
+          "link": 15,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 16,
+          "widget": {
+            "name": "height"
+          }
         }
       ],
       "outputs": [
         {
-          "name": "IMAGE",
-          "type": "IMAGE",
+          "name": "LATENT",
+          "type": "LATENT",
           "slot_index": 0,
-          "links": null
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "slot_index": 1,
-          "links": [
-            34
-          ]
-        },
-        {
-          "name": "MASK_IMAGE",
-          "type": "IMAGE",
-          "slot_index": 2,
           "links": [
             17
           ]
         }
       ],
-      "title": "Mask the person to replace",
+      "title": "Empty latent (pose T2I)",
       "properties": {
-        "Node name for S&R": "SAM3Segment"
+        "Node name for S&R": "EmptyLatentImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
       },
       "widgets_values": [
-        "person",
-        "Merged",
-        0.5,
-        0,
-        0,
-        0,
-        0,
-        "Auto",
-        false,
-        false,
-        "Alpha",
-        "#222222"
+        1024,
+        1024,
+        1
       ],
       "widgets_values_named": {
-        "prompt": "person",
-        "output_mode": "Merged",
-        "confidence_threshold": 0.5,
-        "max_segments": 0,
-        "segment_pick": 0,
-        "mask_blur": 0,
-        "mask_offset": 0,
-        "device": "Auto",
-        "invert_output": false,
-        "unload_model": false,
-        "background": "Alpha",
-        "background_color": "#222222"
-      }
-    },
-    {
-      "id": 25,
-      "type": "GrowMaskWithBlur",
-      "pos": [
-        -40,
-        1040
-      ],
-      "size": [
-        320,
-        250
-      ],
-      "flags": {},
-      "order": 10,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 34
-        }
-      ],
-      "outputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "slot_index": 0,
-          "links": [
-            15,
-            16
-          ]
-        },
-        {
-          "name": "mask_inverted",
-          "type": "MASK",
-          "slot_index": 1,
-          "links": null
-        }
-      ],
-      "title": "Fill holes + feather (not SAM offset)",
-      "properties": {
-        "Node name for S&R": "GrowMaskWithBlur"
-      },
-      "widgets_values": [
-        8,
-        0.0,
-        true,
-        false,
-        10.0,
-        1.0,
-        1.0,
-        true
-      ],
-      "widgets_values_named": {
-        "expand": 8,
-        "incremental_expandrate": 0.0,
-        "tapered_corners": true,
-        "flip_input": false,
-        "blur_radius": 10.0,
-        "lerp_alpha": 1.0,
-        "decay_factor": 1.0,
-        "fill_holes": true
+        "width": 1024,
+        "height": 1024,
+        "batch_size": 1
       }
     },
     {
       "id": 11,
       "type": "DWPreprocessor",
       "pos": [
-        -400,
-        500
+        -380,
+        320
       ],
       "size": [
         320,
@@ -579,7 +506,7 @@
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 14
+          "link": 13
         }
       ],
       "outputs": [
@@ -628,8 +555,8 @@
       "id": 12,
       "type": "FluxKontextImageScale",
       "pos": [
-        -40,
-        500
+        -20,
+        320
       ],
       "size": [
         250,
@@ -667,8 +594,8 @@
       "id": 13,
       "type": "PreviewImage",
       "pos": [
-        -40,
-        580
+        -20,
+        400
       ],
       "size": [
         250,
@@ -701,100 +628,28 @@
     },
     {
       "id": 14,
-      "type": "MaskPreview",
+      "type": "TextEncodeKrea2OstrisEdit",
       "pos": [
-        -40,
-        800
+        280,
+        40
       ],
       "size": [
-        250,
-        220
+        420,
+        200
       ],
       "flags": {},
       "order": 13,
       "mode": 0,
       "inputs": [
         {
-          "name": "mask",
-          "type": "MASK",
-          "link": 15
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "slot_index": 0,
-          "links": null
-        }
-      ],
-      "title": "Mask check",
-      "properties": {
-        "Node name for S&R": "MaskPreview",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      }
-    },
-    {
-      "id": 15,
-      "type": "PreviewImage",
-      "pos": [
-        230,
-        800
-      ],
-      "size": [
-        250,
-        180
-      ],
-      "flags": {},
-      "order": 14,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 17
-        }
-      ],
-      "outputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": null
-        }
-      ],
-      "title": "Cutout check",
-      "properties": {
-        "Node name for S&R": "PreviewImage",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      }
-    },
-    {
-      "id": 16,
-      "type": "TextEncodeKrea2OstrisEdit",
-      "pos": [
-        250,
-        40
-      ],
-      "size": [
-        420,
-        220
-      ],
-      "flags": {},
-      "order": 15,
-      "mode": 0,
-      "inputs": [
-        {
           "name": "clip",
           "type": "CLIP",
-          "link": 32
+          "link": 8
         },
         {
           "name": "vae",
           "type": "VAE",
-          "link": 4,
+          "link": 3,
           "shape": 7
         },
         {
@@ -841,29 +696,29 @@
       "bgcolor": "#353"
     },
     {
-      "id": 17,
+      "id": 15,
       "type": "TextEncodeKrea2OstrisEdit",
       "pos": [
-        250,
-        300
+        280,
+        280
       ],
       "size": [
         420,
-        160
+        140
       ],
       "flags": {},
-      "order": 16,
+      "order": 14,
       "mode": 0,
       "inputs": [
         {
           "name": "clip",
           "type": "CLIP",
-          "link": 33
+          "link": 9
         },
         {
           "name": "vae",
           "type": "VAE",
-          "link": 5,
+          "link": 4,
           "shape": 7
         },
         {
@@ -910,10 +765,10 @@
       "bgcolor": "#533"
     },
     {
-      "id": 18,
+      "id": 16,
       "type": "FluxKontextMultiReferenceLatentMethod",
       "pos": [
-        700,
+        740,
         40
       ],
       "size": [
@@ -921,7 +776,7 @@
         80
       ],
       "flags": {},
-      "order": 17,
+      "order": 15,
       "mode": 0,
       "showAdvanced": true,
       "inputs": [
@@ -955,10 +810,10 @@
       }
     },
     {
-      "id": 19,
+      "id": 17,
       "type": "FluxKontextMultiReferenceLatentMethod",
       "pos": [
-        700,
+        740,
         150
       ],
       "size": [
@@ -966,7 +821,7 @@
         80
       ],
       "flags": {},
-      "order": 18,
+      "order": 16,
       "mode": 0,
       "showAdvanced": true,
       "inputs": [
@@ -1000,20 +855,25 @@
       }
     },
     {
-      "id": 20,
-      "type": "InpaintModelConditioning",
+      "id": 18,
+      "type": "KSampler",
       "pos": [
-        700,
+        740,
         260
       ],
       "size": [
-        340,
-        170
+        320,
+        262
       ],
       "flags": {},
-      "order": 19,
+      "order": 17,
       "mode": 0,
       "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 10
+        },
         {
           "name": "positive",
           "type": "CONDITIONING",
@@ -1025,102 +885,9 @@
           "link": 25
         },
         {
-          "name": "vae",
-          "type": "VAE",
-          "link": 6
-        },
-        {
-          "name": "pixels",
-          "type": "IMAGE",
-          "link": 13
-        },
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 16
-        },
-        {
-          "name": "noise_mask",
-          "type": "BOOLEAN",
-          "link": null,
-          "widget": {
-            "name": "noise_mask"
-          }
-        }
-      ],
-      "outputs": [
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "slot_index": 0,
-          "links": [
-            26
-          ]
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "slot_index": 1,
-          "links": [
-            27
-          ]
-        },
-        {
-          "name": "latent",
-          "type": "LATENT",
-          "slot_index": 2,
-          "links": [
-            28
-          ]
-        }
-      ],
-      "title": "Freeze background / fill mask",
-      "properties": {
-        "Node name for S&R": "InpaintModelConditioning",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      },
-      "widgets_values": [
-        true
-      ],
-      "widgets_values_named": {
-        "noise_mask": true
-      }
-    },
-    {
-      "id": 21,
-      "type": "KSampler",
-      "pos": [
-        1080,
-        40
-      ],
-      "size": [
-        320,
-        262
-      ],
-      "flags": {},
-      "order": 20,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 11
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 26
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "link": 27
-        },
-        {
           "name": "latent_image",
           "type": "LATENT",
-          "link": 28
+          "link": 17
         },
         {
           "name": "seed",
@@ -1177,11 +944,11 @@
           "type": "LATENT",
           "slot_index": 0,
           "links": [
-            29
+            26
           ]
         }
       ],
-      "title": "KSampler (inpaint + pose)",
+      "title": "KSampler (pose T2I)",
       "properties": {
         "Node name for S&R": "KSampler",
         "cnr_id": "comfy-core",
@@ -1190,46 +957,46 @@
       "widgets_values": [
         42,
         "randomize",
-        9,
+        10,
         1,
         "euler",
-        "beta",
+        "simple",
         1
       ],
       "widgets_values_named": {
         "seed": 42,
         "control_after_generate": "randomize",
-        "steps": 9,
+        "steps": 10,
         "cfg": 1,
         "sampler_name": "euler",
-        "scheduler": "beta",
+        "scheduler": "simple",
         "denoise": 1
       }
     },
     {
-      "id": 22,
+      "id": 19,
       "type": "VAEDecode",
       "pos": [
-        1440,
-        40
+        1100,
+        260
       ],
       "size": [
         210,
         46
       ],
       "flags": {},
-      "order": 21,
+      "order": 18,
       "mode": 0,
       "inputs": [
         {
           "name": "samples",
           "type": "LATENT",
-          "link": 29
+          "link": 26
         },
         {
           "name": "vae",
           "type": "VAE",
-          "link": 7
+          "link": 5
         }
       ],
       "outputs": [
@@ -1238,12 +1005,12 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            30,
-            31
+            27,
+            28
           ]
         }
       ],
-      "title": "VAE Decode",
+      "title": "VAE Decode posed",
       "properties": {
         "Node name for S&R": "VAEDecode",
         "cnr_id": "comfy-core",
@@ -1251,24 +1018,319 @@
       }
     },
     {
-      "id": 23,
+      "id": 20,
       "type": "PreviewImage",
       "pos": [
-        1440,
-        140
+        1100,
+        340
       ],
       "size": [
-        380,
-        420
+        280,
+        280
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 27
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        }
+      ],
+      "title": "Posed generate (full frame)",
+      "properties": {
+        "Node name for S&R": "PreviewImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 21,
+      "type": "SAM3Segment",
+      "pos": [
+        -380,
+        620
+      ],
+      "size": [
+        360,
+        320
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 14
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": [
+            29
+          ]
+        },
+        {
+          "name": "MASK_IMAGE",
+          "type": "IMAGE",
+          "slot_index": 2,
+          "links": null
+        }
+      ],
+      "title": "Mask person on the ORIGINAL (composite only)",
+      "properties": {
+        "Node name for S&R": "SAM3Segment"
+      },
+      "widgets_values": [
+        "person including hair and hands",
+        "Merged",
+        0.5,
+        0,
+        0,
+        0,
+        0,
+        "Auto",
+        false,
+        false,
+        "Alpha",
+        "#222222"
+      ],
+      "widgets_values_named": {
+        "prompt": "person including hair and hands",
+        "output_mode": "Merged",
+        "confidence_threshold": 0.5,
+        "max_segments": 0,
+        "segment_pick": 0,
+        "mask_blur": 0,
+        "mask_offset": 0,
+        "device": "Auto",
+        "invert_output": false,
+        "unload_model": false,
+        "background": "Alpha",
+        "background_color": "#222222"
+      }
+    },
+    {
+      "id": 22,
+      "type": "GrowMaskWithBlur",
+      "pos": [
+        20,
+        700
+      ],
+      "size": [
+        320,
+        250
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 29
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": [
+            30,
+            31
+          ]
+        },
+        {
+          "name": "mask_inverted",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": null
+        }
+      ],
+      "title": "Fill holes + feather for paste",
+      "properties": {
+        "Node name for S&R": "GrowMaskWithBlur"
+      },
+      "widgets_values": [
+        12,
+        0.0,
+        true,
+        false,
+        12.0,
+        1.0,
+        1.0,
+        true
+      ],
+      "widgets_values_named": {
+        "expand": 12,
+        "incremental_expandrate": 0.0,
+        "tapered_corners": true,
+        "flip_input": false,
+        "blur_radius": 12.0,
+        "lerp_alpha": 1.0,
+        "decay_factor": 1.0,
+        "fill_holes": true
+      }
+    },
+    {
+      "id": 23,
+      "type": "MaskPreview",
+      "pos": [
+        360,
+        700
+      ],
+      "size": [
+        250,
+        220
       ],
       "flags": {},
       "order": 22,
       "mode": 0,
       "inputs": [
         {
+          "name": "mask",
+          "type": "MASK",
+          "link": 30
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": null
+        }
+      ],
+      "title": "Mask check",
+      "properties": {
+        "Node name for S&R": "MaskPreview",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 24,
+      "type": "ImageCompositeMasked",
+      "pos": [
+        1420,
+        40
+      ],
+      "size": [
+        300,
+        150
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "IMAGE",
+          "link": 34
+        },
+        {
+          "name": "source",
+          "type": "IMAGE",
+          "link": 28
+        },
+        {
+          "name": "x",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "x"
+          }
+        },
+        {
+          "name": "y",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "y"
+          }
+        },
+        {
+          "name": "resize_source",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "resize_source"
+          }
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 31,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            32,
+            33
+          ]
+        }
+      ],
+      "title": "Paste posed person onto original kitchen",
+      "properties": {
+        "Node name for S&R": "ImageCompositeMasked",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        0,
+        0,
+        true
+      ],
+      "widgets_values_named": {
+        "x": 0,
+        "y": 0,
+        "resize_source": true
+      }
+    },
+    {
+      "id": 25,
+      "type": "PreviewImage",
+      "pos": [
+        1420,
+        230
+      ],
+      "size": [
+        380,
+        420
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
           "name": "images",
           "type": "IMAGE",
-          "link": 30
+          "link": 32
         }
       ],
       "outputs": [
@@ -1287,24 +1349,24 @@
       }
     },
     {
-      "id": 24,
+      "id": 26,
       "type": "SaveImage",
       "pos": [
-        1440,
-        580
+        1420,
+        670
       ],
       "size": [
         380,
         58
       ],
       "flags": {},
-      "order": 23,
+      "order": 25,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 31
+          "link": 33
         }
       ],
       "outputs": [
@@ -1321,10 +1383,10 @@
         "ver": "0.37.0"
       },
       "widgets_values": [
-        "krea2_inpaint_pose"
+        "krea2_pose_composite"
       ],
       "widgets_values_named": {
-        "filename_prefix": "krea2_inpaint_pose"
+        "filename_prefix": "krea2_pose_composite"
       }
     }
   ],
@@ -1346,10 +1408,18 @@
       "CLIP"
     ],
     [
+      3,
+      3,
+      0,
+      14,
+      1,
+      "VAE"
+    ],
+    [
       4,
       3,
       0,
-      16,
+      15,
       1,
       "VAE"
     ],
@@ -1357,47 +1427,47 @@
       5,
       3,
       0,
-      17,
+      19,
       1,
       "VAE"
     ],
     [
       6,
-      3,
-      0,
-      20,
-      2,
-      "VAE"
-    ],
-    [
-      7,
-      3,
-      0,
-      22,
-      1,
-      "VAE"
-    ],
-    [
-      8,
       4,
       0,
       5,
       0,
       "MODEL"
+    ],
+    [
+      7,
+      5,
+      0,
+      6,
+      0,
+      "MODEL"
+    ],
+    [
+      8,
+      5,
+      1,
+      14,
+      0,
+      "CLIP"
     ],
     [
       9,
       5,
+      1,
+      15,
       0,
-      6,
-      0,
-      "MODEL"
+      "CLIP"
     ],
     [
       10,
       6,
       0,
-      7,
+      18,
       0,
       "MODEL"
     ],
@@ -1405,9 +1475,9 @@
       11,
       7,
       0,
-      21,
+      8,
       0,
-      "MODEL"
+      "IMAGE"
     ],
     [
       12,
@@ -1419,51 +1489,43 @@
     ],
     [
       13,
-      9,
-      0,
-      10,
-      0,
-      "IMAGE"
-    ],
-    [
-      14,
-      9,
+      8,
       0,
       11,
       0,
       "IMAGE"
     ],
     [
-      15,
-      25,
-      0,
       14,
+      8,
       0,
-      "MASK"
+      21,
+      0,
+      "IMAGE"
+    ],
+    [
+      15,
+      9,
+      0,
+      10,
+      0,
+      "INT"
     ],
     [
       16,
-      25,
-      0,
-      20,
-      4,
-      "MASK"
-    ],
-    [
-      34,
+      9,
+      1,
       10,
       1,
-      25,
-      0,
-      "MASK"
+      "INT"
     ],
     [
       17,
       10,
-      2,
-      15,
       0,
-      "IMAGE"
+      18,
+      3,
+      "LATENT"
     ],
     [
       18,
@@ -1485,7 +1547,7 @@
       20,
       12,
       0,
-      16,
+      14,
       2,
       "IMAGE"
     ],
@@ -1493,73 +1555,73 @@
       21,
       12,
       0,
-      17,
+      15,
       2,
       "IMAGE"
     ],
     [
       22,
-      16,
+      14,
       0,
-      18,
+      16,
       0,
       "CONDITIONING"
     ],
     [
       23,
-      17,
+      15,
       0,
-      19,
+      17,
       0,
       "CONDITIONING"
     ],
     [
       24,
+      16,
+      0,
       18,
-      0,
-      20,
-      0,
+      1,
       "CONDITIONING"
     ],
     [
       25,
-      19,
+      17,
       0,
-      20,
-      1,
+      18,
+      2,
       "CONDITIONING"
     ],
     [
       26,
-      20,
+      18,
       0,
-      21,
-      1,
-      "CONDITIONING"
+      19,
+      0,
+      "LATENT"
     ],
     [
       27,
+      19,
+      0,
       20,
-      1,
-      21,
-      2,
-      "CONDITIONING"
+      0,
+      "IMAGE"
     ],
     [
       28,
-      20,
-      2,
-      21,
-      3,
-      "LATENT"
+      19,
+      0,
+      24,
+      1,
+      "IMAGE"
     ],
     [
       29,
       21,
-      0,
+      1,
       22,
       0,
-      "LATENT"
+      "MASK"
     ],
     [
       30,
@@ -1567,31 +1629,39 @@
       0,
       23,
       0,
-      "IMAGE"
+      "MASK"
     ],
     [
       31,
       22,
       0,
       24,
+      5,
+      "MASK"
+    ],
+    [
+      32,
+      24,
+      0,
+      25,
       0,
       "IMAGE"
     ],
     [
-      32,
-      5,
-      1,
-      16,
+      33,
+      24,
       0,
-      "CLIP"
+      26,
+      0,
+      "IMAGE"
     ],
     [
-      33,
-      5,
-      1,
-      17,
+      34,
+      8,
       0,
-      "CLIP"
+      24,
+      0,
+      "IMAGE"
     ]
   ],
   "groups": [
@@ -1608,31 +1678,31 @@
     },
     {
       "id": 2,
-      "title": "Scene, SAM3 mask, DWPose",
+      "title": "Pose T2I (Control LoRA owns the body)",
       "bounding": [
-        -1140,
-        480,
-        1660,
-        600
+        -400,
+        0,
+        1480,
+        640
       ],
-      "color": "#8A3D3D"
+      "color": "#3f789e"
     },
     {
       "id": 3,
-      "title": "Encode pose + inpaint",
+      "title": "SAM3 only to paste onto the original kitchen",
       "bounding": [
-        220,
-        0,
-        1640,
-        700
+        -1140,
+        480,
+        900,
+        520
       ],
-      "color": "#3f789e"
+      "color": "#8A3D3D"
     }
   ],
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.62,
+      "scale": 0.58,
       "offset": [
         1200,
         80
@@ -1640,8 +1710,8 @@
     },
     "frontendVersion": "1.52.7",
     "visagely": {
-      "title": "Visagely \u00b7 Krea2 replace character + pose",
-      "notes": "SAM3 mask_offset stays 0. GrowMaskWithBlur fill_holes + expand 8 + blur 10. Black spots were holes in the person mask that InpaintModelConditioning punched to empty latents. If the person is still cut off, raise expand to 10-12, not SAM offset. If the kitchen gets eaten, lower expand. If black remains, try noise_mask false."
+      "title": "Visagely \u00b7 Krea2 pose T2I + composite",
+      "notes": "Pose Control LoRA is a full-frame generator, not an inpaint ControlNet. Generate the posed person with DWPose + Ostris encode (official path, euler/simple, 10 steps), then SAM3+composite onto the original kitchen. InpaintModelConditioning was punching gray holes (black spots) and trapping the body in a back-view silhouette so pose could not turn the head."
     }
   },
   "version": 0.4
