@@ -1,122 +1,815 @@
 {
-  "_meta": {
-    "title": "Visagely · Krea 2 Image2Image (RAW + Turbo LoRA)",
-    "description": "Recreates the screenshot: Krea 2 RAW UNET, turbo LoRA, Qwen3-VL CLIP type krea2, Qwen VAE, img2img from Image To Copy. Sampler matches the shot (20 steps, cfg 1, euler_ancestral, beta, denoise 0.53). Identity is the trigger word + optional character LoRA. ComfyUI 0.25+ required for CLIP type krea2."
-  },
-  "1": {
-    "class_type": "UNETLoader",
-    "inputs": {
-      "unet_name": "krea2_raw_bf16.safetensors",
-      "weight_dtype": "default"
+  "id": "krea2-image2image-i2i",
+  "revision": 0,
+  "last_node_id": 15,
+  "last_link_id": 16,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UNETLoader",
+      "pos": [
+        -980,
+        80
+      ],
+      "size": [
+        420,
+        82
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "slot_index": 0,
+          "links": [
+            1
+          ]
+        }
+      ],
+      "title": "Get_Model",
+      "properties": {
+        "Node name for S&R": "UNETLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "krea2_raw_bf16.safetensors",
+        "default"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "CLIPLoader",
+      "pos": [
+        -980,
+        220
+      ],
+      "size": [
+        420,
+        106
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "slot_index": 0,
+          "links": [
+            2
+          ]
+        }
+      ],
+      "title": "Get_CLIP",
+      "properties": {
+        "Node name for S&R": "CLIPLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "qwen3vl_4b_fp8_scaled.safetensors",
+        "krea2",
+        "default"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "VAELoader",
+      "pos": [
+        -980,
+        390
+      ],
+      "size": [
+        420,
+        58
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "slot_index": 0,
+          "links": [
+            3,
+            4
+          ]
+        }
+      ],
+      "title": "Get_VAE",
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "qwen_image_vae.safetensors"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        -500,
+        80
+      ],
+      "size": [
+        430,
+        82
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "slot_index": 0,
+          "links": [
+            5
+          ]
+        }
+      ],
+      "title": "Turbo LoRA",
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "krea2_turbo_lora_rank_64_bf16.safetensors",
+        1.0
+      ]
+    },
+    {
+      "id": 5,
+      "type": "LoraLoader",
+      "pos": [
+        -500,
+        220
+      ],
+      "size": [
+        430,
+        126
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 5
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "slot_index": 0,
+          "links": [
+            6
+          ]
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "slot_index": 1,
+          "links": [
+            7,
+            8
+          ]
+        }
+      ],
+      "title": "Trigger Word / Identity LoRA",
+      "properties": {
+        "Node name for S&R": "LoraLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "KreAlpha2640.safetensors",
+        0.9,
+        1.0
+      ]
+    },
+    {
+      "id": 6,
+      "type": "LoadImage",
+      "pos": [
+        -980,
+        520
+      ],
+      "size": [
+        320,
+        314
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": null
+        }
+      ],
+      "title": "Reference Image Of Your Character",
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "example.png",
+        "image"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "LoadImage",
+      "pos": [
+        -500,
+        520
+      ],
+      "size": [
+        320,
+        314
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            9
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": null
+        }
+      ],
+      "title": "Image To Copy",
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "photo_02.png",
+        "image"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "ImageScale",
+      "pos": [
+        -80,
+        520
+      ],
+      "size": [
+        300,
+        130
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            10
+          ]
+        }
+      ],
+      "title": "Image Resize",
+      "properties": {
+        "Node name for S&R": "ImageScale",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "lanczos",
+        1136,
+        2032,
+        "disabled"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "VAEEncode",
+      "pos": [
+        -80,
+        390
+      ],
+      "size": [
+        300,
+        46
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "pixels",
+          "type": "IMAGE",
+          "link": 10
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEEncode",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 10,
+      "type": "CLIPTextEncode",
+      "pos": [
+        -80,
+        80
+      ],
+      "size": [
+        430,
+        180
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            12
+          ]
+        }
+      ],
+      "title": "Text Generation",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "vsgly_id, photorealistic photo, cobblestone street at night, rust-orange long-sleeve mini dress, hand on hip, looking at camera, warm street lights, full body"
+      ]
+    },
+    {
+      "id": 11,
+      "type": "CLIPTextEncode",
+      "pos": [
+        -80,
+        290
+      ],
+      "size": [
+        430,
+        76
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            13
+          ]
+        }
+      ],
+      "title": "Negative",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 12,
+      "type": "KSampler",
+      "pos": [
+        400,
+        80
+      ],
+      "size": [
+        320,
+        262
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 6
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 12
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 13
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 11
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            14
+          ]
+        }
+      ],
+      "title": "Pre-Sampling / KSampler",
+      "properties": {
+        "Node name for S&R": "KSampler",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        370104869846578,
+        "randomize",
+        20,
+        1,
+        "euler_ancestral",
+        "beta",
+        0.53
+      ]
+    },
+    {
+      "id": 13,
+      "type": "VAEDecode",
+      "pos": [
+        780,
+        80
+      ],
+      "size": [
+        240,
+        46
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 14
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            15,
+            16
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 14,
+      "type": "PreviewImage",
+      "pos": [
+        1080,
+        80
+      ],
+      "size": [
+        380,
+        420
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 15
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        }
+      ],
+      "title": "Final Images",
+      "properties": {
+        "Node name for S&R": "PreviewImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 15,
+      "type": "SaveImage",
+      "pos": [
+        1080,
+        530
+      ],
+      "size": [
+        380,
+        58
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 16
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "krea2_i2i"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      4,
+      0,
+      "MODEL"
+    ],
+    [
+      2,
+      2,
+      0,
+      5,
+      1,
+      "CLIP"
+    ],
+    [
+      3,
+      3,
+      0,
+      9,
+      1,
+      "VAE"
+    ],
+    [
+      4,
+      3,
+      0,
+      13,
+      1,
+      "VAE"
+    ],
+    [
+      5,
+      4,
+      0,
+      5,
+      0,
+      "MODEL"
+    ],
+    [
+      6,
+      5,
+      0,
+      12,
+      0,
+      "MODEL"
+    ],
+    [
+      7,
+      5,
+      1,
+      10,
+      0,
+      "CLIP"
+    ],
+    [
+      8,
+      5,
+      1,
+      11,
+      0,
+      "CLIP"
+    ],
+    [
+      9,
+      7,
+      0,
+      8,
+      0,
+      "IMAGE"
+    ],
+    [
+      10,
+      8,
+      0,
+      9,
+      0,
+      "IMAGE"
+    ],
+    [
+      11,
+      9,
+      0,
+      12,
+      3,
+      "LATENT"
+    ],
+    [
+      12,
+      10,
+      0,
+      12,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      13,
+      11,
+      0,
+      12,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      14,
+      12,
+      0,
+      13,
+      0,
+      "LATENT"
+    ],
+    [
+      15,
+      13,
+      0,
+      14,
+      0,
+      "IMAGE"
+    ],
+    [
+      16,
+      13,
+      0,
+      15,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "Image2Image Pipeline",
+      "bounding": [
+        -1020,
+        20,
+        980,
+        840
+      ],
+      "color": "#3f789e"
+    },
+    {
+      "id": 2,
+      "title": "Final Images",
+      "bounding": [
+        1040,
+        20,
+        460,
+        600
+      ],
+      "color": "#3f789e"
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.78,
+      "offset": [
+        1100,
+        180
+      ]
+    },
+    "frontendVersion": "1.52.7",
+    "visagely": {
+      "title": "Visagely \u00b7 Krea 2 Image2Image (RAW + Turbo LoRA)",
+      "notes": "CLIP type krea2. Identity = vsgly_id + KreAlpha2640.safetensors. Image To Copy = photo_02.png. 20 steps, cfg 1, euler_ancestral, beta, denoise 0.53, 1136x2032."
     }
   },
-  "2": {
-    "class_type": "CLIPLoader",
-    "inputs": {
-      "clip_name": "qwen3vl_4b_fp8_scaled.safetensors",
-      "type": "krea2"
-    }
-  },
-  "3": {
-    "class_type": "VAELoader",
-    "inputs": {
-      "vae_name": "qwen_image_vae.safetensors"
-    }
-  },
-  "4": {
-    "class_type": "LoraLoaderModelOnly",
-    "inputs": {
-      "model": ["1", 0],
-      "lora_name": "krea2_turbo_lora_rank_64_bf16.safetensors",
-      "strength_model": 1.0
-    }
-  },
-  "5": {
-    "class_type": "LoraLoader",
-    "inputs": {
-      "model": ["4", 0],
-      "clip": ["2", 0],
-      "lora_name": "vsgly_id_krea2_v1-000006.safetensors",
-      "strength_model": 0.9,
-      "strength_clip": 1.0
-    }
-  },
-  "6": {
-    "class_type": "LoadImage",
-    "inputs": {
-      "image": "character_reference.png"
-    }
-  },
-  "7": {
-    "class_type": "LoadImage",
-    "inputs": {
-      "image": "image_to_copy.png"
-    }
-  },
-  "8": {
-    "class_type": "ImageScale",
-    "inputs": {
-      "image": ["7", 0],
-      "upscale_method": "lanczos",
-      "width": 1136,
-      "height": 2032,
-      "crop": "disabled"
-    }
-  },
-  "9": {
-    "class_type": "VAEEncode",
-    "inputs": {
-      "pixels": ["8", 0],
-      "vae": ["3", 0]
-    }
-  },
-  "10": {
-    "class_type": "CLIPTextEncode",
-    "inputs": {
-      "clip": ["5", 1],
-      "text": "vsgly_id, photorealistic photo of a woman standing on a cobblestone street at night, rust-orange long-sleeve mini dress, hand on hip, looking at camera, warm street lights, full body"
-    }
-  },
-  "11": {
-    "class_type": "CLIPTextEncode",
-    "inputs": {
-      "clip": ["5", 1],
-      "text": ""
-    }
-  },
-  "12": {
-    "class_type": "KSampler",
-    "inputs": {
-      "model": ["5", 0],
-      "positive": ["10", 0],
-      "negative": ["11", 0],
-      "latent_image": ["9", 0],
-      "seed": 370104869846578,
-      "steps": 20,
-      "cfg": 1,
-      "sampler_name": "euler_ancestral",
-      "scheduler": "beta",
-      "denoise": 0.53
-    }
-  },
-  "13": {
-    "class_type": "VAEDecode",
-    "inputs": {
-      "samples": ["12", 0],
-      "vae": ["3", 0]
-    }
-  },
-  "14": {
-    "class_type": "PreviewImage",
-    "inputs": {
-      "images": ["13", 0]
-    }
-  },
-  "15": {
-    "class_type": "SaveImage",
-    "inputs": {
-      "images": ["13", 0],
-      "filename_prefix": "krea2_i2i"
-    }
-  }
+  "version": 0.4
 }
