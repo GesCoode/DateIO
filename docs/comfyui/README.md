@@ -289,6 +289,6 @@ Generate 8 seeds of a **close-up** and 8 of a **new scene the dataset never show
 | [`WORKFLOW.md`](WORKFLOW.md) | Slow command checklist (this week’s order) |
 | [`datasets/identity-v1/`](datasets/identity-v1/) | Dataset layout + caption rules |
 | [`training/`](training/) | Kohya FLUX script + identity recipe; FluxTrainer JSON fallback |
-| [`workflows/`](workflows/) | Importable ComfyUI API-format graphs (incl. FLUX img2img character copy) |
+| [`workflows/`](workflows/) | Importable ComfyUI API-format graphs (incl. Krea 2 img2img character copy) |
 | [`vastai/provision.sh`](vastai/provision.sh) | Optional first-boot downloads on a ComfyUI instance |
 | [`vastai/krea2_server_init/`](vastai/krea2_server_init/) | Laptop script: SSH in, check GPU/disk, install musubi, download Krea 2 (does not train) |
