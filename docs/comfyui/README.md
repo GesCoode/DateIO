@@ -194,7 +194,13 @@ Do **not** `apt upgrade` or install NVIDIA drivers; the vast template already ha
 - paste-ready: [`training/kohya-krea2-raw.sh`](training/kohya-krea2-raw.sh)
 - generate: Load [`workflows/text-to-image-krea2-turbo.json`](workflows/text-to-image-krea2-turbo.json) (vanilla T2I) or [`workflows/image2image-krea2.json`](workflows/image2image-krea2.json)
 
-The official **Text to Image (Krea-2 Turbo)** template is a subgraph with empty `widgets_values`. Comfy then puts Refine Prompt's boolean `true` into `vae_name`. Do not use that template. VAE must be `qwen_image_vae.safetensors`. This box has RAW fp8 + `krea2_turbo_lora_rank_64_bf16`, not `krea2_turbo_fp8_scaled`.
+The official **Text to Image (Krea-2 Turbo)** template is a subgraph with empty `widgets_values`. Comfy then puts Refine Prompt's boolean `true` into `vae_name`. Load the vanilla JSON instead.
+
+France box loaders (Comfy-Org/Krea-2):
+
+- UNET `Krea-2/krea2-turbo.safetensors` (`krea2_turbo_bf16`)
+- CLIP `Krea-2/qwen3vl_4b_bf16.safetensors`, type `krea2`
+- VAE `QwenImage/qwen_image_vae.safetensors`
 
 On a box that is already set up:
 

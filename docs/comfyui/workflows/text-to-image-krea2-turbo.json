@@ -25,18 +25,18 @@
           "type": "MODEL",
           "slot_index": 0,
           "links": [
-            1
+            4
           ]
         }
       ],
-      "title": "Get_Model (Krea 2 RAW fp8)",
+      "title": "Load Diffusion Model",
       "properties": {
         "Node name for S&R": "UNETLoader",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       },
       "widgets_values": [
-        "krea2_raw_fp8_scaled.safetensors",
+        "Krea-2/krea2-turbo.safetensors",
         "default"
       ]
     },
@@ -72,7 +72,7 @@
         "ver": "0.37.0"
       },
       "widgets_values": [
-        "qwen3vl_4b_fp8_scaled.safetensors",
+        "Krea-2/qwen3vl_4b_bf16.safetensors",
         "krea2",
         "default"
       ]
@@ -109,49 +109,7 @@
         "ver": "0.37.0"
       },
       "widgets_values": [
-        "qwen_image_vae.safetensors"
-      ]
-    },
-    {
-      "id": 4,
-      "type": "LoraLoaderModelOnly",
-      "pos": [
-        -500,
-        80
-      ],
-      "size": [
-        430,
-        82
-      ],
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 1
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "slot_index": 0,
-          "links": [
-            4
-          ]
-        }
-      ],
-      "title": "Turbo LoRA",
-      "properties": {
-        "Node name for S&R": "LoraLoaderModelOnly",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      },
-      "widgets_values": [
-        "krea2_turbo_lora_rank_64_bf16.safetensors",
-        1.0
+        "QwenImage/qwen_image_vae.safetensors"
       ]
     },
     {
@@ -454,10 +412,10 @@
   ],
   "links": [
     [
-      1,
+      4,
       1,
       0,
-      4,
+      8,
       0,
       "MODEL"
     ],
@@ -476,14 +434,6 @@
       9,
       1,
       "VAE"
-    ],
-    [
-      4,
-      4,
-      0,
-      8,
-      0,
-      "MODEL"
     ],
     [
       5,
@@ -577,8 +527,8 @@
     },
     "frontendVersion": "1.52.7",
     "visagely": {
-      "title": "Visagely · Krea 2 Text to Image (RAW fp8 + Turbo LoRA)",
-      "notes": "Vanilla graph (no subgraph). VAE must be qwen_image_vae.safetensors — never a boolean. CLIP type krea2. Official Templates subgraph ships widgets_values=[] so Refine Prompt? true leaks onto vae_name. UNET is RAW fp8 plus turbo LoRA (krea2_turbo_fp8_scaled is not on this box). 8 steps, cfg 1, euler, simple, denoise 1, 1024x1024."
+      "title": "Visagely · Krea 2 Text to Image (official Turbo bf16)",
+      "notes": "Vanilla graph. Loaders match Comfy missing-model paths: Krea-2/krea2-turbo.safetensors, Krea-2/qwen3vl_4b_bf16.safetensors (type krea2), QwenImage/qwen_image_vae.safetensors. 8 steps, cfg 1, euler, simple, denoise 1, 1024x1024."
     }
   },
   "version": 0.4

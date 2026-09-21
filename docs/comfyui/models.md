@@ -38,6 +38,18 @@ Add the fp8 (or fp16) UNET so trainers are happy, plus Union ControlNet:
 
 Union ControlNet modes we care about: **0 canny**, **2 depth**, **4 pose**.
 
+## France RTX 3090 — Krea 2 Turbo generate
+
+From [Comfy-Org/Krea-2](https://huggingface.co/Comfy-Org/Krea-2). Nested folder names match the Comfy missing-model dropdown.
+
+| File | Put in | Source |
+| --- | --- | --- |
+| `krea2-turbo.safetensors` (bf16, 26.3 GB) | `models/diffusion_models/Krea-2/` | `diffusion_models/krea2_turbo_bf16.safetensors` |
+| `qwen3vl_4b_bf16.safetensors` (8.3 GB) | `models/text_encoders/Krea-2/` | `text_encoders/qwen3vl_4b_bf16.safetensors` |
+| `qwen_image_vae.safetensors` | `models/vae/QwenImage/` | `vae/qwen_image_vae.safetensors` (same file as flat `models/vae/`) |
+
+CLIP type must be **`krea2`**. Official Turbo UNET does not need the turbo LoRA (that LoRA is for running RAW as Turbo).
+
 ## Disk budget
 
 - Local 2070 kit (GGUF Q4 + encoders + VAE): ~**12–16 GB**
