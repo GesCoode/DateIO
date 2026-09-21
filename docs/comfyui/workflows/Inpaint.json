@@ -2,7 +2,7 @@
   "id": "krea2-replace-character",
   "revision": 0,
   "last_node_id": 36,
-  "last_link_id": 51,
+  "last_link_id": 53,
   "nodes": [
     {
       "id": 1,
@@ -185,7 +185,7 @@
         126
       ],
       "flags": {},
-      "order": 6,
+      "order": 7,
       "mode": 0,
       "inputs": [
         {
@@ -244,7 +244,7 @@
         82
       ],
       "flags": {},
-      "order": 10,
+      "order": 13,
       "mode": 0,
       "inputs": [
         {
@@ -299,7 +299,8 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            11
+            11,
+            52
           ]
         },
         {
@@ -352,9 +353,9 @@
           "slot_index": 0,
           "links": [
             12,
-            13,
             14,
-            45
+            45,
+            53
           ]
         }
       ],
@@ -387,7 +388,7 @@
         82
       ],
       "flags": {},
-      "order": 7,
+      "order": 8,
       "mode": 0,
       "inputs": [
         {
@@ -441,7 +442,7 @@
         106
       ],
       "flags": {},
-      "order": 11,
+      "order": 14,
       "mode": 0,
       "inputs": [
         {
@@ -500,13 +501,13 @@
         222
       ],
       "flags": {},
-      "order": 8,
+      "order": 6,
       "mode": 0,
       "inputs": [
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 13
+          "link": 52
         }
       ],
       "outputs": [
@@ -528,7 +529,7 @@
           "links": null
         }
       ],
-      "title": "DWPose (1024, no kontext crop)",
+      "title": "DWPose on original pixels (1024)",
       "properties": {
         "cnr_id": "comfyui_controlnet_aux",
         "ver": "1.1.5",
@@ -565,7 +566,7 @@
         240
       ],
       "flags": {},
-      "order": 12,
+      "order": 10,
       "mode": 0,
       "inputs": [
         {
@@ -601,7 +602,7 @@
         82
       ],
       "flags": {},
-      "order": 13,
+      "order": 11,
       "mode": 0,
       "inputs": [
         {
@@ -714,7 +715,7 @@
         200
       ],
       "flags": {},
-      "order": 14,
+      "order": 12,
       "mode": 0,
       "inputs": [
         {
@@ -955,7 +956,7 @@
           "name": "image2",
           "shape": 7,
           "type": "IMAGE",
-          "link": null
+          "link": 53
         },
         {
           "name": "image3",
@@ -1298,21 +1299,21 @@
     },
     {
       "id": 26,
-      "type": "RMBG",
+      "type": "BodySegment",
       "pos": [
         900,
         420
       ],
       "size": [
         300,
-        292
+        484
       ],
       "flags": {},
       "order": 30,
       "mode": 0,
       "inputs": [
         {
-          "name": "image",
+          "name": "images",
           "type": "IMAGE",
           "link": 38
         }
@@ -1339,31 +1340,47 @@
           "links": null
         }
       ],
-      "title": "Mask generated person",
+      "title": "Mask generated person (body parts)",
       "properties": {
         "cnr_id": "comfyui-rmbg",
         "ver": "3.1.0",
-        "Node name for S&R": "RMBG"
+        "Node name for S&R": "BodySegment"
       },
       "widgets_values": [
-        "RMBG-2.0",
-        1,
-        1024,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
         0,
         4,
-        false,
         false,
         "Alpha",
         "#222222"
       ],
       "widgets_values_named": {
-        "model": "RMBG-2.0",
-        "sensitivity": 1,
-        "process_res": 1024,
+        "Hair": true,
+        "Glasses": true,
+        "Top-clothes": true,
+        "Bottom-clothes": true,
+        "Torso-skin": true,
+        "Face": true,
+        "Left-arm": true,
+        "Right-arm": true,
+        "Left-leg": true,
+        "Right-leg": true,
+        "Left-foot": true,
+        "Right-foot": true,
         "mask_blur": 0,
         "mask_offset": 4,
         "invert_output": false,
-        "refine_foreground": false,
         "background": "Alpha",
         "background_color": "#222222"
       },
@@ -1973,14 +1990,6 @@
       "IMAGE"
     ],
     [
-      13,
-      8,
-      0,
-      11,
-      0,
-      "IMAGE"
-    ],
-    [
       14,
       8,
       0,
@@ -2275,6 +2284,22 @@
       36,
       0,
       "IMAGE"
+    ],
+    [
+      52,
+      7,
+      0,
+      11,
+      0,
+      "IMAGE"
+    ],
+    [
+      53,
+      8,
+      0,
+      19,
+      3,
+      "IMAGE"
     ]
   ],
   "groups": [
@@ -2338,8 +2363,8 @@
     },
     "frontendVersion": "1.52.7",
     "visagely": {
-      "title": "Inpaint.json \u2014 pose without kontext crop",
-      "notes": "Removed FluxKontextImageScale (center-crop changed the lean). DWPose 1024, black pose bg replaced with mid-gray. Empty latent matches kitchen pixels. SAM3 replaced with RMBG-2.0 + Lama."
+      "title": "Inpaint.json \u2014 pose from map + photo, real masks",
+      "notes": "No FluxKontextImageScale crop. DWPose on original pixels. Gray pose bg. Kitchen is Ostris image2 so lean comes from the photo. RMBG+Lama removes the original person; BodySegment masks the generated person."
     }
   },
   "version": 0.4,
