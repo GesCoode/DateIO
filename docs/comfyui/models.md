@@ -50,6 +50,20 @@ From [Comfy-Org/Krea-2](https://huggingface.co/Comfy-Org/Krea-2). Nested folder 
 
 CLIP type must be **`krea2`**. Official Turbo UNET does not need the turbo LoRA (that LoRA is for running RAW as Turbo).
 
+## RTX 6000 Ada (48 GB) — Sick Ollie Krea2 BF16
+
+SSH: `ssh -p 29920 root@91.108.80.253 -L 8080:localhost:8080`
+
+CivitAI redirects anonymous downloads to login. BF16 (SHA256 `956C3A9AFE…`) is from Hugging Face [`martineux/sickollie`](https://huggingface.co/martineux/sickollie) (`sickOllie_krea2.safetensors`). Same CivitAI model `2676616`. INT8 fallback: [`Kentus/sickOllie_krea2`](https://huggingface.co/Kentus/sickOllie_krea2).
+
+| File | Put in | Notes |
+| --- | --- | --- |
+| `SICK_OLLIE_Krea2_BF16.safetensors` (23.88 GB) | `models/diffusion_models/` | Needs ~40 GB+ VRAM. Do not put BF16 on a 24 GB 3090. |
+| `qwen3vl_4b_fp8_scaled.safetensors` | `models/text_encoders/` | CLIPLoader **type must be `krea2`**. `stable_diffusion` / `qwen_image` emit 2560 features; Krea2 needs 12×2560=30720. |
+| `qwen_image_vae.safetensors` | `models/vae/` | Comfy-Org/Krea-2 |
+
+Sampler (author): 1440×1920, Euler, Beta, CFG **1**, 9 steps. Workflows: [`workflows/text-to-image-sick-ollie.json`](workflows/text-to-image-sick-ollie.json), [`workflows/image2image-sick-ollie.json`](workflows/image2image-sick-ollie.json). Custom nodes: `ComfyUI-SickOllie` + `rgthree-comfy`.
+
 ## Disk budget
 
 - Local 2070 kit (GGUF Q4 + encoders + VAE): ~**12–16 GB**
