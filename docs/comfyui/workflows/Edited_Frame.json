@@ -311,7 +311,7 @@
           "links": null
         }
       ],
-      "title": "1. Scene photo",
+      "title": "Scene photo",
       "properties": {
         "Node name for S&R": "LoadImage",
         "cnr_id": "comfy-core",
@@ -327,54 +327,6 @@
       },
       "color": "#232",
       "bgcolor": "#353"
-    },
-    {
-      "id": 50,
-      "type": "LoadImage",
-      "pos": [
-        -1180,
-        1240
-      ],
-      "size": [
-        400,
-        360
-      ],
-      "flags": {},
-      "order": 7,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": [
-            62
-          ]
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "slot_index": 1,
-          "links": null
-        }
-      ],
-      "title": "2. Person mask (white=person, include hair)",
-      "properties": {
-        "Node name for S&R": "LoadImage",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      },
-      "widgets_values": [
-        "ExampleReferenceImage.png",
-        "image"
-      ],
-      "widgets_values_named": {
-        "image": "ExampleReferenceImage.png",
-        "upload": "image"
-      },
-      "color": "#432",
-      "bgcolor": "#653"
     },
     {
       "id": 28,
@@ -396,10 +348,10 @@
         "Node name for S&R": "Note"
       },
       "widgets_values": [
-        "Load (1) the scene photo and (2) a white=person black=background mask.\nInclude hair in the mask. Photoshop is fine.\n\nOnly the masked person is denoised (denoise 1). The car/kitchen pixels stay.\nThat stops splotches on the background AND lets the man replace the woman (hair/body), while clothes can still come from the photo via Ostris.\nCLIP type MUST be krea2. Do not describe pose in the prompt."
+        "Load only the scene photo. RMBG-2.0 builds the person mask (not SAM3).\nOnly that hole is denoised. Check Person hole \u2014 hair should be white.\nNeeds 1038lab/ComfyUI-RMBG. CLIP type MUST be krea2."
       ],
       "widgets_values_named": {
-        "text": "Load (1) the scene photo and (2) a white=person black=background mask.\nInclude hair in the mask. Photoshop is fine.\n\nOnly the masked person is denoised (denoise 1). The car/kitchen pixels stay.\nThat stops splotches on the background AND lets the man replace the woman (hair/body), while clothes can still come from the photo via Ostris.\nCLIP type MUST be krea2. Do not describe pose in the prompt."
+        "text": "Load only the scene photo. RMBG-2.0 builds the person mask (not SAM3).\nOnly that hole is denoised. Check Person hole \u2014 hair should be white.\nNeeds 1038lab/ComfyUI-RMBG. CLIP type MUST be krea2."
       },
       "color": "#432",
       "bgcolor": "#653"
@@ -434,7 +386,8 @@
             14,
             15,
             16,
-            17
+            17,
+            71
           ]
         }
       ],
@@ -482,8 +435,7 @@
           "type": "INT",
           "slot_index": 0,
           "links": [
-            19,
-            60
+            19
           ]
         },
         {
@@ -491,8 +443,7 @@
           "type": "INT",
           "slot_index": 1,
           "links": [
-            22,
-            61
+            22
           ]
         },
         {
@@ -553,15 +504,15 @@
       }
     },
     {
-      "id": 51,
-      "type": "ImageScale",
+      "id": 50,
+      "type": "RMBG",
       "pos": [
-        -760,
+        -1180,
         1240
       ],
       "size": [
-        280,
-        150
+        300,
+        292
       ],
       "flags": {},
       "order": 11,
@@ -570,23 +521,7 @@
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 62
-        },
-        {
-          "name": "width",
-          "type": "INT",
-          "link": 60,
-          "widget": {
-            "name": "width"
-          }
-        },
-        {
-          "name": "height",
-          "type": "INT",
-          "link": 61,
-          "widget": {
-            "name": "height"
-          }
+          "link": 71
         }
       ],
       "outputs": [
@@ -594,79 +529,59 @@
           "name": "IMAGE",
           "type": "IMAGE",
           "slot_index": 0,
-          "links": [
-            63
-          ]
-        }
-      ],
-      "title": "Mask to photo size",
-      "properties": {
-        "Node name for S&R": "ImageScale",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      },
-      "widgets_values": [
-        "nearest-exact",
-        1024,
-        1024,
-        "disabled"
-      ],
-      "widgets_values_named": {
-        "upscale_method": "nearest-exact",
-        "width": 1024,
-        "height": 1024,
-        "crop": "disabled"
-      }
-    },
-    {
-      "id": 52,
-      "type": "ImageToMask",
-      "pos": [
-        -460,
-        1240
-      ],
-      "size": [
-        210,
-        58
-      ],
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 63
-        }
-      ],
-      "outputs": [
+          "links": null
+        },
         {
           "name": "MASK",
           "type": "MASK",
-          "slot_index": 0,
+          "slot_index": 1,
           "links": [
             64
           ]
+        },
+        {
+          "name": "MASK_IMAGE",
+          "type": "IMAGE",
+          "slot_index": 2,
+          "links": null
         }
       ],
-      "title": "White = person",
+      "title": "Auto person mask (RMBG-2.0)",
       "properties": {
-        "Node name for S&R": "ImageToMask",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
+        "Node name for S&R": "RMBG",
+        "cnr_id": "comfyui-rmbg",
+        "ver": "3.1.0"
       },
       "widgets_values": [
-        "red"
+        "RMBG-2.0",
+        1,
+        1024,
+        0,
+        6,
+        false,
+        false,
+        "Alpha",
+        "#222222"
       ],
       "widgets_values_named": {
-        "channel": "red"
-      }
+        "model": "RMBG-2.0",
+        "sensitivity": 1,
+        "process_res": 1024,
+        "mask_blur": 0,
+        "mask_offset": 6,
+        "invert_output": false,
+        "refine_foreground": false,
+        "background": "Alpha",
+        "background_color": "#222222"
+      },
+      "color": "#222e40",
+      "bgcolor": "#364254"
     },
     {
       "id": 53,
       "type": "GrowMask",
       "pos": [
-        -220,
+        -820,
         1240
       ],
       "size": [
@@ -1433,7 +1348,7 @@
           ]
         }
       ],
-      "title": "Negative (empty)",
+      "title": "Negative (not the woman)",
       "properties": {
         "aux_id": "ostris/comfyui-krea2-ostris-edit",
         "ver": "7756566160c4a1b24bb1bd9f0ff3ced1a83d7547",
@@ -1797,41 +1712,17 @@
       "VAE"
     ],
     [
-      62,
+      71,
+      10,
+      0,
       50,
-      0,
-      51,
-      0,
-      "IMAGE"
-    ],
-    [
-      60,
-      11,
-      0,
-      51,
-      1,
-      "INT"
-    ],
-    [
-      61,
-      11,
-      1,
-      51,
-      2,
-      "INT"
-    ],
-    [
-      63,
-      51,
-      0,
-      52,
       0,
       "IMAGE"
     ],
     [
       64,
-      52,
-      0,
+      50,
+      1,
       53,
       0,
       "MASK"

@@ -18,12 +18,9 @@ OSTRIS = {
     "cnr_id": "comfyui-krea2-ostris-edit",
 }
 NOTE = (
-    "Load (1) the scene photo and (2) a white=person black=background mask.\n"
-    "Include hair in the mask. Photoshop is fine.\n\n"
-    "Only the masked person is denoised (denoise 1). The car/kitchen pixels stay.\n"
-    "That stops splotches on the background AND lets the man replace the woman "
-    "(hair/body), while clothes can still come from the photo via Ostris.\n"
-    "CLIP type MUST be krea2. Do not describe pose in the prompt."
+    "Load only the scene photo. RMBG-2.0 builds the person mask (not SAM3).\n"
+    "Only that hole is denoised. Check Person hole — hair should be white.\n"
+    "Needs 1038lab/ComfyUI-RMBG. CLIP type MUST be krea2."
 )
 
 
@@ -125,23 +122,12 @@ def main() -> None:
         "id": 7, "type": "LoadImage", "pos": [-1180, 460], "size": [400, 360],
         "flags": {}, "order": 6, "mode": 0, "inputs": [],
         "outputs": [out("IMAGE", "IMAGE", [11, 40], 0), out("MASK", "MASK", None, 1)],
-        "title": "1. Scene photo",
+        "title": "Scene photo",
         "properties": props("LoadImage"),
         "widgets_values": ["ExampleReferenceImage.png", "image"],
         "widgets_values_named": {"image": "ExampleReferenceImage.png", "upload": "image"},
         "color": "#232",
         "bgcolor": "#353",
-    })
-    add({
-        "id": 50, "type": "LoadImage", "pos": [-1180, 1240], "size": [400, 360],
-        "flags": {}, "order": 7, "mode": 0, "inputs": [],
-        "outputs": [out("IMAGE", "IMAGE", [62], 0), out("MASK", "MASK", None, 1)],
-        "title": "2. Person mask (white=person, include hair)",
-        "properties": props("LoadImage"),
-        "widgets_values": ["ExampleReferenceImage.png", "image"],
-        "widgets_values_named": {"image": "ExampleReferenceImage.png", "upload": "image"},
-        "color": "#432",
-        "bgcolor": "#653",
     })
     add({
         "id": 28, "type": "Note", "pos": [80, 860], "size": [420, 220],
@@ -156,7 +142,7 @@ def main() -> None:
         "id": 10, "type": "ImageScaleToTotalPixels", "pos": [-1180, 860], "size": [320, 106],
         "flags": {}, "order": 8, "mode": 0,
         "inputs": [inp("image", "IMAGE", 11)],
-        "outputs": [out("IMAGE", "IMAGE", [14, 15, 16, 17])],
+        "outputs": [out("IMAGE", "IMAGE", [14, 15, 16, 17, 71])],
         "title": "Scale kitchen ~2MP",
         "properties": props("ImageScaleToTotalPixels"),
         "widgets_values": ["lanczos", 2.0, 1],
@@ -167,8 +153,8 @@ def main() -> None:
         "flags": {}, "order": 9, "mode": 0,
         "inputs": [inp("image", "IMAGE", 14)],
         "outputs": [
-            out("width", "INT", [19, 60], 0),
-            out("height", "INT", [22, 61], 1),
+            out("width", "INT", [19], 0),
+            out("height", "INT", [22], 1),
             out("batch_size", "INT", None, 2),
         ],
         "title": "Kitchen size",
@@ -183,36 +169,37 @@ def main() -> None:
         "properties": props("VAEEncode"),
     })
     add({
-        "id": 51, "type": "ImageScale", "pos": [-760, 1240], "size": [280, 150],
+        "id": 50, "type": "RMBG", "pos": [-1180, 1240], "size": [300, 292],
         "flags": {}, "order": 11, "mode": 0,
-        "inputs": [
-            inp("image", "IMAGE", 62),
-            inp("width", "INT", 60, widget="width"),
-            inp("height", "INT", 61, widget="height"),
+        "inputs": [inp("image", "IMAGE", 71)],
+        "outputs": [
+            out("IMAGE", "IMAGE", None, 0),
+            out("MASK", "MASK", [64], 1),
+            out("MASK_IMAGE", "IMAGE", None, 2),
         ],
-        "outputs": [out("IMAGE", "IMAGE", [63])],
-        "title": "Mask to photo size",
-        "properties": props("ImageScale"),
-        "widgets_values": ["nearest-exact", 1024, 1024, "disabled"],
-        "widgets_values_named": {
-            "upscale_method": "nearest-exact",
-            "width": 1024,
-            "height": 1024,
-            "crop": "disabled",
+        "title": "Auto person mask (RMBG-2.0)",
+        "properties": {
+            "Node name for S&R": "RMBG",
+            "cnr_id": "comfyui-rmbg",
+            "ver": "3.1.0",
         },
+        "widgets_values": ["RMBG-2.0", 1, 1024, 0, 6, False, False, "Alpha", "#222222"],
+        "widgets_values_named": {
+            "model": "RMBG-2.0",
+            "sensitivity": 1,
+            "process_res": 1024,
+            "mask_blur": 0,
+            "mask_offset": 6,
+            "invert_output": False,
+            "refine_foreground": False,
+            "background": "Alpha",
+            "background_color": "#222222",
+        },
+        "color": "#222e40",
+        "bgcolor": "#364254",
     })
     add({
-        "id": 52, "type": "ImageToMask", "pos": [-460, 1240], "size": [210, 58],
-        "flags": {}, "order": 12, "mode": 0,
-        "inputs": [inp("image", "IMAGE", 63)],
-        "outputs": [out("MASK", "MASK", [64])],
-        "title": "White = person",
-        "properties": props("ImageToMask"),
-        "widgets_values": ["red"],
-        "widgets_values_named": {"channel": "red"},
-    })
-    add({
-        "id": 53, "type": "GrowMask", "pos": [-220, 1240], "size": [240, 82],
+        "id": 53, "type": "GrowMask", "pos": [-820, 1240], "size": [240, 82],
         "flags": {}, "order": 13, "mode": 0,
         "inputs": [inp("mask", "MASK", 64)],
         "outputs": [out("MASK", "MASK", [65, 66])],
