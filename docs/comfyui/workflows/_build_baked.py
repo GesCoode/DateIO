@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Krea2 kitchen edit: auto DWPose, single edited frame. No inpaint, no pass 2."""
+"""Krea2 scene edit: encode photo, noise only the person mask, auto DWPose."""
 from __future__ import annotations
 
 import json
@@ -7,8 +7,9 @@ from pathlib import Path
 
 PROMPT = (
     "vsgly_id, a man with short dark wavy hair and a short beard, "
-    "white long-sleeve shirt, denim shorts, standing in a bright white kitchen, photorealistic"
+    "masculine face and body, short hair, wearing the same clothes as the photo, photorealistic"
 )
+NEG = "woman, female, long hair, feminine body, breasts, mixed gender"
 
 CORE = {"cnr_id": "comfy-core", "ver": "0.37.0"}
 OSTRIS = {
@@ -17,10 +18,12 @@ OSTRIS = {
     "cnr_id": "comfyui-krea2-ostris-edit",
 }
 NOTE = (
-    "The photo is encoded and sampled as image-to-image, not from empty noise.\n"
-    "Denoise 0.6 keeps most real background pixels. Raise toward 0.8 if the "
-    "original person will not leave; lower toward 0.45 if the scene drifts.\n\n"
-    "Pose is still DWPose on gray. CLIP type MUST be krea2."
+    "Load (1) the scene photo and (2) a white=person black=background mask.\n"
+    "Include hair in the mask. Photoshop is fine.\n\n"
+    "Only the masked person is denoised (denoise 1). The car/kitchen pixels stay.\n"
+    "That stops splotches on the background AND lets the man replace the woman "
+    "(hair/body), while clothes can still come from the photo via Ostris.\n"
+    "CLIP type MUST be krea2. Do not describe pose in the prompt."
 )
 
 
@@ -98,10 +101,10 @@ def main() -> None:
         "outputs": [out("MODEL", "MODEL", [9], 0), out("CLIP", "CLIP", None, 1)],
         "title": "Identity LoRA",
         "properties": props("LoraLoader"),
-        "widgets_values": ["KreAlpha2640.safetensors", 0.9, 1.0],
+        "widgets_values": ["KreAlpha2640.safetensors", 1.0, 1.0],
         "widgets_values_named": {
             "lora_name": "KreAlpha2640.safetensors",
-            "strength_model": 0.9,
+            "strength_model": 1.0,
             "strength_clip": 1.0,
         },
     })
@@ -122,12 +125,23 @@ def main() -> None:
         "id": 7, "type": "LoadImage", "pos": [-1180, 460], "size": [400, 360],
         "flags": {}, "order": 6, "mode": 0, "inputs": [],
         "outputs": [out("IMAGE", "IMAGE", [11, 40], 0), out("MASK", "MASK", None, 1)],
-        "title": "Kitchen photo",
+        "title": "1. Scene photo",
         "properties": props("LoadImage"),
         "widgets_values": ["ExampleReferenceImage.png", "image"],
         "widgets_values_named": {"image": "ExampleReferenceImage.png", "upload": "image"},
         "color": "#232",
         "bgcolor": "#353",
+    })
+    add({
+        "id": 50, "type": "LoadImage", "pos": [-1180, 1240], "size": [400, 360],
+        "flags": {}, "order": 7, "mode": 0, "inputs": [],
+        "outputs": [out("IMAGE", "IMAGE", [62], 0), out("MASK", "MASK", None, 1)],
+        "title": "2. Person mask (white=person, include hair)",
+        "properties": props("LoadImage"),
+        "widgets_values": ["ExampleReferenceImage.png", "image"],
+        "widgets_values_named": {"image": "ExampleReferenceImage.png", "upload": "image"},
+        "color": "#432",
+        "bgcolor": "#653",
     })
     add({
         "id": 28, "type": "Note", "pos": [80, 860], "size": [420, 220],
@@ -153,8 +167,8 @@ def main() -> None:
         "flags": {}, "order": 9, "mode": 0,
         "inputs": [inp("image", "IMAGE", 14)],
         "outputs": [
-            out("width", "INT", [19], 0),
-            out("height", "INT", [22], 1),
+            out("width", "INT", [19, 60], 0),
+            out("height", "INT", [22, 61], 1),
             out("batch_size", "INT", None, 2),
         ],
         "title": "Kitchen size",
@@ -165,8 +179,71 @@ def main() -> None:
         "flags": {}, "order": 10, "mode": 0,
         "inputs": [inp("pixels", "IMAGE", 17), inp("vae", "VAE", 50)],
         "outputs": [out("LATENT", "LATENT", [24])],
-        "title": "Encode the real photo (keeps background)",
+        "title": "Encode the real photo",
         "properties": props("VAEEncode"),
+    })
+    add({
+        "id": 51, "type": "ImageScale", "pos": [-760, 1240], "size": [280, 150],
+        "flags": {}, "order": 11, "mode": 0,
+        "inputs": [
+            inp("image", "IMAGE", 62),
+            inp("width", "INT", 60, widget="width"),
+            inp("height", "INT", 61, widget="height"),
+        ],
+        "outputs": [out("IMAGE", "IMAGE", [63])],
+        "title": "Mask to photo size",
+        "properties": props("ImageScale"),
+        "widgets_values": ["nearest-exact", 1024, 1024, "disabled"],
+        "widgets_values_named": {
+            "upscale_method": "nearest-exact",
+            "width": 1024,
+            "height": 1024,
+            "crop": "disabled",
+        },
+    })
+    add({
+        "id": 52, "type": "ImageToMask", "pos": [-460, 1240], "size": [210, 58],
+        "flags": {}, "order": 12, "mode": 0,
+        "inputs": [inp("image", "IMAGE", 63)],
+        "outputs": [out("MASK", "MASK", [64])],
+        "title": "White = person",
+        "properties": props("ImageToMask"),
+        "widgets_values": ["red"],
+        "widgets_values_named": {"channel": "red"},
+    })
+    add({
+        "id": 53, "type": "GrowMask", "pos": [-220, 1240], "size": [240, 82],
+        "flags": {}, "order": 13, "mode": 0,
+        "inputs": [inp("mask", "MASK", 64)],
+        "outputs": [out("MASK", "MASK", [65, 66])],
+        "title": "Grow mask (cover hair)",
+        "properties": props("GrowMask"),
+        "widgets_values": [32, True],
+        "widgets_values_named": {"expand": 32, "tapered_corners": True},
+    })
+    add({
+        "id": 56, "type": "MaskToImage", "pos": [40, 1500], "size": [180, 26],
+        "flags": {"collapsed": True}, "order": 14, "mode": 0,
+        "inputs": [inp("mask", "MASK", 65)],
+        "outputs": [out("IMAGE", "IMAGE", [67])],
+        "title": "Mask to image",
+        "properties": props("MaskToImage"),
+    })
+    add({
+        "id": 54, "type": "PreviewImage", "pos": [40, 1240], "size": [240, 240],
+        "flags": {}, "order": 15, "mode": 0,
+        "inputs": [inp("images", "IMAGE", 67)],
+        "outputs": [out("IMAGE", "IMAGE", None)],
+        "title": "Person hole",
+        "properties": props("PreviewImage"),
+    })
+    add({
+        "id": 55, "type": "SetLatentNoiseMask", "pos": [-560, 940], "size": [270, 46],
+        "flags": {}, "order": 16, "mode": 0,
+        "inputs": [inp("samples", "LATENT", 24), inp("mask", "MASK", 66, shape=7)],
+        "outputs": [out("LATENT", "LATENT", [70])],
+        "title": "Noise only the person",
+        "properties": props("SetLatentNoiseMask"),
     })
     add({
         "id": 30, "type": "DWPreprocessor", "pos": [-720, 460], "size": [300, 222],
@@ -329,10 +406,10 @@ def main() -> None:
         "flags": {}, "order": 21, "mode": 0,
         "inputs": ostris(4, 6, 16, 27),
         "outputs": [out("CONDITIONING", "CONDITIONING", [31])],
-        "title": "Negative (empty)",
+        "title": "Negative (not the woman)",
         "properties": {**OSTRIS, "Node name for S&R": "TextEncodeKrea2OstrisEdit"},
-        "widgets_values": [""],
-        "widgets_values_named": {"prompt": ""},
+        "widgets_values": [NEG],
+        "widgets_values_named": {"prompt": NEG},
     })
     add({
         "id": 17, "type": "FluxKontextMultiReferenceLatentMethod", "pos": [80, 40], "size": [340, 58],
@@ -361,12 +438,12 @@ def main() -> None:
             inp("model", "MODEL", 10),
             inp("positive", "CONDITIONING", 32),
             inp("negative", "CONDITIONING", 33),
-            inp("latent_image", "LATENT", 24),
+            inp("latent_image", "LATENT", 70),
         ],
         "outputs": [out("LATENT", "LATENT", [34])],
         "title": "KSampler",
         "properties": props("KSampler"),
-        "widgets_values": [42, "randomize", 12, 1, "euler", "simple", 0.6],
+        "widgets_values": [42, "randomize", 12, 1, "euler", "simple", 1],
         "widgets_values_named": {
             "seed": 42,
             "control_after_generate": "randomize",
@@ -374,7 +451,7 @@ def main() -> None:
             "cfg": 1,
             "sampler_name": "euler",
             "scheduler": "simple",
-            "denoise": 0.6,
+            "denoise": 1,
         },
     })
     add({
@@ -432,8 +509,8 @@ def main() -> None:
     graph = {
         "id": "krea2-edited-frame",
         "revision": 0,
-        "last_node_id": 36,
-        "last_link_id": 50,
+        "last_node_id": 56,
+        "last_link_id": 70,
         "nodes": nodes,
         "links": links,
         "groups": [
@@ -446,8 +523,8 @@ def main() -> None:
             "ds": {"scale": 0.5, "offset": [1300, 40]},
             "frontendVersion": "1.52.7",
             "visagely": {
-                "title": "Edited frame — encode photo, denoise 0.6",
-                "notes": "VAEEncode the scene. Denoise 0.6 keeps real background. Ostris + DWPose gray.",
+                "title": "Edited frame — person-only denoise",
+                "notes": "SetLatentNoiseMask on a grown person mask. Background pixels stay. Denoise 1 in the hole.",
             },
         },
         "version": 0.4,

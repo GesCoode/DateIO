@@ -1,8 +1,8 @@
 {
   "id": "krea2-edited-frame",
   "revision": 0,
-  "last_node_id": 36,
-  "last_link_id": 50,
+  "last_node_id": 56,
+  "last_link_id": 70,
   "nodes": [
     {
       "id": 1,
@@ -224,12 +224,12 @@
       },
       "widgets_values": [
         "KreAlpha2640.safetensors",
-        0.9,
+        1.0,
         1.0
       ],
       "widgets_values_named": {
         "lora_name": "KreAlpha2640.safetensors",
-        "strength_model": 0.9,
+        "strength_model": 1.0,
         "strength_clip": 1.0
       }
     },
@@ -311,7 +311,7 @@
           "links": null
         }
       ],
-      "title": "Kitchen photo",
+      "title": "1. Scene photo",
       "properties": {
         "Node name for S&R": "LoadImage",
         "cnr_id": "comfy-core",
@@ -327,6 +327,54 @@
       },
       "color": "#232",
       "bgcolor": "#353"
+    },
+    {
+      "id": 50,
+      "type": "LoadImage",
+      "pos": [
+        -1180,
+        1240
+      ],
+      "size": [
+        400,
+        360
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            62
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": null
+        }
+      ],
+      "title": "2. Person mask (white=person, include hair)",
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "ExampleReferenceImage.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "ExampleReferenceImage.png",
+        "upload": "image"
+      },
+      "color": "#432",
+      "bgcolor": "#653"
     },
     {
       "id": 28,
@@ -348,10 +396,10 @@
         "Node name for S&R": "Note"
       },
       "widgets_values": [
-        "The photo is encoded and sampled as image-to-image, not from empty noise.\nDenoise 0.6 keeps most real background pixels. Raise toward 0.8 if the original person will not leave; lower toward 0.45 if the scene drifts.\n\nPose is still DWPose on gray. CLIP type MUST be krea2."
+        "Load (1) the scene photo and (2) a white=person black=background mask.\nInclude hair in the mask. Photoshop is fine.\n\nOnly the masked person is denoised (denoise 1). The car/kitchen pixels stay.\nThat stops splotches on the background AND lets the man replace the woman (hair/body), while clothes can still come from the photo via Ostris.\nCLIP type MUST be krea2. Do not describe pose in the prompt."
       ],
       "widgets_values_named": {
-        "text": "The photo is encoded and sampled as image-to-image, not from empty noise.\nDenoise 0.6 keeps most real background pixels. Raise toward 0.8 if the original person will not leave; lower toward 0.45 if the scene drifts.\n\nPose is still DWPose on gray. CLIP type MUST be krea2."
+        "text": "Load (1) the scene photo and (2) a white=person black=background mask.\nInclude hair in the mask. Photoshop is fine.\n\nOnly the masked person is denoised (denoise 1). The car/kitchen pixels stay.\nThat stops splotches on the background AND lets the man replace the woman (hair/body), while clothes can still come from the photo via Ostris.\nCLIP type MUST be krea2. Do not describe pose in the prompt."
       },
       "color": "#432",
       "bgcolor": "#653"
@@ -434,7 +482,8 @@
           "type": "INT",
           "slot_index": 0,
           "links": [
-            19
+            19,
+            60
           ]
         },
         {
@@ -442,7 +491,8 @@
           "type": "INT",
           "slot_index": 1,
           "links": [
-            22
+            22,
+            61
           ]
         },
         {
@@ -495,9 +545,286 @@
           ]
         }
       ],
-      "title": "Encode the real photo (keeps background)",
+      "title": "Encode the real photo",
       "properties": {
         "Node name for S&R": "VAEEncode",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 51,
+      "type": "ImageScale",
+      "pos": [
+        -760,
+        1240
+      ],
+      "size": [
+        280,
+        150
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 62
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 60,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 61,
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            63
+          ]
+        }
+      ],
+      "title": "Mask to photo size",
+      "properties": {
+        "Node name for S&R": "ImageScale",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "nearest-exact",
+        1024,
+        1024,
+        "disabled"
+      ],
+      "widgets_values_named": {
+        "upscale_method": "nearest-exact",
+        "width": 1024,
+        "height": 1024,
+        "crop": "disabled"
+      }
+    },
+    {
+      "id": 52,
+      "type": "ImageToMask",
+      "pos": [
+        -460,
+        1240
+      ],
+      "size": [
+        210,
+        58
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 63
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": [
+            64
+          ]
+        }
+      ],
+      "title": "White = person",
+      "properties": {
+        "Node name for S&R": "ImageToMask",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "red"
+      ],
+      "widgets_values_named": {
+        "channel": "red"
+      }
+    },
+    {
+      "id": 53,
+      "type": "GrowMask",
+      "pos": [
+        -220,
+        1240
+      ],
+      "size": [
+        240,
+        82
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 64
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": [
+            65,
+            66
+          ]
+        }
+      ],
+      "title": "Grow mask (cover hair)",
+      "properties": {
+        "Node name for S&R": "GrowMask",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        32,
+        true
+      ],
+      "widgets_values_named": {
+        "expand": 32,
+        "tapered_corners": true
+      }
+    },
+    {
+      "id": 56,
+      "type": "MaskToImage",
+      "pos": [
+        40,
+        1500
+      ],
+      "size": [
+        180,
+        26
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 65
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            67
+          ]
+        }
+      ],
+      "title": "Mask to image",
+      "properties": {
+        "Node name for S&R": "MaskToImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 54,
+      "type": "PreviewImage",
+      "pos": [
+        40,
+        1240
+      ],
+      "size": [
+        240,
+        240
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 67
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        }
+      ],
+      "title": "Person hole",
+      "properties": {
+        "Node name for S&R": "PreviewImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 55,
+      "type": "SetLatentNoiseMask",
+      "pos": [
+        -560,
+        940
+      ],
+      "size": [
+        270,
+        46
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 24
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 66,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            70
+          ]
+        }
+      ],
+      "title": "Noise only the person",
+      "properties": {
+        "Node name for S&R": "SetLatentNoiseMask",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       }
@@ -1043,10 +1370,10 @@
         "Node name for S&R": "TextEncodeKrea2OstrisEdit"
       },
       "widgets_values": [
-        "vsgly_id, a man with short dark wavy hair and a short beard, white long-sleeve shirt, denim shorts, standing in a bright white kitchen, photorealistic"
+        "vsgly_id, a man with short dark wavy hair and a short beard, masculine face and body, short hair, wearing the same clothes as the photo, photorealistic"
       ],
       "widgets_values_named": {
-        "prompt": "vsgly_id, a man with short dark wavy hair and a short beard, white long-sleeve shirt, denim shorts, standing in a bright white kitchen, photorealistic"
+        "prompt": "vsgly_id, a man with short dark wavy hair and a short beard, masculine face and body, short hair, wearing the same clothes as the photo, photorealistic"
       },
       "color": "#232",
       "bgcolor": "#353"
@@ -1114,10 +1441,10 @@
         "Node name for S&R": "TextEncodeKrea2OstrisEdit"
       },
       "widgets_values": [
-        ""
+        "woman, female, long hair, feminine body, breasts, mixed gender"
       ],
       "widgets_values_named": {
-        "prompt": ""
+        "prompt": "woman, female, long hair, feminine body, breasts, mixed gender"
       }
     },
     {
@@ -1241,7 +1568,7 @@
         {
           "name": "latent_image",
           "type": "LATENT",
-          "link": 24
+          "link": 70
         }
       ],
       "outputs": [
@@ -1267,7 +1594,7 @@
         1,
         "euler",
         "simple",
-        0.6
+        1
       ],
       "widgets_values_named": {
         "seed": 42,
@@ -1276,7 +1603,7 @@
         "cfg": 1,
         "sampler_name": "euler",
         "scheduler": "simple",
-        "denoise": 0.6
+        "denoise": 1
       }
     },
     {
@@ -1468,6 +1795,78 @@
       12,
       1,
       "VAE"
+    ],
+    [
+      62,
+      50,
+      0,
+      51,
+      0,
+      "IMAGE"
+    ],
+    [
+      60,
+      11,
+      0,
+      51,
+      1,
+      "INT"
+    ],
+    [
+      61,
+      11,
+      1,
+      51,
+      2,
+      "INT"
+    ],
+    [
+      63,
+      51,
+      0,
+      52,
+      0,
+      "IMAGE"
+    ],
+    [
+      64,
+      52,
+      0,
+      53,
+      0,
+      "MASK"
+    ],
+    [
+      65,
+      53,
+      0,
+      56,
+      0,
+      "MASK"
+    ],
+    [
+      67,
+      56,
+      0,
+      54,
+      0,
+      "IMAGE"
+    ],
+    [
+      24,
+      12,
+      0,
+      55,
+      0,
+      "LATENT"
+    ],
+    [
+      66,
+      53,
+      0,
+      55,
+      1,
+      "MASK"
     ],
     [
       40,
@@ -1686,8 +2085,8 @@
       "CONDITIONING"
     ],
     [
-      24,
-      12,
+      70,
+      55,
       0,
       19,
       3,
@@ -1775,8 +2174,8 @@
     },
     "frontendVersion": "1.52.7",
     "visagely": {
-      "title": "Edited frame \u2014 encode photo, denoise 0.6",
-      "notes": "VAEEncode the scene. Denoise 0.6 keeps real background. Ostris + DWPose gray."
+      "title": "Edited frame \u2014 person-only denoise",
+      "notes": "SetLatentNoiseMask on a grown person mask. Background pixels stay. Denoise 1 in the hole."
     }
   },
   "version": 0.4,
