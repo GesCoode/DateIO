@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Krea2 kitchen edit: auto DWPose + two-pass refine. No inpaint composite."""
+"""Krea2 kitchen edit: auto DWPose, single edited frame. No inpaint, no pass 2."""
 from __future__ import annotations
 
 import json
@@ -18,10 +18,10 @@ OSTRIS = {
 }
 NOTE = (
     "Load the kitchen photo only. Pose is DWPose (gray background, not black).\n"
-    "Edited frame is a regenerated scene in the same camera — that is intended.\n"
-    "Pass 2 (denoise 0.35) cleans grain/dots without changing the layout.\n\n"
+    "The edited frame is a regenerated scene in the same camera — that is intended.\n"
+    "There is no second pass: re-sampling with the pose map speckled the image.\n\n"
     "Needs comfyui_controlnet_aux + kjnodes. CLIP type MUST be krea2.\n"
-    "Do not describe pose in the prompt. Switch VAE to qwen_image_vae if RealVAE is missing."
+    "Do not describe pose in the prompt."
 )
 
 
@@ -76,7 +76,7 @@ def main() -> None:
     add({
         "id": 3, "type": "VAELoader", "pos": [-1180, 310], "size": [400, 58],
         "flags": {}, "order": 2, "mode": 0, "inputs": [],
-        "outputs": [out("VAE", "VAE", [5, 6, 7, 50, 51])],
+        "outputs": [out("VAE", "VAE", [5, 6, 7])],
         "title": "VAE (RealVAE for cleaner kitchen)",
         "properties": props("VAELoader"),
         "widgets_values": ["krea2RealVae_v10.safetensors"],
@@ -110,7 +110,7 @@ def main() -> None:
         "id": 6, "type": "LoraLoaderModelOnly", "pos": [-720, 320], "size": [300, 82],
         "flags": {}, "order": 5, "mode": 0,
         "inputs": [inp("model", "MODEL", 9)],
-        "outputs": [out("MODEL", "MODEL", [10, 53])],
+        "outputs": [out("MODEL", "MODEL", [10])],
         "title": "Pose LoRA 0.45",
         "properties": props("LoraLoaderModelOnly"),
         "widgets_values": ["krea2_turbo_openpose_controlnet.safetensors", 0.45],
@@ -344,7 +344,7 @@ def main() -> None:
         "id": 17, "type": "FluxKontextMultiReferenceLatentMethod", "pos": [80, 40], "size": [340, 58],
         "flags": {}, "order": 22, "mode": 0,
         "inputs": [inp("conditioning", "CONDITIONING", 30)],
-        "outputs": [out("CONDITIONING", "CONDITIONING", [32, 54])],
+        "outputs": [out("CONDITIONING", "CONDITIONING", [32])],
         "title": "Positive refs",
         "properties": props("FluxKontextMultiReferenceLatentMethod"),
         "widgets_values": ["index_timestep_zero"],
@@ -354,7 +354,7 @@ def main() -> None:
         "id": 18, "type": "FluxKontextMultiReferenceLatentMethod", "pos": [80, 140], "size": [340, 58],
         "flags": {}, "order": 23, "mode": 0,
         "inputs": [inp("conditioning", "CONDITIONING", 31)],
-        "outputs": [out("CONDITIONING", "CONDITIONING", [33, 55])],
+        "outputs": [out("CONDITIONING", "CONDITIONING", [33])],
         "title": "Negative refs",
         "properties": props("FluxKontextMultiReferenceLatentMethod"),
         "widgets_values": ["index_timestep_zero"],
@@ -370,7 +370,7 @@ def main() -> None:
             inp("latent_image", "LATENT", 24),
         ],
         "outputs": [out("LATENT", "LATENT", [34])],
-        "title": "Pass 1 (layout + pose)",
+        "title": "KSampler",
         "properties": props("KSampler"),
         "widgets_values": [42, "randomize", 12, 1, "euler", "simple", 1],
         "widgets_values_named": {
@@ -388,62 +388,13 @@ def main() -> None:
         "flags": {}, "order": 25, "mode": 0,
         "inputs": [inp("samples", "LATENT", 34), inp("vae", "VAE", 7)],
         "outputs": [out("IMAGE", "IMAGE", [35, 36])],
-        "title": "Decode pass 1",
+        "title": "VAE Decode",
         "properties": props("VAEDecode"),
     })
     add({
-        "id": 21, "type": "PreviewImage", "pos": [1060, 40], "size": [280, 400],
+        "id": 22, "type": "PreviewImage", "pos": [1060, 40], "size": [400, 600],
         "flags": {}, "order": 26, "mode": 0,
         "inputs": [inp("images", "IMAGE", 35)],
-        "outputs": [out("IMAGE", "IMAGE", None)],
-        "title": "1st pass",
-        "properties": props("PreviewImage"),
-    })
-    add({
-        "id": 37, "type": "VAEEncode", "pos": [820, 140], "size": [210, 46],
-        "flags": {}, "order": 27, "mode": 0,
-        "inputs": [inp("pixels", "IMAGE", 36), inp("vae", "VAE", 50)],
-        "outputs": [out("LATENT", "LATENT", [52])],
-        "title": "Encode for refine",
-        "properties": props("VAEEncode"),
-    })
-    add({
-        "id": 38, "type": "KSampler", "pos": [820, 230], "size": [320, 262],
-        "flags": {}, "order": 28, "mode": 0,
-        "inputs": [
-            inp("model", "MODEL", 53),
-            inp("positive", "CONDITIONING", 54),
-            inp("negative", "CONDITIONING", 55),
-            inp("latent_image", "LATENT", 52),
-        ],
-        "outputs": [out("LATENT", "LATENT", [56])],
-        "title": "Pass 2 (clean kitchen, denoise 0.35)",
-        "properties": props("KSampler"),
-        "widgets_values": [42, "randomize", 10, 1, "euler", "simple", 0.35],
-        "widgets_values_named": {
-            "seed": 42,
-            "control_after_generate": "randomize",
-            "steps": 10,
-            "cfg": 1,
-            "sampler_name": "euler",
-            "scheduler": "simple",
-            "denoise": 0.35,
-        },
-        "color": "#232",
-        "bgcolor": "#353",
-    })
-    add({
-        "id": 39, "type": "VAEDecode", "pos": [1180, 230], "size": [210, 46],
-        "flags": {}, "order": 29, "mode": 0,
-        "inputs": [inp("samples", "LATENT", 56), inp("vae", "VAE", 51)],
-        "outputs": [out("IMAGE", "IMAGE", [57, 58])],
-        "title": "Decode pass 2",
-        "properties": props("VAEDecode"),
-    })
-    add({
-        "id": 22, "type": "PreviewImage", "pos": [1420, 40], "size": [380, 560],
-        "flags": {}, "order": 30, "mode": 0,
-        "inputs": [inp("images", "IMAGE", 57)],
         "outputs": [out("IMAGE", "IMAGE", None)],
         "title": "Edited frame",
         "properties": props("PreviewImage"),
@@ -451,9 +402,9 @@ def main() -> None:
         "bgcolor": "#353",
     })
     add({
-        "id": 23, "type": "SaveImage", "pos": [1420, 620], "size": [380, 58],
-        "flags": {}, "order": 31, "mode": 0,
-        "inputs": [inp("images", "IMAGE", 58)],
+        "id": 23, "type": "SaveImage", "pos": [1060, 660], "size": [400, 58],
+        "flags": {}, "order": 27, "mode": 0,
+        "inputs": [inp("images", "IMAGE", 36)],
         "outputs": [out("IMAGE", "IMAGE", None)],
         "title": "Save edited frame",
         "properties": props("SaveImage"),
@@ -487,23 +438,22 @@ def main() -> None:
     graph = {
         "id": "krea2-edited-frame",
         "revision": 0,
-        "last_node_id": 39,
-        "last_link_id": 58,
+        "last_node_id": 36,
+        "last_link_id": 49,
         "nodes": nodes,
         "links": links,
         "groups": [
             {"id": 1, "title": "Models", "bounding": [-1220, 0, 820, 430], "color": "#3f789e", "flags": {}},
             {"id": 2, "title": "Kitchen + auto pose (gray bg)", "bounding": [-1220, 430, 1920, 840], "color": "#322", "flags": {}},
-            {"id": 3, "title": "Pass 1 layout", "bounding": [-420, 0, 1000, 430], "color": "#3f789e", "flags": {}},
-            {"id": 4, "title": "Pass 2 clean background", "bounding": [780, 120, 1060, 580], "color": "#2B6B4A", "flags": {}},
+            {"id": 3, "title": "Generate edited frame", "bounding": [-420, 0, 1100, 720], "color": "#3f789e", "flags": {}},
         ],
         "config": {},
         "extra": {
             "ds": {"scale": 0.5, "offset": [1300, 40]},
             "frontendVersion": "1.52.7",
             "visagely": {
-                "title": "Edited frame only — two-pass Krea2 kitchen edit",
-                "notes": "No inpaint composite. DWPose gray bg + GrowMask. Pass 2 denoise 0.35.",
+                "title": "Edited frame — single pass",
+                "notes": "No inpaint, no second pass. DWPose gray bg + GrowMask. Ostris image1=kitchen.",
             },
         },
         "version": 0.4,

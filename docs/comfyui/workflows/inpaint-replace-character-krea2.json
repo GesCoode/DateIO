@@ -1,8 +1,8 @@
 {
   "id": "krea2-edited-frame",
   "revision": 0,
-  "last_node_id": 39,
-  "last_link_id": 58,
+  "last_node_id": 36,
+  "last_link_id": 49,
   "nodes": [
     {
       "id": 1,
@@ -111,9 +111,7 @@
           "links": [
             5,
             6,
-            7,
-            50,
-            51
+            7
           ]
         }
       ],
@@ -261,8 +259,7 @@
           "type": "MODEL",
           "slot_index": 0,
           "links": [
-            10,
-            53
+            10
           ]
         }
       ],
@@ -350,10 +347,10 @@
         "Node name for S&R": "Note"
       },
       "widgets_values": [
-        "Load the kitchen photo only. Pose is DWPose (gray background, not black).\nEdited frame is a regenerated scene in the same camera \u2014 that is intended.\nPass 2 (denoise 0.35) cleans grain/dots without changing the layout.\n\nNeeds comfyui_controlnet_aux + kjnodes. CLIP type MUST be krea2.\nDo not describe pose in the prompt. Switch VAE to qwen_image_vae if RealVAE is missing."
+        "Load the kitchen photo only. Pose is DWPose (gray background, not black).\nThe edited frame is a regenerated scene in the same camera \u2014 that is intended.\nThere is no second pass: re-sampling with the pose map speckled the image.\n\nNeeds comfyui_controlnet_aux + kjnodes. CLIP type MUST be krea2.\nDo not describe pose in the prompt."
       ],
       "widgets_values_named": {
-        "text": "Load the kitchen photo only. Pose is DWPose (gray background, not black).\nEdited frame is a regenerated scene in the same camera \u2014 that is intended.\nPass 2 (denoise 0.35) cleans grain/dots without changing the layout.\n\nNeeds comfyui_controlnet_aux + kjnodes. CLIP type MUST be krea2.\nDo not describe pose in the prompt. Switch VAE to qwen_image_vae if RealVAE is missing."
+        "text": "Load the kitchen photo only. Pose is DWPose (gray background, not black).\nThe edited frame is a regenerated scene in the same camera \u2014 that is intended.\nThere is no second pass: re-sampling with the pose map speckled the image.\n\nNeeds comfyui_controlnet_aux + kjnodes. CLIP type MUST be krea2.\nDo not describe pose in the prompt."
       },
       "color": "#432",
       "bgcolor": "#653"
@@ -1166,8 +1163,7 @@
           "type": "CONDITIONING",
           "slot_index": 0,
           "links": [
-            32,
-            54
+            32
           ]
         }
       ],
@@ -1211,8 +1207,7 @@
           "type": "CONDITIONING",
           "slot_index": 0,
           "links": [
-            33,
-            55
+            33
           ]
         }
       ],
@@ -1275,7 +1270,7 @@
           ]
         }
       ],
-      "title": "Pass 1 (layout + pose)",
+      "title": "KSampler",
       "properties": {
         "Node name for S&R": "KSampler",
         "cnr_id": "comfy-core",
@@ -1337,203 +1332,7 @@
           ]
         }
       ],
-      "title": "Decode pass 1",
-      "properties": {
-        "Node name for S&R": "VAEDecode",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      }
-    },
-    {
-      "id": 21,
-      "type": "PreviewImage",
-      "pos": [
-        1060,
-        40
-      ],
-      "size": [
-        280,
-        400
-      ],
-      "flags": {},
-      "order": 26,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 35
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": null
-        }
-      ],
-      "title": "1st pass",
-      "properties": {
-        "Node name for S&R": "PreviewImage",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      }
-    },
-    {
-      "id": 37,
-      "type": "VAEEncode",
-      "pos": [
-        820,
-        140
-      ],
-      "size": [
-        210,
-        46
-      ],
-      "flags": {},
-      "order": 27,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "pixels",
-          "type": "IMAGE",
-          "link": 36
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 50
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "slot_index": 0,
-          "links": [
-            52
-          ]
-        }
-      ],
-      "title": "Encode for refine",
-      "properties": {
-        "Node name for S&R": "VAEEncode",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      }
-    },
-    {
-      "id": 38,
-      "type": "KSampler",
-      "pos": [
-        820,
-        230
-      ],
-      "size": [
-        320,
-        262
-      ],
-      "flags": {},
-      "order": 28,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 53
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 54
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "link": 55
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 52
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "slot_index": 0,
-          "links": [
-            56
-          ]
-        }
-      ],
-      "title": "Pass 2 (clean kitchen, denoise 0.35)",
-      "properties": {
-        "Node name for S&R": "KSampler",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      },
-      "widgets_values": [
-        42,
-        "randomize",
-        10,
-        1,
-        "euler",
-        "simple",
-        0.35
-      ],
-      "widgets_values_named": {
-        "seed": 42,
-        "control_after_generate": "randomize",
-        "steps": 10,
-        "cfg": 1,
-        "sampler_name": "euler",
-        "scheduler": "simple",
-        "denoise": 0.35
-      },
-      "color": "#232",
-      "bgcolor": "#353"
-    },
-    {
-      "id": 39,
-      "type": "VAEDecode",
-      "pos": [
-        1180,
-        230
-      ],
-      "size": [
-        210,
-        46
-      ],
-      "flags": {},
-      "order": 29,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "samples",
-          "type": "LATENT",
-          "link": 56
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 51
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": [
-            57,
-            58
-          ]
-        }
-      ],
-      "title": "Decode pass 2",
+      "title": "VAE Decode",
       "properties": {
         "Node name for S&R": "VAEDecode",
         "cnr_id": "comfy-core",
@@ -1544,21 +1343,21 @@
       "id": 22,
       "type": "PreviewImage",
       "pos": [
-        1420,
+        1060,
         40
       ],
       "size": [
-        380,
-        560
+        400,
+        600
       ],
       "flags": {},
-      "order": 30,
+      "order": 26,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 57
+          "link": 35
         }
       ],
       "outputs": [
@@ -1582,21 +1381,21 @@
       "id": 23,
       "type": "SaveImage",
       "pos": [
-        1420,
-        620
+        1060,
+        660
       ],
       "size": [
-        380,
+        400,
         58
       ],
       "flags": {},
-      "order": 31,
+      "order": 27,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 58
+          "link": 36
         }
       ],
       "outputs": [
@@ -1930,85 +1729,13 @@
       35,
       20,
       0,
-      21,
+      22,
       0,
       "IMAGE"
     ],
     [
       36,
       20,
-      0,
-      37,
-      0,
-      "IMAGE"
-    ],
-    [
-      50,
-      3,
-      0,
-      37,
-      1,
-      "VAE"
-    ],
-    [
-      53,
-      6,
-      0,
-      38,
-      0,
-      "MODEL"
-    ],
-    [
-      54,
-      17,
-      0,
-      38,
-      1,
-      "CONDITIONING"
-    ],
-    [
-      55,
-      18,
-      0,
-      38,
-      2,
-      "CONDITIONING"
-    ],
-    [
-      52,
-      37,
-      0,
-      38,
-      3,
-      "LATENT"
-    ],
-    [
-      56,
-      38,
-      0,
-      39,
-      0,
-      "LATENT"
-    ],
-    [
-      51,
-      3,
-      0,
-      39,
-      1,
-      "VAE"
-    ],
-    [
-      57,
-      39,
-      0,
-      22,
-      0,
-      "IMAGE"
-    ],
-    [
-      58,
-      39,
       0,
       23,
       0,
@@ -2042,26 +1769,14 @@
     },
     {
       "id": 3,
-      "title": "Pass 1 layout",
+      "title": "Generate edited frame",
       "bounding": [
         -420,
         0,
-        1000,
-        430
+        1100,
+        720
       ],
       "color": "#3f789e",
-      "flags": {}
-    },
-    {
-      "id": 4,
-      "title": "Pass 2 clean background",
-      "bounding": [
-        780,
-        120,
-        1060,
-        580
-      ],
-      "color": "#2B6B4A",
       "flags": {}
     }
   ],
@@ -2076,8 +1791,8 @@
     },
     "frontendVersion": "1.52.7",
     "visagely": {
-      "title": "Edited frame only \u2014 two-pass Krea2 kitchen edit",
-      "notes": "No inpaint composite. DWPose gray bg + GrowMask. Pass 2 denoise 0.35."
+      "title": "Edited frame \u2014 single pass",
+      "notes": "No inpaint, no second pass. DWPose gray bg + GrowMask. Ostris image1=kitchen."
     }
   },
   "version": 0.4,
