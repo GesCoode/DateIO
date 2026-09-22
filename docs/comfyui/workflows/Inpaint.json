@@ -2,7 +2,7 @@
   "id": "krea2-edited-frame",
   "revision": 0,
   "last_node_id": 36,
-  "last_link_id": 49,
+  "last_link_id": 50,
   "nodes": [
     {
       "id": 1,
@@ -111,11 +111,12 @@
           "links": [
             5,
             6,
-            7
+            7,
+            50
           ]
         }
       ],
-      "title": "VAE (RealVAE for cleaner kitchen)",
+      "title": "VAE",
       "properties": {
         "Node name for S&R": "VAELoader",
         "cnr_id": "comfy-core",
@@ -347,10 +348,10 @@
         "Node name for S&R": "Note"
       },
       "widgets_values": [
-        "Load the kitchen photo only. Pose is DWPose (gray background, not black).\nThe edited frame is a regenerated scene in the same camera \u2014 that is intended.\nThere is no second pass: re-sampling with the pose map speckled the image.\n\nNeeds comfyui_controlnet_aux + kjnodes. CLIP type MUST be krea2.\nDo not describe pose in the prompt."
+        "The photo is encoded and sampled as image-to-image, not from empty noise.\nDenoise 0.6 keeps most real background pixels. Raise toward 0.8 if the original person will not leave; lower toward 0.45 if the scene drifts.\n\nPose is still DWPose on gray. CLIP type MUST be krea2."
       ],
       "widgets_values_named": {
-        "text": "Load the kitchen photo only. Pose is DWPose (gray background, not black).\nThe edited frame is a regenerated scene in the same camera \u2014 that is intended.\nThere is no second pass: re-sampling with the pose map speckled the image.\n\nNeeds comfyui_controlnet_aux + kjnodes. CLIP type MUST be krea2.\nDo not describe pose in the prompt."
+        "text": "The photo is encoded and sampled as image-to-image, not from empty noise.\nDenoise 0.6 keeps most real background pixels. Raise toward 0.8 if the original person will not leave; lower toward 0.45 if the scene drifts.\n\nPose is still DWPose on gray. CLIP type MUST be krea2."
       },
       "color": "#432",
       "bgcolor": "#653"
@@ -384,7 +385,8 @@
           "links": [
             14,
             15,
-            16
+            16,
+            17
           ]
         }
       ],
@@ -432,7 +434,6 @@
           "type": "INT",
           "slot_index": 0,
           "links": [
-            18,
             19
           ]
         },
@@ -441,7 +442,6 @@
           "type": "INT",
           "slot_index": 1,
           "links": [
-            21,
             22
           ]
         },
@@ -461,34 +461,28 @@
     },
     {
       "id": 12,
-      "type": "EmptyLatentImage",
+      "type": "VAEEncode",
       "pos": [
         -560,
         860
       ],
       "size": [
         270,
-        106
+        46
       ],
       "flags": {},
       "order": 10,
       "mode": 0,
       "inputs": [
         {
-          "name": "width",
-          "type": "INT",
-          "link": 18,
-          "widget": {
-            "name": "width"
-          }
+          "name": "pixels",
+          "type": "IMAGE",
+          "link": 17
         },
         {
-          "name": "height",
-          "type": "INT",
-          "link": 21,
-          "widget": {
-            "name": "height"
-          }
+          "name": "vae",
+          "type": "VAE",
+          "link": 50
         }
       ],
       "outputs": [
@@ -501,21 +495,11 @@
           ]
         }
       ],
-      "title": "Pass 1 latent",
+      "title": "Encode the real photo (keeps background)",
       "properties": {
-        "Node name for S&R": "EmptyLatentImage",
+        "Node name for S&R": "VAEEncode",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
-      },
-      "widgets_values": [
-        1024,
-        1024,
-        1
-      ],
-      "widgets_values_named": {
-        "width": 1024,
-        "height": 1024,
-        "batch_size": 1
       }
     },
     {
@@ -1283,7 +1267,7 @@
         1,
         "euler",
         "simple",
-        1
+        0.6
       ],
       "widgets_values_named": {
         "seed": 42,
@@ -1292,7 +1276,7 @@
         "cfg": 1,
         "sampler_name": "euler",
         "scheduler": "simple",
-        "denoise": 1
+        "denoise": 0.6
       }
     },
     {
@@ -1470,20 +1454,20 @@
       "IMAGE"
     ],
     [
-      18,
-      11,
+      17,
+      10,
       0,
       12,
       0,
-      "INT"
+      "IMAGE"
     ],
     [
-      21,
-      11,
-      1,
+      50,
+      3,
+      0,
       12,
       1,
-      "INT"
+      "VAE"
     ],
     [
       40,
@@ -1791,8 +1775,8 @@
     },
     "frontendVersion": "1.52.7",
     "visagely": {
-      "title": "Edited frame \u2014 single pass",
-      "notes": "No inpaint, no second pass. DWPose gray bg + GrowMask. Ostris image1=kitchen."
+      "title": "Edited frame \u2014 encode photo, denoise 0.6",
+      "notes": "VAEEncode the scene. Denoise 0.6 keeps real background. Ostris + DWPose gray."
     }
   },
   "version": 0.4,

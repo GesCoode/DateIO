@@ -17,11 +17,10 @@ OSTRIS = {
     "cnr_id": "comfyui-krea2-ostris-edit",
 }
 NOTE = (
-    "Load the kitchen photo only. Pose is DWPose (gray background, not black).\n"
-    "The edited frame is a regenerated scene in the same camera — that is intended.\n"
-    "There is no second pass: re-sampling with the pose map speckled the image.\n\n"
-    "Needs comfyui_controlnet_aux + kjnodes. CLIP type MUST be krea2.\n"
-    "Do not describe pose in the prompt."
+    "The photo is encoded and sampled as image-to-image, not from empty noise.\n"
+    "Denoise 0.6 keeps most real background pixels. Raise toward 0.8 if the "
+    "original person will not leave; lower toward 0.45 if the scene drifts.\n\n"
+    "Pose is still DWPose on gray. CLIP type MUST be krea2."
 )
 
 
@@ -76,8 +75,8 @@ def main() -> None:
     add({
         "id": 3, "type": "VAELoader", "pos": [-1180, 310], "size": [400, 58],
         "flags": {}, "order": 2, "mode": 0, "inputs": [],
-        "outputs": [out("VAE", "VAE", [5, 6, 7])],
-        "title": "VAE (RealVAE for cleaner kitchen)",
+        "outputs": [out("VAE", "VAE", [5, 6, 7, 50])],
+        "title": "VAE",
         "properties": props("VAELoader"),
         "widgets_values": ["krea2RealVae_v10.safetensors"],
         "widgets_values_named": {"vae_name": "krea2RealVae_v10.safetensors"},
@@ -143,7 +142,7 @@ def main() -> None:
         "id": 10, "type": "ImageScaleToTotalPixels", "pos": [-1180, 860], "size": [320, 106],
         "flags": {}, "order": 8, "mode": 0,
         "inputs": [inp("image", "IMAGE", 11)],
-        "outputs": [out("IMAGE", "IMAGE", [14, 15, 16])],
+        "outputs": [out("IMAGE", "IMAGE", [14, 15, 16, 17])],
         "title": "Scale kitchen ~2MP",
         "properties": props("ImageScaleToTotalPixels"),
         "widgets_values": ["lanczos", 2.0, 1],
@@ -154,25 +153,20 @@ def main() -> None:
         "flags": {}, "order": 9, "mode": 0,
         "inputs": [inp("image", "IMAGE", 14)],
         "outputs": [
-            out("width", "INT", [18, 19], 0),
-            out("height", "INT", [21, 22], 1),
+            out("width", "INT", [19], 0),
+            out("height", "INT", [22], 1),
             out("batch_size", "INT", None, 2),
         ],
         "title": "Kitchen size",
         "properties": props("GetImageSize"),
     })
     add({
-        "id": 12, "type": "EmptyLatentImage", "pos": [-560, 860], "size": [270, 106],
+        "id": 12, "type": "VAEEncode", "pos": [-560, 860], "size": [270, 46],
         "flags": {}, "order": 10, "mode": 0,
-        "inputs": [
-            inp("width", "INT", 18, widget="width"),
-            inp("height", "INT", 21, widget="height"),
-        ],
+        "inputs": [inp("pixels", "IMAGE", 17), inp("vae", "VAE", 50)],
         "outputs": [out("LATENT", "LATENT", [24])],
-        "title": "Pass 1 latent",
-        "properties": props("EmptyLatentImage"),
-        "widgets_values": [1024, 1024, 1],
-        "widgets_values_named": {"width": 1024, "height": 1024, "batch_size": 1},
+        "title": "Encode the real photo (keeps background)",
+        "properties": props("VAEEncode"),
     })
     add({
         "id": 30, "type": "DWPreprocessor", "pos": [-720, 460], "size": [300, 222],
@@ -372,7 +366,7 @@ def main() -> None:
         "outputs": [out("LATENT", "LATENT", [34])],
         "title": "KSampler",
         "properties": props("KSampler"),
-        "widgets_values": [42, "randomize", 12, 1, "euler", "simple", 1],
+        "widgets_values": [42, "randomize", 12, 1, "euler", "simple", 0.6],
         "widgets_values_named": {
             "seed": 42,
             "control_after_generate": "randomize",
@@ -380,7 +374,7 @@ def main() -> None:
             "cfg": 1,
             "sampler_name": "euler",
             "scheduler": "simple",
-            "denoise": 1,
+            "denoise": 0.6,
         },
     })
     add({
@@ -439,7 +433,7 @@ def main() -> None:
         "id": "krea2-edited-frame",
         "revision": 0,
         "last_node_id": 36,
-        "last_link_id": 49,
+        "last_link_id": 50,
         "nodes": nodes,
         "links": links,
         "groups": [
@@ -452,8 +446,8 @@ def main() -> None:
             "ds": {"scale": 0.5, "offset": [1300, 40]},
             "frontendVersion": "1.52.7",
             "visagely": {
-                "title": "Edited frame — single pass",
-                "notes": "No inpaint, no second pass. DWPose gray bg + GrowMask. Ostris image1=kitchen.",
+                "title": "Edited frame — encode photo, denoise 0.6",
+                "notes": "VAEEncode the scene. Denoise 0.6 keeps real background. Ostris + DWPose gray.",
             },
         },
         "version": 0.4,
