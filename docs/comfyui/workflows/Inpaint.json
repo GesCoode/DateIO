@@ -348,10 +348,10 @@
         "Node name for S&R": "Note"
       },
       "widgets_values": [
-        "Load only the scene photo. RMBG-2.0 builds the person mask (not SAM3).\nOnly that hole is denoised. Check Person hole \u2014 hair should be white.\nNeeds 1038lab/ComfyUI-RMBG. CLIP type MUST be krea2."
+        "Load the scene photo only. RMBG-2.0 masks the person (not SAM3).\nGrow is small so windows/seats stay out of the hole.\nAfter sampling, the generated person is pasted onto the ORIGINAL photo pixels so the background is not VAE-blurred.\nPerson hole preview must be the body/hair only, not the car glass."
       ],
       "widgets_values_named": {
-        "text": "Load only the scene photo. RMBG-2.0 builds the person mask (not SAM3).\nOnly that hole is denoised. Check Person hole \u2014 hair should be white.\nNeeds 1038lab/ComfyUI-RMBG. CLIP type MUST be krea2."
+        "text": "Load the scene photo only. RMBG-2.0 masks the person (not SAM3).\nGrow is small so windows/seats stay out of the hole.\nAfter sampling, the generated person is pasted onto the ORIGINAL photo pixels so the background is not VAE-blurred.\nPerson hole preview must be the body/hair only, not the car glass."
       },
       "color": "#432",
       "bgcolor": "#653"
@@ -387,7 +387,8 @@
             15,
             16,
             17,
-            71
+            71,
+            72
           ]
         }
       ],
@@ -556,8 +557,8 @@
         "RMBG-2.0",
         1,
         1024,
+        10,
         0,
-        6,
         false,
         false,
         "Alpha",
@@ -567,8 +568,8 @@
         "model": "RMBG-2.0",
         "sensitivity": 1,
         "process_res": 1024,
-        "mask_blur": 0,
-        "mask_offset": 6,
+        "mask_blur": 10,
+        "mask_offset": 0,
         "invert_output": false,
         "refine_foreground": false,
         "background": "Alpha",
@@ -605,22 +606,23 @@
           "slot_index": 0,
           "links": [
             65,
-            66
+            66,
+            73
           ]
         }
       ],
-      "title": "Grow mask (cover hair)",
+      "title": "Grow mask (hair fringe only)",
       "properties": {
         "Node name for S&R": "GrowMask",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       },
       "widgets_values": [
-        32,
+        6,
         true
       ],
       "widgets_values_named": {
-        "expand": 32,
+        "expand": 6,
         "tapered_corners": true
       }
     },
@@ -1553,8 +1555,7 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            35,
-            36
+            35
           ]
         }
       ],
@@ -1566,10 +1567,70 @@
       }
     },
     {
+      "id": 57,
+      "type": "ImageCompositeMasked",
+      "pos": [
+        820,
+        140
+      ],
+      "size": [
+        300,
+        146
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "IMAGE",
+          "link": 72
+        },
+        {
+          "name": "source",
+          "type": "IMAGE",
+          "link": 35
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 73,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            80,
+            81
+          ]
+        }
+      ],
+      "title": "Paste person on original pixels",
+      "properties": {
+        "Node name for S&R": "ImageCompositeMasked",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        0,
+        0,
+        false
+      ],
+      "widgets_values_named": {
+        "x": 0,
+        "y": 0,
+        "resize_source": false
+      }
+    },
+    {
       "id": 22,
       "type": "PreviewImage",
       "pos": [
-        1060,
+        1160,
         40
       ],
       "size": [
@@ -1577,13 +1638,13 @@
         600
       ],
       "flags": {},
-      "order": 26,
+      "order": 27,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 35
+          "link": 80
         }
       ],
       "outputs": [
@@ -1607,7 +1668,7 @@
       "id": 23,
       "type": "SaveImage",
       "pos": [
-        1060,
+        1160,
         660
       ],
       "size": [
@@ -1615,13 +1676,13 @@
         58
       ],
       "flags": {},
-      "order": 27,
+      "order": 28,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 36
+          "link": 81
         }
       ],
       "outputs": [
@@ -2000,16 +2061,40 @@
       "VAE"
     ],
     [
+      72,
+      10,
+      0,
+      57,
+      0,
+      "IMAGE"
+    ],
+    [
       35,
       20,
+      0,
+      57,
+      1,
+      "IMAGE"
+    ],
+    [
+      73,
+      53,
+      0,
+      57,
+      2,
+      "MASK"
+    ],
+    [
+      80,
+      57,
       0,
       22,
       0,
       "IMAGE"
     ],
     [
-      36,
-      20,
+      81,
+      57,
       0,
       23,
       0,

@@ -18,9 +18,11 @@ OSTRIS = {
     "cnr_id": "comfyui-krea2-ostris-edit",
 }
 NOTE = (
-    "Load only the scene photo. RMBG-2.0 builds the person mask (not SAM3).\n"
-    "Only that hole is denoised. Check Person hole — hair should be white.\n"
-    "Needs 1038lab/ComfyUI-RMBG. CLIP type MUST be krea2."
+    "Load the scene photo only. RMBG-2.0 masks the person (not SAM3).\n"
+    "Grow is small so windows/seats stay out of the hole.\n"
+    "After sampling, the generated person is pasted onto the ORIGINAL photo "
+    "pixels so the background is not VAE-blurred.\n"
+    "Person hole preview must be the body/hair only, not the car glass."
 )
 
 
@@ -142,7 +144,7 @@ def main() -> None:
         "id": 10, "type": "ImageScaleToTotalPixels", "pos": [-1180, 860], "size": [320, 106],
         "flags": {}, "order": 8, "mode": 0,
         "inputs": [inp("image", "IMAGE", 11)],
-        "outputs": [out("IMAGE", "IMAGE", [14, 15, 16, 17, 71])],
+        "outputs": [out("IMAGE", "IMAGE", [14, 15, 16, 17, 71, 72])],
         "title": "Scale kitchen ~2MP",
         "properties": props("ImageScaleToTotalPixels"),
         "widgets_values": ["lanczos", 2.0, 1],
@@ -183,13 +185,13 @@ def main() -> None:
             "cnr_id": "comfyui-rmbg",
             "ver": "3.1.0",
         },
-        "widgets_values": ["RMBG-2.0", 1, 1024, 0, 6, False, False, "Alpha", "#222222"],
+        "widgets_values": ["RMBG-2.0", 1, 1024, 10, 0, False, False, "Alpha", "#222222"],
         "widgets_values_named": {
             "model": "RMBG-2.0",
             "sensitivity": 1,
             "process_res": 1024,
-            "mask_blur": 0,
-            "mask_offset": 6,
+            "mask_blur": 10,
+            "mask_offset": 0,
             "invert_output": False,
             "refine_foreground": False,
             "background": "Alpha",
@@ -202,11 +204,11 @@ def main() -> None:
         "id": 53, "type": "GrowMask", "pos": [-820, 1240], "size": [240, 82],
         "flags": {}, "order": 13, "mode": 0,
         "inputs": [inp("mask", "MASK", 64)],
-        "outputs": [out("MASK", "MASK", [65, 66])],
-        "title": "Grow mask (cover hair)",
+        "outputs": [out("MASK", "MASK", [65, 66, 73])],
+        "title": "Grow mask (hair fringe only)",
         "properties": props("GrowMask"),
-        "widgets_values": [32, True],
-        "widgets_values_named": {"expand": 32, "tapered_corners": True},
+        "widgets_values": [6, True],
+        "widgets_values_named": {"expand": 6, "tapered_corners": True},
     })
     add({
         "id": 56, "type": "MaskToImage", "pos": [40, 1500], "size": [180, 26],
@@ -445,14 +447,28 @@ def main() -> None:
         "id": 20, "type": "VAEDecode", "pos": [820, 40], "size": [210, 46],
         "flags": {}, "order": 25, "mode": 0,
         "inputs": [inp("samples", "LATENT", 34), inp("vae", "VAE", 7)],
-        "outputs": [out("IMAGE", "IMAGE", [35, 36])],
+        "outputs": [out("IMAGE", "IMAGE", [35])],
         "title": "VAE Decode",
         "properties": props("VAEDecode"),
     })
     add({
-        "id": 22, "type": "PreviewImage", "pos": [1060, 40], "size": [400, 600],
+        "id": 57, "type": "ImageCompositeMasked", "pos": [820, 140], "size": [300, 146],
         "flags": {}, "order": 26, "mode": 0,
-        "inputs": [inp("images", "IMAGE", 35)],
+        "inputs": [
+            inp("destination", "IMAGE", 72),
+            inp("source", "IMAGE", 35),
+            inp("mask", "MASK", 73, shape=7),
+        ],
+        "outputs": [out("IMAGE", "IMAGE", [80, 81])],
+        "title": "Paste person on original pixels",
+        "properties": props("ImageCompositeMasked"),
+        "widgets_values": [0, 0, False],
+        "widgets_values_named": {"x": 0, "y": 0, "resize_source": False},
+    })
+    add({
+        "id": 22, "type": "PreviewImage", "pos": [1160, 40], "size": [400, 600],
+        "flags": {}, "order": 27, "mode": 0,
+        "inputs": [inp("images", "IMAGE", 80)],
         "outputs": [out("IMAGE", "IMAGE", None)],
         "title": "Edited frame",
         "properties": props("PreviewImage"),
@@ -460,9 +476,9 @@ def main() -> None:
         "bgcolor": "#353",
     })
     add({
-        "id": 23, "type": "SaveImage", "pos": [1060, 660], "size": [400, 58],
-        "flags": {}, "order": 27, "mode": 0,
-        "inputs": [inp("images", "IMAGE", 36)],
+        "id": 23, "type": "SaveImage", "pos": [1160, 660], "size": [400, 58],
+        "flags": {}, "order": 28, "mode": 0,
+        "inputs": [inp("images", "IMAGE", 81)],
         "outputs": [out("IMAGE", "IMAGE", None)],
         "title": "Save edited frame",
         "properties": props("SaveImage"),
@@ -496,8 +512,8 @@ def main() -> None:
     graph = {
         "id": "krea2-edited-frame",
         "revision": 0,
-        "last_node_id": 56,
-        "last_link_id": 70,
+        "last_node_id": 57,
+        "last_link_id": 81,
         "nodes": nodes,
         "links": links,
         "groups": [
@@ -511,7 +527,7 @@ def main() -> None:
             "frontendVersion": "1.52.7",
             "visagely": {
                 "title": "Edited frame — person-only denoise",
-                "notes": "SetLatentNoiseMask on a grown person mask. Background pixels stay. Denoise 1 in the hole.",
+                "notes": "Tight RMBG mask + paste generated person onto original photo pixels.",
             },
         },
         "version": 0.4,
