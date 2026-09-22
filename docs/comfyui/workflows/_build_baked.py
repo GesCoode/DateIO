@@ -460,6 +460,7 @@ def main() -> None:
     (out_dir / "replace-character-baked.json").write_text(text)
     (out_dir / "Inpaint.json").write_text(text)
     (out_dir / "inpaint-replace-character-krea2.json").write_text(text)
+    (out_dir / "Edited_Frame.json").write_text(text)
     print(f"wrote {len(nodes)} nodes, {len(links)} links")
 
 
