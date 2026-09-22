@@ -1,14 +1,14 @@
 {
-  "id": "krea2-replace-character",
+  "id": "krea2-replace-character-baked",
   "revision": 0,
-  "last_node_id": 35,
-  "last_link_id": 57,
+  "last_node_id": 28,
+  "last_link_id": 39,
   "nodes": [
     {
       "id": 1,
       "type": "UNETLoader",
       "pos": [
-        -1100,
+        -1180,
         40
       ],
       "size": [
@@ -31,9 +31,9 @@
       ],
       "title": "UNET (Sick Ollie / Krea2)",
       "properties": {
+        "Node name for S&R": "UNETLoader",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "UNETLoader"
+        "ver": "0.37.0"
       },
       "widgets_values": [
         "SICK_OLLIE_Krea2_BF16.safetensors",
@@ -48,8 +48,8 @@
       "id": 2,
       "type": "CLIPLoader",
       "pos": [
-        -1100,
-        180
+        -1180,
+        160
       ],
       "size": [
         400,
@@ -71,19 +71,19 @@
           ]
         }
       ],
-      "title": "CLIP (type krea2)",
+      "title": "CLIP (type must be krea2)",
       "properties": {
+        "Node name for S&R": "CLIPLoader",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "CLIPLoader"
+        "ver": "0.37.0"
       },
       "widgets_values": [
-        "qwen3vl_4b_fp8_scaled.safetensors",
+        "qwen3vl_4b_bf16.safetensors",
         "krea2",
         "default"
       ],
       "widgets_values_named": {
-        "clip_name": "qwen3vl_4b_fp8_scaled.safetensors",
+        "clip_name": "qwen3vl_4b_bf16.safetensors",
         "type": "krea2",
         "device": "default"
       }
@@ -92,8 +92,8 @@
       "id": 3,
       "type": "VAELoader",
       "pos": [
-        -1100,
-        350
+        -1180,
+        310
       ],
       "size": [
         400,
@@ -115,11 +115,11 @@
           ]
         }
       ],
-      "title": "VAE",
+      "title": "VAE (qwen_image or krea2RealVae_v10)",
       "properties": {
+        "Node name for S&R": "VAELoader",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "VAELoader"
+        "ver": "0.37.0"
       },
       "widgets_values": [
         "qwen_image_vae.safetensors"
@@ -132,15 +132,15 @@
       "id": 4,
       "type": "Krea2OstrisEditModelPatch",
       "pos": [
-        -640,
+        -720,
         40
       ],
       "size": [
-        270,
+        280,
         72
       ],
       "flags": {},
-      "order": 4,
+      "order": 3,
       "mode": 0,
       "inputs": [
         {
@@ -163,8 +163,8 @@
       "properties": {
         "aux_id": "ostris/comfyui-krea2-ostris-edit",
         "ver": "7756566160c4a1b24bb1bd9f0ff3ced1a83d7547",
-        "Node name for S&R": "Krea2OstrisEditModelPatch",
-        "cnr_id": "comfyui-krea2-ostris-edit"
+        "cnr_id": "comfyui-krea2-ostris-edit",
+        "Node name for S&R": "Krea2OstrisEditModelPatch"
       },
       "widgets_values": [
         false
@@ -177,15 +177,15 @@
       "id": 5,
       "type": "LoraLoader",
       "pos": [
-        -640,
-        160
+        -720,
+        150
       ],
       "size": [
         300,
         126
       ],
       "flags": {},
-      "order": 7,
+      "order": 4,
       "mode": 0,
       "inputs": [
         {
@@ -217,34 +217,34 @@
       ],
       "title": "Identity LoRA",
       "properties": {
+        "Node name for S&R": "LoraLoader",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "LoraLoader"
+        "ver": "0.37.0"
       },
       "widgets_values": [
         "KreAlpha2640.safetensors",
         0.9,
-        1
+        1.0
       ],
       "widgets_values_named": {
         "lora_name": "KreAlpha2640.safetensors",
         "strength_model": 0.9,
-        "strength_clip": 1
+        "strength_clip": 1.0
       }
     },
     {
       "id": 6,
       "type": "LoraLoaderModelOnly",
       "pos": [
-        -640,
-        340
+        -720,
+        320
       ],
       "size": [
-        302.53671875,
+        300,
         82
       ],
       "flags": {},
-      "order": 13,
+      "order": 5,
       "mode": 0,
       "inputs": [
         {
@@ -263,11 +263,11 @@
           ]
         }
       ],
-      "title": "Pose LoRA (kept low so the photo wins)",
+      "title": "Pose LoRA 0.45 (photo wins lean)",
       "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "LoraLoaderModelOnly"
+        "ver": "0.37.0"
       },
       "widgets_values": [
         "krea2_turbo_openpose_controlnet.safetensors",
@@ -282,15 +282,15 @@
       "id": 7,
       "type": "LoadImage",
       "pos": [
-        -1100,
-        500
+        -1180,
+        460
       ],
       "size": [
         400,
         360
       ],
       "flags": {},
-      "order": 3,
+      "order": 6,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -299,8 +299,7 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            11,
-            52
+            11
           ]
         },
         {
@@ -310,11 +309,11 @@
           "links": null
         }
       ],
-      "title": "Scene / pose reference",
+      "title": "1. Kitchen (baked background)",
       "properties": {
+        "Node name for S&R": "LoadImage",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "LoadImage"
+        "ver": "0.37.0"
       },
       "widgets_values": [
         "ExampleReferenceImage.png",
@@ -323,21 +322,147 @@
       "widgets_values_named": {
         "image": "ExampleReferenceImage.png",
         "upload": "image"
-      }
+      },
+      "color": "#232",
+      "bgcolor": "#353"
     },
     {
       "id": 8,
-      "type": "ImageScaleToTotalPixels",
+      "type": "LoadImage",
       "pos": [
-        -640,
-        500
+        -760,
+        460
       ],
       "size": [
-        300,
+        400,
+        360
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            12
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": null
+        }
+      ],
+      "title": "2. Pose map (gray bg, baked)",
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "ExampleReferenceImage.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "ExampleReferenceImage.png",
+        "upload": "image"
+      },
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 9,
+      "type": "LoadImage",
+      "pos": [
+        -340,
+        460
+      ],
+      "size": [
+        400,
+        360
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            13
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": null
+        }
+      ],
+      "title": "3. Person mask (white=person)",
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "ExampleReferenceImage.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "ExampleReferenceImage.png",
+        "upload": "image"
+      },
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 28,
+      "type": "Note",
+      "pos": [
+        80,
+        460
+      ],
+      "size": [
+        420,
+        360
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "Note"
+      },
+      "widgets_values": [
+        "Baked inputs \u2014 no SAM3 / RMBG / Lama / DWPose.\n\n1 Kitchen: the photo to keep.\n2 Pose: OpenPose/DWPose PNG. Use a MID-GRAY background, not black (black pose bg speckles the shirt).\n3 Mask: white person, black kitchen. Photoshop is fine. Does not need to be perfect.\n\nCLIP type MUST be krea2 (ComfyUI >= 0.26).\nPose is the pose map + pose LoRA. Do not describe pose in the prompt.\nSkip the composite Save if you will cut in Photoshop \u2014 use Edited frame."
+      ],
+      "widgets_values_named": {
+        "text": "Baked inputs \u2014 no SAM3 / RMBG / Lama / DWPose.\n\n1 Kitchen: the photo to keep.\n2 Pose: OpenPose/DWPose PNG. Use a MID-GRAY background, not black (black pose bg speckles the shirt).\n3 Mask: white person, black kitchen. Photoshop is fine. Does not need to be perfect.\n\nCLIP type MUST be krea2 (ComfyUI >= 0.26).\nPose is the pose map + pose LoRA. Do not describe pose in the prompt.\nSkip the composite Save if you will cut in Photoshop \u2014 use Edited frame."
+      },
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 10,
+      "type": "ImageScaleToTotalPixels",
+      "pos": [
+        -1180,
+        860
+      ],
+      "size": [
+        320,
         106
       ],
       "flags": {},
-      "order": 5,
+      "order": 10,
       "mode": 0,
       "inputs": [
         {
@@ -352,19 +477,18 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            12,
             14,
-            45,
-            53,
-            54
+            15,
+            16,
+            17
           ]
         }
       ],
-      "title": "Scale scene ~1.5MP",
+      "title": "Scale kitchen ~1.5MP",
       "properties": {
+        "Node name for S&R": "ImageScaleToTotalPixels",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "ImageScaleToTotalPixels"
+        "ver": "0.37.0"
       },
       "widgets_values": [
         "lanczos",
@@ -378,24 +502,24 @@
       }
     },
     {
-      "id": 9,
+      "id": 11,
       "type": "GetImageSize",
       "pos": [
-        -300,
-        500
+        -820,
+        860
       ],
       "size": [
         230,
         82
       ],
       "flags": {},
-      "order": 8,
+      "order": 11,
       "mode": 0,
       "inputs": [
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 12
+          "link": 14
         }
       ],
       "outputs": [
@@ -404,8 +528,9 @@
           "type": "INT",
           "slot_index": 0,
           "links": [
-            15,
-            16
+            18,
+            19,
+            20
           ]
         },
         {
@@ -413,8 +538,9 @@
           "type": "INT",
           "slot_index": 1,
           "links": [
-            17,
-            18
+            21,
+            22,
+            23
           ]
         },
         {
@@ -426,41 +552,41 @@
       ],
       "title": "Kitchen size",
       "properties": {
+        "Node name for S&R": "GetImageSize",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "GetImageSize"
+        "ver": "0.37.0"
       }
     },
     {
-      "id": 10,
+      "id": 12,
       "type": "EmptyLatentImage",
       "pos": [
-        -300,
-        640
+        -560,
+        860
       ],
       "size": [
         270,
         106
       ],
       "flags": {},
-      "order": 14,
+      "order": 12,
       "mode": 0,
       "inputs": [
         {
           "name": "width",
           "type": "INT",
+          "link": 18,
           "widget": {
             "name": "width"
-          },
-          "link": 15
+          }
         },
         {
           "name": "height",
           "type": "INT",
+          "link": 21,
           "widget": {
             "name": "height"
-          },
-          "link": 17
+          }
         }
       ],
       "outputs": [
@@ -469,15 +595,15 @@
           "type": "LATENT",
           "slot_index": 0,
           "links": [
-            19
+            24
           ]
         }
       ],
-      "title": "Empty latent = kitchen pixels",
+      "title": "Latent at kitchen size",
       "properties": {
+        "Node name for S&R": "EmptyLatentImage",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "EmptyLatentImage"
+        "ver": "0.37.0"
       },
       "widgets_values": [
         1024,
@@ -491,367 +617,40 @@
       }
     },
     {
-      "id": 11,
-      "type": "DWPreprocessor",
-      "pos": [
-        -300,
-        800
-      ],
-      "size": [
-        300,
-        222
-      ],
-      "flags": {},
-      "order": 6,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 52
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": [
-            20,
-            21,
-            22,
-            51
-          ]
-        },
-        {
-          "name": "POSE_KEYPOINT",
-          "type": "POSE_KEYPOINT",
-          "slot_index": 1,
-          "links": null
-        }
-      ],
-      "title": "DWPose on original pixels",
-      "properties": {
-        "cnr_id": "comfyui_controlnet_aux",
-        "ver": "1.1.5",
-        "Node name for S&R": "DWPreprocessor"
-      },
-      "widgets_values": [
-        "enable",
-        "enable",
-        "enable",
-        1024,
-        "yolox_l.onnx",
-        "dw-ll_ucoco_384_bs5.torchscript.pt",
-        "disable"
-      ],
-      "widgets_values_named": {
-        "detect_hand": "enable",
-        "detect_body": "enable",
-        "detect_face": "enable",
-        "resolution": 1024,
-        "bbox_detector": "yolox_l.onnx",
-        "pose_estimator": "dw-ll_ucoco_384_bs5.torchscript.pt",
-        "scale_stick_for_xinsr_cn": "disable"
-      }
-    },
-    {
-      "id": 12,
-      "type": "PreviewImage",
-      "pos": [
-        40,
-        800
-      ],
-      "size": [
-        240,
-        240
-      ],
-      "flags": {},
-      "order": 10,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 20
-        }
-      ],
-      "outputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": null
-        }
-      ],
-      "title": "Raw pose",
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "PreviewImage"
-      }
-    },
-    {
       "id": 13,
-      "type": "GetImageSize",
-      "pos": [
-        40,
-        1080
-      ],
-      "size": [
-        230,
-        82
-      ],
-      "flags": {},
-      "order": 11,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 21
-        }
-      ],
-      "outputs": [
-        {
-          "name": "width",
-          "type": "INT",
-          "slot_index": 0,
-          "links": [
-            23
-          ]
-        },
-        {
-          "name": "height",
-          "type": "INT",
-          "slot_index": 1,
-          "links": [
-            24
-          ]
-        },
-        {
-          "name": "batch_size",
-          "type": "INT",
-          "slot_index": 2,
-          "links": null
-        }
-      ],
-      "title": "Pose map size",
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "GetImageSize"
-      }
-    },
-    {
-      "id": 14,
-      "type": "EmptyImage",
-      "pos": [
-        300,
-        1080
-      ],
-      "size": [
-        250,
-        130
-      ],
-      "flags": {},
-      "order": 16,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "width",
-          "type": "INT",
-          "widget": {
-            "name": "width"
-          },
-          "link": 23
-        },
-        {
-          "name": "height",
-          "type": "INT",
-          "widget": {
-            "name": "height"
-          },
-          "link": 24
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": [
-            25
-          ]
-        }
-      ],
-      "title": "Mid-gray canvas",
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "EmptyImage"
-      },
-      "widgets_values": [
-        512,
-        512,
-        1,
-        8421504
-      ],
-      "widgets_values_named": {
-        "width": 512,
-        "height": 512,
-        "batch_size": 1,
-        "color": 8421504
-      }
-    },
-    {
-      "id": 15,
-      "type": "ColorToMask",
-      "pos": [
-        300,
-        800
-      ],
-      "size": [
-        260,
-        200
-      ],
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 22
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "slot_index": 0,
-          "links": [
-            26
-          ]
-        }
-      ],
-      "title": "Black pose background",
-      "properties": {
-        "cnr_id": "comfyui-kjnodes",
-        "ver": "1.5.0",
-        "Node name for S&R": "ColorToMask"
-      },
-      "widgets_values": [
-        false,
-        0,
-        0,
-        0,
-        16,
-        16
-      ],
-      "widgets_values_named": {
-        "invert": false,
-        "red": 0,
-        "green": 0,
-        "blue": 0,
-        "threshold": 16,
-        "per_batch": 16
-      }
-    },
-    {
-      "id": 16,
-      "type": "ImageCompositeMasked",
-      "pos": [
-        600,
-        800
-      ],
-      "size": [
-        300,
-        146
-      ],
-      "flags": {},
-      "order": 19,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "destination",
-          "type": "IMAGE",
-          "link": 51
-        },
-        {
-          "name": "source",
-          "type": "IMAGE",
-          "link": 25
-        },
-        {
-          "name": "mask",
-          "shape": 7,
-          "type": "MASK",
-          "link": 26
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": [
-            28
-          ]
-        }
-      ],
-      "title": "Replace black bg with gray",
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "ImageCompositeMasked"
-      },
-      "widgets_values": [
-        0,
-        0,
-        true
-      ],
-      "widgets_values_named": {
-        "x": 0,
-        "y": 0,
-        "resize_source": true
-      }
-    },
-    {
-      "id": 17,
       "type": "ImageScale",
       "pos": [
-        940,
-        800
+        -760,
+        1000
       ],
       "size": [
         280,
         150
       ],
       "flags": {},
-      "order": 20,
+      "order": 13,
       "mode": 0,
       "inputs": [
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 28
+          "link": 12
         },
         {
           "name": "width",
           "type": "INT",
+          "link": 19,
           "widget": {
             "name": "width"
-          },
-          "link": 16
+          }
         },
         {
           "name": "height",
           "type": "INT",
+          "link": 22,
           "widget": {
             "name": "height"
-          },
-          "link": 18
+          }
         }
       ],
       "outputs": [
@@ -860,17 +659,17 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            29,
-            30,
-            31
+            25,
+            26,
+            27
           ]
         }
       ],
       "title": "Pose to kitchen size (no crop)",
       "properties": {
+        "Node name for S&R": "ImageScale",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "ImageScale"
+        "ver": "0.37.0"
       },
       "widgets_values": [
         "lanczos",
@@ -886,29 +685,29 @@
       }
     },
     {
-      "id": 18,
+      "id": 14,
       "type": "PreviewImage",
       "pos": [
-        1260,
-        800
+        -440,
+        1000
       ],
       "size": [
-        260,
-        260
+        240,
+        240
       ],
       "flags": {},
-      "order": 21,
+      "order": 14,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 29
+          "link": 25
         }
       ],
       "outputs": [
         {
-          "name": "images",
+          "name": "IMAGE",
           "type": "IMAGE",
           "slot_index": 0,
           "links": null
@@ -916,24 +715,134 @@
       ],
       "title": "Pose ref (image2)",
       "properties": {
+        "Node name for S&R": "PreviewImage",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "PreviewImage"
+        "ver": "0.37.0"
       }
     },
     {
-      "id": 19,
+      "id": 23,
+      "type": "ImageScale",
+      "pos": [
+        -340,
+        1000
+      ],
+      "size": [
+        280,
+        150
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 13
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 20,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 23,
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            28
+          ]
+        }
+      ],
+      "title": "Mask to kitchen size",
+      "properties": {
+        "Node name for S&R": "ImageScale",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "lanczos",
+        1024,
+        1024,
+        "disabled"
+      ],
+      "widgets_values_named": {
+        "upscale_method": "lanczos",
+        "width": 1024,
+        "height": 1024,
+        "crop": "disabled"
+      }
+    },
+    {
+      "id": 24,
+      "type": "ImageToMask",
+      "pos": [
+        -20,
+        1000
+      ],
+      "size": [
+        210,
+        58
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 28
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": [
+            29
+          ]
+        }
+      ],
+      "title": "White = person",
+      "properties": {
+        "Node name for S&R": "ImageToMask",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "red"
+      ],
+      "widgets_values_named": {
+        "channel": "red"
+      }
+    },
+    {
+      "id": 15,
       "type": "TextEncodeKrea2OstrisEdit",
       "pos": [
-        -280,
+        -380,
         40
       ],
       "size": [
-        400,
-        220
+        420,
+        200
       ],
       "flags": {},
-      "order": 22,
+      "order": 17,
       "mode": 0,
       "inputs": [
         {
@@ -943,27 +852,143 @@
         },
         {
           "name": "vae",
-          "shape": 7,
           "type": "VAE",
-          "link": 5
+          "link": 5,
+          "shape": 7
         },
         {
           "name": "image1",
-          "shape": 7,
           "type": "IMAGE",
-          "link": 53
+          "link": 15,
+          "shape": 7
         },
         {
           "name": "image2",
-          "shape": 7,
           "type": "IMAGE",
-          "link": 30
+          "link": 26,
+          "shape": 7
         },
         {
           "name": "image3",
-          "shape": 7,
           "type": "IMAGE",
-          "link": null
+          "link": null,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            30
+          ]
+        }
+      ],
+      "title": "Positive (image1=kitchen, image2=pose)",
+      "properties": {
+        "aux_id": "ostris/comfyui-krea2-ostris-edit",
+        "ver": "7756566160c4a1b24bb1bd9f0ff3ced1a83d7547",
+        "cnr_id": "comfyui-krea2-ostris-edit",
+        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
+      },
+      "widgets_values": [
+        "vsgly_id, a man with short dark wavy hair and a short beard, white long-sleeve shirt, denim shorts, standing in a bright white kitchen, photorealistic"
+      ],
+      "widgets_values_named": {
+        "prompt": "vsgly_id, a man with short dark wavy hair and a short beard, white long-sleeve shirt, denim shorts, standing in a bright white kitchen, photorealistic"
+      },
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 16,
+      "type": "TextEncodeKrea2OstrisEdit",
+      "pos": [
+        -380,
+        280
+      ],
+      "size": [
+        420,
+        140
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 4
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 6,
+          "shape": 7
+        },
+        {
+          "name": "image1",
+          "type": "IMAGE",
+          "link": 16,
+          "shape": 7
+        },
+        {
+          "name": "image2",
+          "type": "IMAGE",
+          "link": 27,
+          "shape": 7
+        },
+        {
+          "name": "image3",
+          "type": "IMAGE",
+          "link": null,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            31
+          ]
+        }
+      ],
+      "title": "Negative (empty)",
+      "properties": {
+        "aux_id": "ostris/comfyui-krea2-ostris-edit",
+        "ver": "7756566160c4a1b24bb1bd9f0ff3ced1a83d7547",
+        "cnr_id": "comfyui-krea2-ostris-edit",
+        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "widgets_values_named": {
+        "prompt": ""
+      }
+    },
+    {
+      "id": 17,
+      "type": "FluxKontextMultiReferenceLatentMethod",
+      "pos": [
+        80,
+        40
+      ],
+      "size": [
+        340,
+        58
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 30
         }
       ],
       "outputs": [
@@ -976,63 +1001,38 @@
           ]
         }
       ],
-      "title": "Positive (image1 = kitchen)",
+      "title": "Positive refs",
       "properties": {
-        "aux_id": "ostris/comfyui-krea2-ostris-edit",
-        "ver": "7756566160c4a1b24bb1bd9f0ff3ced1a83d7547",
-        "Node name for S&R": "TextEncodeKrea2OstrisEdit",
-        "cnr_id": "comfyui-krea2-ostris-edit"
+        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
       },
       "widgets_values": [
-        "vsgly_id, a man with short dark wavy hair and a short beard, looking back over his left shoulder toward the camera, face in three-quarter view, body facing the kitchen counter, back mostly to camera, white long-sleeve shirt, denim shorts, standing in a bright white kitchen, photorealistic"
+        "index_timestep_zero"
       ],
       "widgets_values_named": {
-        "prompt": "vsgly_id, a man with short dark wavy hair and a short beard, looking back over his left shoulder toward the camera, face in three-quarter view, body facing the kitchen counter, back mostly to camera, white long-sleeve shirt, denim shorts, standing in a bright white kitchen, photorealistic"
+        "reference_latents_method": "index_timestep_zero"
       }
     },
     {
-      "id": 20,
-      "type": "TextEncodeKrea2OstrisEdit",
+      "id": 18,
+      "type": "FluxKontextMultiReferenceLatentMethod",
       "pos": [
-        -280,
-        300
+        80,
+        140
       ],
       "size": [
-        400,
-        168
+        340,
+        58
       ],
       "flags": {},
-      "order": 23,
+      "order": 20,
       "mode": 0,
       "inputs": [
         {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 4
-        },
-        {
-          "name": "vae",
-          "shape": 7,
-          "type": "VAE",
-          "link": 6
-        },
-        {
-          "name": "image1",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": 54
-        },
-        {
-          "name": "image2",
-          "shape": 7,
-          "type": "IMAGE",
+          "name": "conditioning",
+          "type": "CONDITIONING",
           "link": 31
-        },
-        {
-          "name": "image3",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": null
         }
       ],
       "outputs": [
@@ -1045,100 +1045,11 @@
           ]
         }
       ],
-      "title": "Negative (empty)",
-      "properties": {
-        "aux_id": "ostris/comfyui-krea2-ostris-edit",
-        "ver": "7756566160c4a1b24bb1bd9f0ff3ced1a83d7547",
-        "Node name for S&R": "TextEncodeKrea2OstrisEdit",
-        "cnr_id": "comfyui-krea2-ostris-edit"
-      },
-      "widgets_values": [
-        ""
-      ],
-      "widgets_values_named": {
-        "prompt": ""
-      }
-    },
-    {
-      "id": 21,
-      "type": "FluxKontextMultiReferenceLatentMethod",
-      "pos": [
-        160,
-        40
-      ],
-      "size": [
-        340,
-        58
-      ],
-      "flags": {},
-      "order": 24,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "conditioning",
-          "type": "CONDITIONING",
-          "link": 32
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "slot_index": 0,
-          "links": [
-            34
-          ]
-        }
-      ],
-      "title": "Positive refs",
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
-      },
-      "widgets_values": [
-        "index_timestep_zero"
-      ],
-      "widgets_values_named": {
-        "reference_latents_method": "index_timestep_zero"
-      }
-    },
-    {
-      "id": 22,
-      "type": "FluxKontextMultiReferenceLatentMethod",
-      "pos": [
-        160,
-        140
-      ],
-      "size": [
-        340,
-        58
-      ],
-      "flags": {},
-      "order": 25,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "conditioning",
-          "type": "CONDITIONING",
-          "link": 33
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "slot_index": 0,
-          "links": [
-            35
-          ]
-        }
-      ],
       "title": "Negative refs",
       "properties": {
+        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
+        "ver": "0.37.0"
       },
       "widgets_values": [
         "index_timestep_zero"
@@ -1148,10 +1059,10 @@
       }
     },
     {
-      "id": 23,
+      "id": 19,
       "type": "KSampler",
       "pos": [
-        540,
+        460,
         40
       ],
       "size": [
@@ -1159,7 +1070,7 @@
         262
       ],
       "flags": {},
-      "order": 26,
+      "order": 21,
       "mode": 0,
       "inputs": [
         {
@@ -1170,17 +1081,17 @@
         {
           "name": "positive",
           "type": "CONDITIONING",
-          "link": 34
+          "link": 32
         },
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "link": 35
+          "link": 33
         },
         {
           "name": "latent_image",
           "type": "LATENT",
-          "link": 19
+          "link": 24
         }
       ],
       "outputs": [
@@ -1189,15 +1100,15 @@
           "type": "LATENT",
           "slot_index": 0,
           "links": [
-            36
+            34
           ]
         }
       ],
       "title": "KSampler (edit kitchen)",
       "properties": {
+        "Node name for S&R": "KSampler",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "KSampler"
+        "ver": "0.37.0"
       },
       "widgets_values": [
         42,
@@ -1219,24 +1130,24 @@
       }
     },
     {
-      "id": 24,
+      "id": 20,
       "type": "VAEDecode",
       "pos": [
-        900,
+        820,
         40
       ],
       "size": [
-        240,
+        210,
         46
       ],
       "flags": {},
-      "order": 27,
+      "order": 22,
       "mode": 0,
       "inputs": [
         {
           "name": "samples",
           "type": "LATENT",
-          "link": 36
+          "link": 34
         },
         {
           "name": "vae",
@@ -1250,487 +1161,129 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            37,
-            48,
-            57
+            35,
+            36,
+            37
           ]
         }
       ],
+      "title": "VAE Decode",
       "properties": {
+        "Node name for S&R": "VAEDecode",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "VAEDecode"
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 21,
+      "type": "PreviewImage",
+      "pos": [
+        1060,
+        40
+      ],
+      "size": [
+        360,
+        520
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 35
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        }
+      ],
+      "title": "Edited frame (use this if compositing in PS)",
+      "properties": {
+        "Node name for S&R": "PreviewImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 22,
+      "type": "SaveImage",
+      "pos": [
+        1060,
+        580
+      ],
+      "size": [
+        360,
+        58
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 36
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        }
+      ],
+      "title": "Save edited frame",
+      "properties": {
+        "Node name for S&R": "SaveImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "krea2_edited_frame"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "krea2_edited_frame"
       }
     },
     {
       "id": 25,
-      "type": "PreviewImage",
-      "pos": [
-        1180,
-        40
-      ],
-      "size": [
-        320,
-        340
-      ],
-      "flags": {},
-      "order": 28,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 37
-        }
-      ],
-      "outputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": null
-        }
-      ],
-      "title": "Edited frame (same camera)",
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "PreviewImage"
-      }
-    },
-    {
-      "id": 26,
-      "type": "RMBG",
-      "pos": [
-        40,
-        420
-      ],
-      "size": [
-        300,
-        292
-      ],
-      "flags": {},
-      "order": 9,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 14
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": null
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "slot_index": 1,
-          "links": [
-            40
-          ]
-        },
-        {
-          "name": "MASK_IMAGE",
-          "type": "IMAGE",
-          "slot_index": 2,
-          "links": null
-        }
-      ],
-      "title": "Mask original person",
-      "properties": {
-        "cnr_id": "comfyui-rmbg",
-        "ver": "3.1.0",
-        "Node name for S&R": "RMBG"
-      },
-      "widgets_values": [
-        "RMBG-2.0",
-        1,
-        1024,
-        0,
-        6,
-        false,
-        false,
-        "Alpha",
-        "#222222"
-      ],
-      "widgets_values_named": {
-        "model": "RMBG-2.0",
-        "sensitivity": 1,
-        "process_res": 1024,
-        "mask_blur": 0,
-        "mask_offset": 6,
-        "invert_output": false,
-        "refine_foreground": false,
-        "background": "Alpha",
-        "background_color": "#222222"
-      },
-      "color": "#222e40",
-      "bgcolor": "#364254"
-    },
-    {
-      "id": 27,
-      "type": "GrowMaskWithBlur",
-      "pos": [
-        380,
-        420
-      ],
-      "size": [
-        280,
-        246
-      ],
-      "flags": {},
-      "order": 15,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 40
-        }
-      ],
-      "outputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "slot_index": 0,
-          "links": [
-            41,
-            44
-          ]
-        },
-        {
-          "name": "mask_inverted",
-          "type": "MASK",
-          "slot_index": 1,
-          "links": null
-        }
-      ],
-      "title": "Feather original mask",
-      "properties": {
-        "cnr_id": "comfyui-kjnodes",
-        "ver": "1.5.0",
-        "Node name for S&R": "GrowMaskWithBlur"
-      },
-      "widgets_values": [
-        12,
-        0,
-        true,
-        false,
-        8,
-        1,
-        1,
-        true
-      ],
-      "widgets_values_named": {
-        "expand": 12,
-        "incremental_expandrate": 0,
-        "tapered_corners": true,
-        "flip_input": false,
-        "blur_radius": 8,
-        "lerp_alpha": 1,
-        "decay_factor": 1,
-        "fill_holes": true
-      }
-    },
-    {
-      "id": 28,
-      "type": "MaskPreview",
-      "pos": [
-        700,
-        420
-      ],
-      "size": [
-        200,
-        180
-      ],
-      "flags": {},
-      "order": 17,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 41
-        }
-      ],
-      "outputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "slot_index": 0,
-          "links": null
-        }
-      ],
-      "title": "Original person (Lama)",
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "MaskPreview"
-      }
-    },
-    {
-      "id": 32,
-      "type": "AILab_LamaRemover",
-      "pos": [
-        380,
-        680
-      ],
-      "size": [
-        300,
-        110
-      ],
-      "flags": {},
-      "order": 18,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 45
-        },
-        {
-          "name": "masks",
-          "type": "MASK",
-          "link": 44
-        }
-      ],
-      "outputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": [
-            46
-          ]
-        }
-      ],
-      "title": "Kitchen without original person",
-      "properties": {
-        "cnr_id": "comfyui-rmbg",
-        "ver": "3.1.0",
-        "Node name for S&R": "AILab_LamaRemover"
-      },
-      "widgets_values": [
-        230,
-        8
-      ],
-      "widgets_values_named": {
-        "removal_strength": 230,
-        "edge_smoothness": 8
-      },
-      "color": "#2e3e57",
-      "bgcolor": "#4b5b73"
-    },
-    {
-      "id": 33,
-      "type": "RMBG",
-      "pos": [
-        900,
-        420
-      ],
-      "size": [
-        300,
-        292
-      ],
-      "flags": {},
-      "order": 29,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 48
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": null
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "slot_index": 1,
-          "links": [
-            55
-          ]
-        },
-        {
-          "name": "MASK_IMAGE",
-          "type": "IMAGE",
-          "slot_index": 2,
-          "links": null
-        }
-      ],
-      "title": "Mask edited person",
-      "properties": {
-        "cnr_id": "comfyui-rmbg",
-        "ver": "3.1.0",
-        "Node name for S&R": "RMBG"
-      },
-      "widgets_values": [
-        "RMBG-2.0",
-        0.75,
-        1024,
-        0,
-        4,
-        false,
-        false,
-        "Alpha",
-        "#222222"
-      ],
-      "widgets_values_named": {
-        "model": "RMBG-2.0",
-        "sensitivity": 0.75,
-        "process_res": 1024,
-        "mask_blur": 0,
-        "mask_offset": 4,
-        "invert_output": false,
-        "refine_foreground": false,
-        "background": "Alpha",
-        "background_color": "#222222"
-      },
-      "color": "#222e40",
-      "bgcolor": "#364254"
-    },
-    {
-      "id": 34,
-      "type": "GrowMaskWithBlur",
-      "pos": [
-        1240,
-        420
-      ],
-      "size": [
-        280,
-        246
-      ],
-      "flags": {},
-      "order": 30,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 55
-        }
-      ],
-      "outputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "slot_index": 0,
-          "links": [
-            56,
-            42
-          ]
-        },
-        {
-          "name": "mask_inverted",
-          "type": "MASK",
-          "slot_index": 1,
-          "links": null
-        }
-      ],
-      "title": "Feather edited mask",
-      "properties": {
-        "cnr_id": "comfyui-kjnodes",
-        "ver": "1.5.0",
-        "Node name for S&R": "GrowMaskWithBlur"
-      },
-      "widgets_values": [
-        8,
-        0,
-        true,
-        false,
-        8,
-        1,
-        1,
-        true
-      ],
-      "widgets_values_named": {
-        "expand": 8,
-        "incremental_expandrate": 0,
-        "tapered_corners": true,
-        "flip_input": false,
-        "blur_radius": 8,
-        "lerp_alpha": 1,
-        "decay_factor": 1,
-        "fill_holes": true
-      }
-    },
-    {
-      "id": 35,
-      "type": "MaskPreview",
-      "pos": [
-        1560,
-        420
-      ],
-      "size": [
-        200,
-        180
-      ],
-      "flags": {},
-      "order": 31,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 56
-        }
-      ],
-      "outputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "slot_index": 0,
-          "links": null
-        }
-      ],
-      "title": "Edited person mask",
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "MaskPreview"
-      }
-    },
-    {
-      "id": 29,
       "type": "ImageCompositeMasked",
       "pos": [
-        960,
-        720
+        220,
+        1000
       ],
       "size": [
         300,
         146
       ],
       "flags": {},
-      "order": 32,
+      "order": 25,
       "mode": 0,
       "inputs": [
         {
           "name": "destination",
           "type": "IMAGE",
-          "link": 46
+          "link": 17
         },
         {
           "name": "source",
           "type": "IMAGE",
-          "link": 57
+          "link": 37
         },
         {
           "name": "mask",
-          "shape": 7,
           "type": "MASK",
-          "link": 42
+          "link": 29,
+          "shape": 7
         }
       ],
       "outputs": [
@@ -1739,16 +1292,16 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            49,
-            50
+            38,
+            39
           ]
         }
       ],
-      "title": "Paste edited person on original kitchen",
+      "title": "Optional: paste on baked kitchen",
       "properties": {
+        "Node name for S&R": "ImageCompositeMasked",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "ImageCompositeMasked"
+        "ver": "0.37.0"
       },
       "widgets_values": [
         0,
@@ -1762,75 +1315,75 @@
       }
     },
     {
-      "id": 30,
+      "id": 26,
       "type": "PreviewImage",
       "pos": [
-        1300,
-        720
+        560,
+        1000
       ],
       "size": [
-        360,
-        380
+        300,
+        360
       ],
       "flags": {},
-      "order": 33,
+      "order": 26,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 49
+          "link": 38
         }
       ],
       "outputs": [
         {
-          "name": "images",
+          "name": "IMAGE",
           "type": "IMAGE",
           "slot_index": 0,
           "links": null
         }
       ],
-      "title": "Result (kitchen + posed person)",
+      "title": "Composite (mask not critical)",
       "properties": {
+        "Node name for S&R": "PreviewImage",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "PreviewImage"
+        "ver": "0.37.0"
       }
     },
     {
-      "id": 31,
+      "id": 27,
       "type": "SaveImage",
       "pos": [
-        1300,
-        1140
+        560,
+        1380
       ],
       "size": [
-        360,
+        300,
         58
       ],
       "flags": {},
-      "order": 34,
+      "order": 27,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 50
+          "link": 39
         }
       ],
       "outputs": [
         {
-          "name": "images",
+          "name": "IMAGE",
           "type": "IMAGE",
           "slot_index": 0,
           "links": null
         }
       ],
-      "title": "Save",
+      "title": "Save composite",
       "properties": {
+        "Node name for S&R": "SaveImage",
         "cnr_id": "comfy-core",
-        "ver": "0.37.0",
-        "Node name for S&R": "SaveImage"
+        "ver": "0.37.0"
       },
       "widgets_values": [
         "krea2_pose_composite"
@@ -1874,26 +1427,106 @@
       "MODEL"
     ],
     [
+      11,
+      7,
+      0,
       10,
-      6,
+      0,
+      "IMAGE"
+    ],
+    [
+      14,
+      10,
+      0,
+      11,
+      0,
+      "IMAGE"
+    ],
+    [
+      18,
+      11,
+      0,
+      12,
+      0,
+      "INT"
+    ],
+    [
+      21,
+      11,
+      1,
+      12,
+      1,
+      "INT"
+    ],
+    [
+      12,
+      8,
+      0,
+      13,
+      0,
+      "IMAGE"
+    ],
+    [
+      19,
+      11,
+      0,
+      13,
+      1,
+      "INT"
+    ],
+    [
+      22,
+      11,
+      1,
+      13,
+      2,
+      "INT"
+    ],
+    [
+      25,
+      13,
+      0,
+      14,
+      0,
+      "IMAGE"
+    ],
+    [
+      13,
+      9,
       0,
       23,
       0,
-      "MODEL"
+      "IMAGE"
+    ],
+    [
+      20,
+      11,
+      0,
+      23,
+      1,
+      "INT"
+    ],
+    [
+      23,
+      11,
+      1,
+      23,
+      2,
+      "INT"
+    ],
+    [
+      28,
+      23,
+      0,
+      24,
+      0,
+      "IMAGE"
     ],
     [
       3,
       2,
       0,
-      19,
-      0,
-      "CLIP"
-    ],
-    [
-      4,
-      2,
-      0,
-      20,
+      15,
       0,
       "CLIP"
     ],
@@ -1901,351 +1534,175 @@
       5,
       3,
       0,
-      19,
+      15,
       1,
       "VAE"
+    ],
+    [
+      15,
+      10,
+      0,
+      15,
+      2,
+      "IMAGE"
+    ],
+    [
+      26,
+      13,
+      0,
+      15,
+      3,
+      "IMAGE"
+    ],
+    [
+      4,
+      2,
+      0,
+      16,
+      0,
+      "CLIP"
     ],
     [
       6,
       3,
       0,
-      20,
+      16,
       1,
       "VAE"
     ],
     [
-      7,
+      16,
+      10,
+      0,
+      16,
+      2,
+      "IMAGE"
+    ],
+    [
+      27,
+      13,
+      0,
+      16,
       3,
-      0,
-      24,
-      1,
-      "VAE"
-    ],
-    [
-      11,
-      7,
-      0,
-      8,
-      0,
-      "IMAGE"
-    ],
-    [
-      52,
-      7,
-      0,
-      11,
-      0,
-      "IMAGE"
-    ],
-    [
-      12,
-      8,
-      0,
-      9,
-      0,
-      "IMAGE"
-    ],
-    [
-      14,
-      8,
-      0,
-      26,
-      0,
-      "IMAGE"
-    ],
-    [
-      45,
-      8,
-      0,
-      32,
-      0,
-      "IMAGE"
-    ],
-    [
-      53,
-      8,
-      0,
-      19,
-      2,
-      "IMAGE"
-    ],
-    [
-      54,
-      8,
-      0,
-      20,
-      2,
-      "IMAGE"
-    ],
-    [
-      15,
-      9,
-      0,
-      10,
-      0,
-      "INT"
-    ],
-    [
-      17,
-      9,
-      1,
-      10,
-      1,
-      "INT"
-    ],
-    [
-      16,
-      9,
-      0,
-      17,
-      1,
-      "INT"
-    ],
-    [
-      18,
-      9,
-      1,
-      17,
-      2,
-      "INT"
-    ],
-    [
-      19,
-      10,
-      0,
-      23,
-      3,
-      "LATENT"
-    ],
-    [
-      20,
-      11,
-      0,
-      12,
-      0,
-      "IMAGE"
-    ],
-    [
-      21,
-      11,
-      0,
-      13,
-      0,
-      "IMAGE"
-    ],
-    [
-      22,
-      11,
-      0,
-      15,
-      0,
-      "IMAGE"
-    ],
-    [
-      51,
-      11,
-      0,
-      16,
-      0,
-      "IMAGE"
-    ],
-    [
-      23,
-      13,
-      0,
-      14,
-      0,
-      "INT"
-    ],
-    [
-      24,
-      13,
-      1,
-      14,
-      1,
-      "INT"
-    ],
-    [
-      25,
-      14,
-      0,
-      16,
-      1,
-      "IMAGE"
-    ],
-    [
-      26,
-      15,
-      0,
-      16,
-      2,
-      "MASK"
-    ],
-    [
-      28,
-      16,
-      0,
-      17,
-      0,
-      "IMAGE"
-    ],
-    [
-      29,
-      17,
-      0,
-      18,
-      0,
       "IMAGE"
     ],
     [
       30,
+      15,
+      0,
       17,
       0,
-      19,
-      3,
-      "IMAGE"
+      "CONDITIONING"
     ],
     [
       31,
-      17,
+      16,
       0,
-      20,
-      3,
-      "IMAGE"
+      18,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      10,
+      6,
+      0,
+      19,
+      0,
+      "MODEL"
     ],
     [
       32,
+      17,
+      0,
       19,
-      0,
-      21,
-      0,
-      "CONDITIONING"
-    ],
-    [
-      33,
-      20,
-      0,
-      22,
-      0,
-      "CONDITIONING"
-    ],
-    [
-      34,
-      21,
-      0,
-      23,
       1,
       "CONDITIONING"
     ],
     [
-      35,
-      22,
+      33,
+      18,
       0,
-      23,
+      19,
       2,
       "CONDITIONING"
+    ],
+    [
+      24,
+      12,
+      0,
+      19,
+      3,
+      "LATENT"
+    ],
+    [
+      34,
+      19,
+      0,
+      20,
+      0,
+      "LATENT"
+    ],
+    [
+      7,
+      3,
+      0,
+      20,
+      1,
+      "VAE"
+    ],
+    [
+      35,
+      20,
+      0,
+      21,
+      0,
+      "IMAGE"
     ],
     [
       36,
-      23,
+      20,
       0,
-      24,
+      22,
       0,
-      "LATENT"
+      "IMAGE"
     ],
     [
-      37,
-      24,
+      17,
+      10,
       0,
       25,
       0,
       "IMAGE"
     ],
     [
-      48,
+      37,
+      20,
+      0,
+      25,
+      1,
+      "IMAGE"
+    ],
+    [
+      29,
       24,
       0,
-      33,
-      0,
-      "IMAGE"
-    ],
-    [
-      57,
-      24,
-      0,
-      29,
-      1,
-      "IMAGE"
-    ],
-    [
-      40,
-      26,
-      1,
-      27,
-      0,
-      "MASK"
-    ],
-    [
-      41,
-      27,
-      0,
-      28,
-      0,
-      "MASK"
-    ],
-    [
-      44,
-      27,
-      0,
-      32,
-      1,
-      "MASK"
-    ],
-    [
-      46,
-      32,
-      0,
-      29,
-      0,
-      "IMAGE"
-    ],
-    [
-      55,
-      33,
-      1,
-      34,
-      0,
-      "MASK"
-    ],
-    [
-      56,
-      34,
-      0,
-      35,
-      0,
-      "MASK"
-    ],
-    [
-      42,
-      34,
-      0,
-      29,
+      25,
       2,
       "MASK"
     ],
     [
-      49,
-      29,
+      38,
+      25,
       0,
-      30,
+      26,
       0,
       "IMAGE"
     ],
     [
-      50,
-      29,
+      39,
+      25,
       0,
-      31,
+      27,
       0,
       "IMAGE"
     ]
@@ -2255,46 +1712,46 @@
       "id": 1,
       "title": "Models",
       "bounding": [
-        -1140,
+        -1220,
         0,
-        540,
-        460
+        820,
+        430
       ],
       "color": "#3f789e",
       "flags": {}
     },
     {
       "id": 2,
-      "title": "Pose map (image2 only)",
+      "title": "Baked kitchen / pose / mask",
       "bounding": [
-        -1140,
-        470,
-        1720,
-        720
+        -1220,
+        430,
+        1760,
+        400
       ],
-      "color": "#8A5A2B",
+      "color": "#8A5530",
       "flags": {}
     },
     {
       "id": 3,
-      "title": "Edit the kitchen photo (image1)",
+      "title": "Edit (Ostris image1=kitchen, image2=pose)",
       "bounding": [
-        -320,
+        -420,
         0,
         1860,
-        400
+        430
       ],
       "color": "#3f789e",
       "flags": {}
     },
     {
       "id": 4,
-      "title": "Lock kitchen: original mask only",
+      "title": "Optional Photoshop-style composite",
       "bounding": [
-        20,
-        400,
-        1680,
-        520
+        -380,
+        960,
+        1280,
+        500
       ],
       "color": "#2B6B4A",
       "flags": {}
@@ -2303,16 +1760,16 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.5,
+      "scale": 0.55,
       "offset": [
-        1200,
-        80
+        1280,
+        40
       ]
     },
     "frontendVersion": "1.52.7",
     "visagely": {
-      "title": "Inpaint.json \u2014 edit kitchen in place",
-      "notes": "Ostris image1 is the kitchen (pose stays in-camera). Pose map is image2. Pose LoRA 0.45. Lama clears the original person. RMBG on the edited frame supplies the paste mask so the bun-shaped original mask cannot crop the head."
+      "title": "Replace character \u2014 baked kitchen, pose, mask",
+      "notes": "No SAM3/RMBG/Lama/DWPose. Ostris image1=kitchen, image2=gray pose. Identity LoRA 0.9, pose LoRA 0.45, CLIP type krea2, euler/simple/cfg 1/10 steps."
     }
   },
   "version": 0.4,
