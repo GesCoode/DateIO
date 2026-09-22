@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the baked kitchen/pose/mask Krea2 character-replace graph."""
+"""Build kitchen+mask baked graph with auto DWPose (gray background)."""
 from __future__ import annotations
 
 import json
@@ -120,8 +120,8 @@ def main() -> None:
     add({
         "id": 7, "type": "LoadImage", "pos": [-1180, 460], "size": [400, 360],
         "flags": {}, "order": 6, "mode": 0, "inputs": [],
-        "outputs": [out("IMAGE", "IMAGE", [11], 0), out("MASK", "MASK", None, 1)],
-        "title": "1. Kitchen (baked background)",
+        "outputs": [out("IMAGE", "IMAGE", [11, 40], 0), out("MASK", "MASK", None, 1)],
+        "title": "1. Kitchen (photo to keep)",
         "properties": props("LoadImage"),
         "widgets_values": ["ExampleReferenceImage.png", "image"],
         "widgets_values_named": {"image": "ExampleReferenceImage.png", "upload": "image"},
@@ -129,21 +129,10 @@ def main() -> None:
         "bgcolor": "#353",
     })
     add({
-        "id": 8, "type": "LoadImage", "pos": [-760, 460], "size": [400, 360],
-        "flags": {}, "order": 7, "mode": 0, "inputs": [],
-        "outputs": [out("IMAGE", "IMAGE", [12], 0), out("MASK", "MASK", None, 1)],
-        "title": "2. Pose map (gray bg, baked)",
-        "properties": props("LoadImage"),
-        "widgets_values": ["ExampleReferenceImage.png", "image"],
-        "widgets_values_named": {"image": "ExampleReferenceImage.png", "upload": "image"},
-        "color": "#322",
-        "bgcolor": "#533",
-    })
-    add({
         "id": 9, "type": "LoadImage", "pos": [-340, 460], "size": [400, 360],
         "flags": {}, "order": 8, "mode": 0, "inputs": [],
         "outputs": [out("IMAGE", "IMAGE", [13], 0), out("MASK", "MASK", None, 1)],
-        "title": "3. Person mask (white=person)",
+        "title": "2. Person mask (white=person)",
         "properties": props("LoadImage"),
         "widgets_values": ["ExampleReferenceImage.png", "image"],
         "widgets_values_named": {"image": "ExampleReferenceImage.png", "upload": "image"},
@@ -152,29 +141,25 @@ def main() -> None:
     })
 
     add({
-        "id": 28, "type": "Note", "pos": [80, 460], "size": [420, 360],
+        "id": 28, "type": "Note", "pos": [380, 460], "size": [400, 280],
         "flags": {}, "order": 9, "mode": 0, "inputs": [], "outputs": [],
         "properties": {"Node name for S&R": "Note"},
         "widgets_values": [
-            "Baked inputs — no SAM3 / RMBG / Lama / DWPose.\n\n"
-            "1 Kitchen: the photo to keep.\n"
-            "2 Pose: OpenPose/DWPose PNG. Use a MID-GRAY background, not black "
-            "(black pose bg speckles the shirt).\n"
-            "3 Mask: white person, black kitchen. Photoshop is fine. Does not need to be perfect.\n\n"
-            "CLIP type MUST be krea2 (ComfyUI >= 0.26).\n"
-            "Pose is the pose map + pose LoRA. Do not describe pose in the prompt.\n"
-            "Skip the composite Save if you will cut in Photoshop — use Edited frame."
+            "Kitchen = the photo to keep (person can still be in it).\n"
+            "Mask = optional white person / black kitchen (Photoshop is fine).\n\n"
+            "Pose map is automatic: DWPose on the kitchen photo, black background "
+            "replaced with mid-gray so Ostris does not speckle the shirt.\n\n"
+            "Needs comfyui_controlnet_aux (DWPreprocessor) and kjnodes (ColorToMask).\n"
+            "CLIP type MUST be krea2. Do not describe pose in the prompt."
         ],
         "widgets_values_named": {
             "text": (
-                "Baked inputs — no SAM3 / RMBG / Lama / DWPose.\n\n"
-                "1 Kitchen: the photo to keep.\n"
-                "2 Pose: OpenPose/DWPose PNG. Use a MID-GRAY background, not black "
-                "(black pose bg speckles the shirt).\n"
-                "3 Mask: white person, black kitchen. Photoshop is fine. Does not need to be perfect.\n\n"
-                "CLIP type MUST be krea2 (ComfyUI >= 0.26).\n"
-                "Pose is the pose map + pose LoRA. Do not describe pose in the prompt.\n"
-                "Skip the composite Save if you will cut in Photoshop — use Edited frame."
+                "Kitchen = the photo to keep (person can still be in it).\n"
+                "Mask = optional white person / black kitchen (Photoshop is fine).\n\n"
+                "Pose map is automatic: DWPose on the kitchen photo, black background "
+                "replaced with mid-gray so Ostris does not speckle the shirt.\n\n"
+                "Needs comfyui_controlnet_aux (DWPreprocessor) and kjnodes (ColorToMask).\n"
+                "CLIP type MUST be krea2. Do not describe pose in the prompt."
             )
         },
         "color": "#432",
@@ -217,8 +202,105 @@ def main() -> None:
         "widgets_values_named": {"width": 1024, "height": 1024, "batch_size": 1},
     })
     add({
-        "id": 13, "type": "ImageScale", "pos": [-760, 1000], "size": [280, 150],
+        "id": 30, "type": "DWPreprocessor", "pos": [-760, 460], "size": [300, 222],
         "flags": {}, "order": 13, "mode": 0,
+        "inputs": [inp("image", "IMAGE", 40)],
+        "outputs": [
+            out("IMAGE", "IMAGE", [41, 42, 43, 44], 0),
+            out("POSE_KEYPOINT", "POSE_KEYPOINT", None, 1),
+        ],
+        "title": "DWPose from kitchen",
+        "properties": {
+            "Node name for S&R": "DWPreprocessor",
+            "cnr_id": "comfyui_controlnet_aux",
+            "ver": "1.1.5",
+        },
+        "widgets_values": [
+            "enable", "enable", "enable", 1024,
+            "yolox_l.onnx", "dw-ll_ucoco_384_bs5.torchscript.pt", "disable",
+        ],
+        "widgets_values_named": {
+            "detect_hand": "enable",
+            "detect_body": "enable",
+            "detect_face": "enable",
+            "resolution": 1024,
+            "bbox_detector": "yolox_l.onnx",
+            "pose_estimator": "dw-ll_ucoco_384_bs5.torchscript.pt",
+            "scale_stick_for_xinsr_cn": "disable",
+        },
+        "color": "#322",
+        "bgcolor": "#533",
+    })
+    add({
+        "id": 31, "type": "PreviewImage", "pos": [-440, 460], "size": [220, 220],
+        "flags": {}, "order": 14, "mode": 0,
+        "inputs": [inp("images", "IMAGE", 41)],
+        "outputs": [out("IMAGE", "IMAGE", None)],
+        "title": "Raw DWPose",
+        "properties": props("PreviewImage"),
+    })
+    add({
+        "id": 32, "type": "GetImageSize", "pos": [-760, 720], "size": [230, 82],
+        "flags": {}, "order": 15, "mode": 0,
+        "inputs": [inp("image", "IMAGE", 42)],
+        "outputs": [
+            out("width", "INT", [45], 0),
+            out("height", "INT", [46], 1),
+            out("batch_size", "INT", None, 2),
+        ],
+        "title": "Pose map size",
+        "properties": props("GetImageSize"),
+    })
+    add({
+        "id": 33, "type": "EmptyImage", "pos": [-500, 720], "size": [250, 130],
+        "flags": {}, "order": 16, "mode": 0,
+        "inputs": [
+            inp("width", "INT", 45, widget="width"),
+            inp("height", "INT", 46, widget="height"),
+        ],
+        "outputs": [out("IMAGE", "IMAGE", [47])],
+        "title": "Mid-gray canvas",
+        "properties": props("EmptyImage"),
+        "widgets_values": [512, 512, 1, 8421504],
+        "widgets_values_named": {"width": 512, "height": 512, "batch_size": 1, "color": 8421504},
+    })
+    add({
+        "id": 34, "type": "ColorToMask", "pos": [-220, 720], "size": [260, 178],
+        "flags": {}, "order": 17, "mode": 0,
+        "inputs": [inp("images", "IMAGE", 43)],
+        "outputs": [out("MASK", "MASK", [48])],
+        "title": "Black pose background",
+        "properties": {
+            "Node name for S&R": "ColorToMask",
+            "cnr_id": "comfyui-kjnodes",
+        },
+        "widgets_values": [False, 0, 0, 0, 16, 16],
+        "widgets_values_named": {
+            "invert": False,
+            "red": 0,
+            "green": 0,
+            "blue": 0,
+            "threshold": 16,
+            "per_batch": 16,
+        },
+    })
+    add({
+        "id": 35, "type": "ImageCompositeMasked", "pos": [60, 720], "size": [300, 146],
+        "flags": {}, "order": 18, "mode": 0,
+        "inputs": [
+            inp("destination", "IMAGE", 44),
+            inp("source", "IMAGE", 47),
+            inp("mask", "MASK", 48, shape=7),
+        ],
+        "outputs": [out("IMAGE", "IMAGE", [12])],
+        "title": "Replace black bg with gray",
+        "properties": props("ImageCompositeMasked"),
+        "widgets_values": [0, 0, True],
+        "widgets_values_named": {"x": 0, "y": 0, "resize_source": True},
+    })
+    add({
+        "id": 13, "type": "ImageScale", "pos": [-760, 1000], "size": [280, 150],
+        "flags": {}, "order": 19, "mode": 0,
         "inputs": [
             inp("image", "IMAGE", 12),
             inp("width", "INT", 19, widget="width"),
@@ -437,13 +519,14 @@ def main() -> None:
     graph = {
         "id": "krea2-replace-character-baked",
         "revision": 0,
-        "last_node_id": 28,
-        "last_link_id": 39,
+        "last_node_id": 35,
+        "last_link_id": 48,
         "nodes": nodes,
         "links": links,
         "groups": [
             {"id": 1, "title": "Models", "bounding": [-1220, 0, 820, 430], "color": "#3f789e", "flags": {}},
-            {"id": 2, "title": "Baked kitchen / pose / mask", "bounding": [-1220, 430, 1760, 400], "color": "#8A5530", "flags": {}},
+            {"id": 2, "title": "Kitchen + mask (baked)", "bounding": [-1220, 430, 920, 400], "color": "#8A5530", "flags": {}},
+            {"id": 5, "title": "Auto pose map (DWPose, gray bg)", "bounding": [-800, 430, 1620, 520], "color": "#322", "flags": {}},
             {"id": 3, "title": "Edit (Ostris image1=kitchen, image2=pose)", "bounding": [-420, 0, 1860, 430], "color": "#3f789e", "flags": {}},
             {"id": 4, "title": "Optional Photoshop-style composite", "bounding": [-380, 960, 1280, 500], "color": "#2B6B4A", "flags": {}},
         ],
@@ -452,10 +535,10 @@ def main() -> None:
             "ds": {"scale": 0.55, "offset": [1280, 40]},
             "frontendVersion": "1.52.7",
             "visagely": {
-                "title": "Replace character — baked kitchen, pose, mask",
+                "title": "Replace character — auto DWPose, baked kitchen/mask",
                 "notes": (
-                    "No SAM3/RMBG/Lama/DWPose. Ostris image1=kitchen, image2=gray pose. "
-                    "Identity LoRA 0.9, pose LoRA 0.45, CLIP type krea2, euler/simple/cfg 1/10 steps."
+                    "No SAM3/RMBG/Lama. DWPose from kitchen, black bg -> mid-gray. "
+                    "Ostris image1=kitchen, image2=pose. Identity 0.9, pose LoRA 0.45, CLIP krea2."
                 ),
             },
         },
