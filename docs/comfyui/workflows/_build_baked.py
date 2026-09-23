@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Replace the reference person with the LoRA character.
 
-Draft at ~0.6MP (empty latent, pose + scene refs). The generate is the
-canvas. Original kitchen pixels are stamped back only where neither the
-old nor the new person sits. No blur-heal, no second sampler.
+Draft at ~0.6MP (empty latent, pose + scene refs). LaMa removes the old
+person from the original photo. The new LoRA person is pasted onto that
+cleaned kitchen. No blur-heal, no second sampler, no ghost.
 """
 from __future__ import annotations
 
@@ -32,6 +32,7 @@ OSTRIS = {
     "cnr_id": "comfyui-krea2-ostris-edit",
 }
 RMBG = {"Node name for S&R": "RMBG", "cnr_id": "comfyui-rmbg", "ver": "3.1.0"}
+LAMA = {"Node name for S&R": "AILab_LamaRemover", "cnr_id": "comfyui-rmbg", "ver": "3.1.0"}
 AUX = {
     "Node name for S&R": "DWPreprocessor",
     "cnr_id": "comfyui_controlnet_aux",
@@ -43,9 +44,10 @@ NOTE = (
     "the whole frame (empty latent).\n"
     "2. image1 = reference with the old person painted out (lighting/camera). "
     "image2 = DWPose on gray. Pose LoRA 0.9.\n"
-    "3. Marry starts from the GENERATE. Original kitchen is stamped back only "
-    "where invert(old person OR new person). The old person never stays in the "
-    "destination, so there is no ghost. No blur-heal. No second sampler.\n"
+    "3. LaMa removes the old person from the original photo (hole fill from "
+    "real kitchen pixels). Then only the new RMBG person is pasted on. The "
+    "old person is gone, so there is no ghost. Leftover holes are kitchen, "
+    "not generated marble. No second sampler.\n"
     "4. Type extra directions in Your adjustments (e.g. make the shirt red).\n"
     "5. Final is a lanczos upscale of the married draft.\n"
     "CLIP type must be krea2."
@@ -300,10 +302,10 @@ def main() -> None:
         "flags": {}, "order": 16, "mode": 0,
         "inputs": [inp("mask", "MASK", 136)],
         "outputs": [out("MASK", "MASK", [66])],
-        "title": "Grow 14 — old person (union)",
+        "title": "Grow 10 — old person (LaMa hole)",
         "properties": props("GrowMask"),
-        "widgets_values": [14, True],
-        "widgets_values_named": {"expand": 14, "tapered_corners": True},
+        "widgets_values": [10, True],
+        "widgets_values_named": {"expand": 10, "tapered_corners": True},
     })
     add({
         "id": 44, "type": "EmptyImage", "pos": [-800, 1020], "size": [250, 130],
@@ -544,7 +546,7 @@ def main() -> None:
         "bgcolor": "#533",
     })
 
-    wv2, named2 = rmbg_widgets(4, 6)
+    wv2, named2 = rmbg_widgets(4, 2)
     named2["process_res"] = 1024
     wv2[2] = 1024
     add({
@@ -567,69 +569,84 @@ def main() -> None:
         "id": 51, "type": "GrowMask", "pos": [960, 360], "size": [240, 82],
         "flags": {}, "order": 38, "mode": 0,
         "inputs": [inp("mask", "MASK", 86)],
-        "outputs": [out("MASK", "MASK", [87])],
-        "title": "Grow 14 — new person (union)",
+        "outputs": [out("MASK", "MASK", [87, 140])],
+        "title": "Grow 8 — new person paste",
         "properties": props("GrowMask"),
-        "widgets_values": [14, True],
-        "widgets_values_named": {"expand": 14, "tapered_corners": True},
+        "widgets_values": [8, True],
+        "widgets_values_named": {"expand": 8, "tapered_corners": True},
+    })
+    add({
+        "id": 52, "type": "FeatherMask", "pos": [960, 470], "size": [250, 154],
+        "flags": {}, "order": 39, "mode": 0,
+        "inputs": [inp("mask", "MASK", 87)],
+        "outputs": [out("MASK", "MASK", [88])],
+        "title": "Feather new person",
+        "properties": props("FeatherMask"),
+        "widgets_values": [16, 16, 16, 16],
+        "widgets_values_named": {"left": 16, "top": 16, "right": 16, "bottom": 16},
     })
     add({
         "id": 53, "type": "MaskComposite", "pos": [1220, 360], "size": [280, 154],
-        "flags": {}, "order": 39, "mode": 0,
+        "flags": {}, "order": 40, "mode": 0,
         "inputs": [
             inp("destination", "MASK", 66),
-            inp("source", "MASK", 87),
+            inp("source", "MASK", 140),
         ],
         "outputs": [out("MASK", "MASK", [89])],
-        "title": "People = old OR new",
+        "title": "Leftover hole (old minus new)",
         "properties": props("MaskComposite"),
-        "widgets_values": [0, 0, "or"],
-        "widgets_values_named": {"x": 0, "y": 0, "operation": "or"},
+        "widgets_values": [0, 0, "subtract"],
+        "widgets_values_named": {"x": 0, "y": 0, "operation": "subtract"},
     })
     add({
-        "id": 52, "type": "FeatherMask", "pos": [1520, 360], "size": [250, 154],
-        "flags": {}, "order": 40, "mode": 0,
+        "id": 56, "type": "MaskToImage", "pos": [1520, 360], "size": [180, 26],
+        "flags": {"collapsed": True}, "order": 41, "mode": 0,
         "inputs": [inp("mask", "MASK", 89)],
-        "outputs": [out("MASK", "MASK", [88])],
-        "title": "Feather people (small)",
-        "properties": props("FeatherMask"),
-        "widgets_values": [8, 8, 8, 8],
-        "widgets_values_named": {"left": 8, "top": 8, "right": 8, "bottom": 8},
-    })
-    add({
-        "id": 78, "type": "InvertMask", "pos": [1520, 540], "size": [210, 46],
-        "flags": {}, "order": 41, "mode": 0,
-        "inputs": [inp("mask", "MASK", 88)],
-        "outputs": [out("MASK", "MASK", [144, 145])],
-        "title": "Kitchen keep = invert(people)",
-        "properties": props("InvertMask"),
-    })
-    add({
-        "id": 56, "type": "MaskToImage", "pos": [1750, 540], "size": [180, 26],
-        "flags": {"collapsed": True}, "order": 42, "mode": 0,
-        "inputs": [inp("mask", "MASK", 145)],
         "outputs": [out("IMAGE", "IMAGE", [93])],
-        "title": "Kitchen keep to image",
+        "title": "Leftover to image",
         "properties": props("MaskToImage"),
     })
     add({
-        "id": 47, "type": "PreviewImage", "pos": [1750, 360], "size": [200, 200],
-        "flags": {}, "order": 43, "mode": 0,
+        "id": 47, "type": "PreviewImage", "pos": [1520, 400], "size": [200, 200],
+        "flags": {}, "order": 42, "mode": 0,
         "inputs": [inp("images", "IMAGE", 93)],
         "outputs": [out("IMAGE", "IMAGE", None)],
-        "title": "Kitchen keep (white = original)",
+        "title": "Leftover hole (LaMa fills this)",
         "properties": props("PreviewImage"),
     })
     add({
-        "id": 55, "type": "ImageCompositeMasked", "pos": [640, 680], "size": [320, 146],
-        "flags": {}, "order": 44, "mode": 0,
+        "id": 76, "type": "AILab_LamaRemover", "pos": [640, 680], "size": [300, 106],
+        "flags": {}, "order": 43, "mode": 0,
         "inputs": [
-            inp("destination", "IMAGE", 135),
-            inp("source", "IMAGE", 132),
-            inp("mask", "MASK", 144, shape=7),
+            inp("images", "IMAGE", 132),
+            inp("masks", "MASK", 66),
+        ],
+        "outputs": [out("images", "IMAGE", [146, 147])],
+        "title": "LaMa — remove old person from kitchen",
+        "properties": LAMA,
+        "widgets_values": [230, 8],
+        "widgets_values_named": {"removal_strength": 230, "edge_smoothness": 8},
+        "color": "#222e40",
+        "bgcolor": "#364254",
+    })
+    add({
+        "id": 77, "type": "PreviewImage", "pos": [960, 680], "size": [260, 260],
+        "flags": {}, "order": 44, "mode": 0,
+        "inputs": [inp("images", "IMAGE", 147)],
+        "outputs": [out("IMAGE", "IMAGE", None)],
+        "title": "Kitchen after LaMa (no old person)",
+        "properties": props("PreviewImage"),
+    })
+    add({
+        "id": 55, "type": "ImageCompositeMasked", "pos": [1240, 680], "size": [320, 146],
+        "flags": {}, "order": 45, "mode": 0,
+        "inputs": [
+            inp("destination", "IMAGE", 146),
+            inp("source", "IMAGE", 135),
+            inp("mask", "MASK", 88, shape=7),
         ],
         "outputs": [out("IMAGE", "IMAGE", [94, 95])],
-        "title": "Stamp original kitchen onto generate",
+        "title": "Paste new person onto LaMa kitchen",
         "properties": props("ImageCompositeMasked"),
         "widgets_values": [0, 0, False],
         "widgets_values_named": {"x": 0, "y": 0, "resize_source": False},
@@ -701,23 +718,23 @@ def main() -> None:
     graph = {
         "id": "krea2-edited-frame",
         "revision": 0,
-        "last_node_id": 78,
-        "last_link_id": 145,
+        "last_node_id": 77,
+        "last_link_id": 147,
         "nodes": nodes,
         "links": links,
         "groups": [
             {"id": 1, "title": "Models + prompts", "bounding": [-1440, 0, 1240, 430], "color": "#3f789e", "flags": {}},
             {"id": 2, "title": "Draft photo, hide old person, pose", "bounding": [-1440, 430, 2000, 1480], "color": "#322", "flags": {}},
             {"id": 3, "title": "Draft generate (empty latent)", "bounding": [-240, 0, 1860, 680], "color": "#3f789e", "flags": {}},
-            {"id": 4, "title": "Stamp original kitchen + upscale", "bounding": [600, 660, 1160, 640], "color": "#3f789e", "flags": {}},
+            {"id": 4, "title": "LaMa hole fill + paste new person + upscale", "bounding": [600, 660, 1160, 640], "color": "#3f789e", "flags": {}},
         ],
         "config": {},
         "extra": {
             "ds": {"scale": 0.42, "offset": [1480, 80]},
             "frontendVersion": "1.52.7",
             "visagely": {
-                "title": "Replace person: generate canvas, stamp original kitchen",
-                "notes": "Empty latent draft. dest=generate, source=original, mask=invert(old∪new). No ghost, no blur-heal, no second sampler.",
+                "title": "Replace person: LaMa kitchen + paste LoRA person",
+                "notes": "Empty latent draft. LaMa removes the old person. Paste only the new RMBG person. No ghost, no blur-heal, no second sampler.",
             },
         },
         "version": 0.4,

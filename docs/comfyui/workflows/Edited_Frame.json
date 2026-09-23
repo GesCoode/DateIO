@@ -1,8 +1,8 @@
 {
   "id": "krea2-edited-frame",
   "revision": 0,
-  "last_node_id": 78,
-  "last_link_id": 145,
+  "last_node_id": 77,
+  "last_link_id": 147,
   "nodes": [
     {
       "id": 1,
@@ -485,10 +485,10 @@
         "Node name for S&R": "Note"
       },
       "widgets_values": [
-        "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent).\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. Marry starts from the GENERATE. Original kitchen is stamped back only where invert(old person OR new person). The old person never stays in the destination, so there is no ghost. No blur-heal. No second sampler.\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Final is a lanczos upscale of the married draft.\nCLIP type must be krea2."
+        "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent).\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. LaMa removes the old person from the original photo (hole fill from real kitchen pixels). Then only the new RMBG person is pasted on. The old person is gone, so there is no ghost. Leftover holes are kitchen, not generated marble. No second sampler.\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Final is a lanczos upscale of the married draft.\nCLIP type must be krea2."
       ],
       "widgets_values_named": {
-        "text": "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent).\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. Marry starts from the GENERATE. Original kitchen is stamped back only where invert(old person OR new person). The old person never stays in the destination, so there is no ghost. No blur-heal. No second sampler.\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Final is a lanczos upscale of the married draft.\nCLIP type must be krea2."
+        "text": "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent).\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. LaMa removes the old person from the original photo (hole fill from real kitchen pixels). Then only the new RMBG person is pasted on. The old person is gone, so there is no ghost. Leftover holes are kitchen, not generated marble. No second sampler.\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Final is a lanczos upscale of the married draft.\nCLIP type must be krea2."
       },
       "color": "#432",
       "bgcolor": "#653"
@@ -812,18 +812,18 @@
           ]
         }
       ],
-      "title": "Grow 14 \u2014 old person (union)",
+      "title": "Grow 10 \u2014 old person (LaMa hole)",
       "properties": {
         "Node name for S&R": "GrowMask",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       },
       "widgets_values": [
-        14,
+        10,
         true
       ],
       "widgets_values_named": {
-        "expand": 14,
+        "expand": 10,
         "tapered_corners": true
       }
     },
@@ -1907,7 +1907,7 @@
         1,
         1024,
         4,
-        6,
+        2,
         false,
         false,
         "Alpha",
@@ -1918,7 +1918,7 @@
         "sensitivity": 1,
         "process_res": 1024,
         "mask_blur": 4,
-        "mask_offset": 6,
+        "mask_offset": 2,
         "invert_output": false,
         "refine_foreground": false,
         "background": "Alpha",
@@ -1954,23 +1954,74 @@
           "type": "MASK",
           "slot_index": 0,
           "links": [
-            87
+            87,
+            140
           ]
         }
       ],
-      "title": "Grow 14 \u2014 new person (union)",
+      "title": "Grow 8 \u2014 new person paste",
       "properties": {
         "Node name for S&R": "GrowMask",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       },
       "widgets_values": [
-        14,
+        8,
         true
       ],
       "widgets_values_named": {
-        "expand": 14,
+        "expand": 8,
         "tapered_corners": true
+      }
+    },
+    {
+      "id": 52,
+      "type": "FeatherMask",
+      "pos": [
+        960,
+        470
+      ],
+      "size": [
+        250,
+        154
+      ],
+      "flags": {},
+      "order": 39,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 87
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": [
+            88
+          ]
+        }
+      ],
+      "title": "Feather new person",
+      "properties": {
+        "Node name for S&R": "FeatherMask",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "widgets_values_named": {
+        "left": 16,
+        "top": 16,
+        "right": 16,
+        "bottom": 16
       }
     },
     {
@@ -1985,7 +2036,7 @@
         154
       ],
       "flags": {},
-      "order": 39,
+      "order": 40,
       "mode": 0,
       "inputs": [
         {
@@ -1996,7 +2047,7 @@
         {
           "name": "source",
           "type": "MASK",
-          "link": 87
+          "link": 140
         }
       ],
       "outputs": [
@@ -2009,7 +2060,7 @@
           ]
         }
       ],
-      "title": "People = old OR new",
+      "title": "Leftover hole (old minus new)",
       "properties": {
         "Node name for S&R": "MaskComposite",
         "cnr_id": "comfy-core",
@@ -2018,109 +2069,20 @@
       "widgets_values": [
         0,
         0,
-        "or"
+        "subtract"
       ],
       "widgets_values_named": {
         "x": 0,
         "y": 0,
-        "operation": "or"
-      }
-    },
-    {
-      "id": 52,
-      "type": "FeatherMask",
-      "pos": [
-        1520,
-        360
-      ],
-      "size": [
-        250,
-        154
-      ],
-      "flags": {},
-      "order": 40,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 89
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "slot_index": 0,
-          "links": [
-            88
-          ]
-        }
-      ],
-      "title": "Feather people (small)",
-      "properties": {
-        "Node name for S&R": "FeatherMask",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      },
-      "widgets_values": [
-        8,
-        8,
-        8,
-        8
-      ],
-      "widgets_values_named": {
-        "left": 8,
-        "top": 8,
-        "right": 8,
-        "bottom": 8
-      }
-    },
-    {
-      "id": 78,
-      "type": "InvertMask",
-      "pos": [
-        1520,
-        540
-      ],
-      "size": [
-        210,
-        46
-      ],
-      "flags": {},
-      "order": 41,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 88
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "slot_index": 0,
-          "links": [
-            144,
-            145
-          ]
-        }
-      ],
-      "title": "Kitchen keep = invert(people)",
-      "properties": {
-        "Node name for S&R": "InvertMask",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
+        "operation": "subtract"
       }
     },
     {
       "id": 56,
       "type": "MaskToImage",
       "pos": [
-        1750,
-        540
+        1520,
+        360
       ],
       "size": [
         180,
@@ -2129,13 +2091,13 @@
       "flags": {
         "collapsed": true
       },
-      "order": 42,
+      "order": 41,
       "mode": 0,
       "inputs": [
         {
           "name": "mask",
           "type": "MASK",
-          "link": 145
+          "link": 89
         }
       ],
       "outputs": [
@@ -2148,7 +2110,7 @@
           ]
         }
       ],
-      "title": "Kitchen keep to image",
+      "title": "Leftover to image",
       "properties": {
         "Node name for S&R": "MaskToImage",
         "cnr_id": "comfy-core",
@@ -2159,15 +2121,15 @@
       "id": 47,
       "type": "PreviewImage",
       "pos": [
-        1750,
-        360
+        1520,
+        400
       ],
       "size": [
         200,
         200
       ],
       "flags": {},
-      "order": 43,
+      "order": 42,
       "mode": 0,
       "inputs": [
         {
@@ -2184,7 +2146,97 @@
           "links": null
         }
       ],
-      "title": "Kitchen keep (white = original)",
+      "title": "Leftover hole (LaMa fills this)",
+      "properties": {
+        "Node name for S&R": "PreviewImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 76,
+      "type": "AILab_LamaRemover",
+      "pos": [
+        640,
+        680
+      ],
+      "size": [
+        300,
+        106
+      ],
+      "flags": {},
+      "order": 43,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 132
+        },
+        {
+          "name": "masks",
+          "type": "MASK",
+          "link": 66
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            146,
+            147
+          ]
+        }
+      ],
+      "title": "LaMa \u2014 remove old person from kitchen",
+      "properties": {
+        "Node name for S&R": "AILab_LamaRemover",
+        "cnr_id": "comfyui-rmbg",
+        "ver": "3.1.0"
+      },
+      "widgets_values": [
+        230,
+        8
+      ],
+      "widgets_values_named": {
+        "removal_strength": 230,
+        "edge_smoothness": 8
+      },
+      "color": "#222e40",
+      "bgcolor": "#364254"
+    },
+    {
+      "id": 77,
+      "type": "PreviewImage",
+      "pos": [
+        960,
+        680
+      ],
+      "size": [
+        260,
+        260
+      ],
+      "flags": {},
+      "order": 44,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 147
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        }
+      ],
+      "title": "Kitchen after LaMa (no old person)",
       "properties": {
         "Node name for S&R": "PreviewImage",
         "cnr_id": "comfy-core",
@@ -2195,7 +2247,7 @@
       "id": 55,
       "type": "ImageCompositeMasked",
       "pos": [
-        640,
+        1240,
         680
       ],
       "size": [
@@ -2203,23 +2255,23 @@
         146
       ],
       "flags": {},
-      "order": 44,
+      "order": 45,
       "mode": 0,
       "inputs": [
         {
           "name": "destination",
           "type": "IMAGE",
-          "link": 135
+          "link": 146
         },
         {
           "name": "source",
           "type": "IMAGE",
-          "link": 132
+          "link": 135
         },
         {
           "name": "mask",
           "type": "MASK",
-          "link": 144,
+          "link": 88,
           "shape": 7
         }
       ],
@@ -2234,7 +2286,7 @@
           ]
         }
       ],
-      "title": "Stamp original kitchen onto generate",
+      "title": "Paste new person onto LaMa kitchen",
       "properties": {
         "Node name for S&R": "ImageCompositeMasked",
         "cnr_id": "comfy-core",
@@ -2845,6 +2897,14 @@
       "MASK"
     ],
     [
+      87,
+      51,
+      0,
+      52,
+      0,
+      "MASK"
+    ],
+    [
       66,
       42,
       0,
@@ -2853,7 +2913,7 @@
       "MASK"
     ],
     [
-      87,
+      140,
       51,
       0,
       53,
@@ -2863,22 +2923,6 @@
     [
       89,
       53,
-      0,
-      52,
-      0,
-      "MASK"
-    ],
-    [
-      88,
-      52,
-      0,
-      78,
-      0,
-      "MASK"
-    ],
-    [
-      145,
-      78,
       0,
       56,
       0,
@@ -2893,24 +2937,48 @@
       "IMAGE"
     ],
     [
-      135,
-      20,
+      132,
+      10,
+      0,
+      76,
+      0,
+      "IMAGE"
+    ],
+    [
+      66,
+      42,
+      0,
+      76,
+      1,
+      "MASK"
+    ],
+    [
+      147,
+      76,
+      0,
+      77,
+      0,
+      "IMAGE"
+    ],
+    [
+      146,
+      76,
       0,
       55,
       0,
       "IMAGE"
     ],
     [
-      132,
-      10,
+      135,
+      20,
       0,
       55,
       1,
       "IMAGE"
     ],
     [
-      144,
-      78,
+      88,
+      52,
       0,
       55,
       2,
@@ -2988,7 +3056,7 @@
     },
     {
       "id": 4,
-      "title": "Stamp original kitchen + upscale",
+      "title": "LaMa hole fill + paste new person + upscale",
       "bounding": [
         600,
         660,
@@ -3010,8 +3078,8 @@
     },
     "frontendVersion": "1.52.7",
     "visagely": {
-      "title": "Replace person: generate canvas, stamp original kitchen",
-      "notes": "Empty latent draft. dest=generate, source=original, mask=invert(old\u222anew). No ghost, no blur-heal, no second sampler."
+      "title": "Replace person: LaMa kitchen + paste LoRA person",
+      "notes": "Empty latent draft. LaMa removes the old person. Paste only the new RMBG person. No ghost, no blur-heal, no second sampler."
     }
   },
   "version": 0.4,
