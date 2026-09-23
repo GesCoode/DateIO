@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Replace the reference person with the LoRA character.
 
-Draft at ~0.6MP (empty latent, pose + scene refs), paste only the new
-person (feathered RMBG), heal leftover old pixels from a blur of the
-original, then upscale. The kitchen/island stays original pixels.
+Draft at ~0.6MP (empty latent, pose + scene refs). The generate is the
+canvas. Original kitchen pixels are stamped back only where neither the
+old nor the new person sits. No blur-heal, no second sampler.
 """
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ IDENTITY = (
 ADJUST = ""
 NEG = (
     "woman, female, long hair, feminine body, breasts, mixed gender, "
+    "ghost, double exposure, overlay of two people, leftover original person, "
     "hard cutout, sticker, pasted, mask outline, halo, different lighting, "
     "cropped legs, missing hips, cut off at the waist, floating torso, "
     "white blob, melted marble"
@@ -42,11 +43,11 @@ NOTE = (
     "the whole frame (empty latent).\n"
     "2. image1 = reference with the old person painted out (lighting/camera). "
     "image2 = DWPose on gray. Pose LoRA 0.9.\n"
-    "3. Marry pastes ONLY the new RMBG person (feathered). Leftover old-person "
-    "pixels are healed from a blur of the original photo — the island/background "
-    "is never replaced by generated marble.\n"
+    "3. Marry starts from the GENERATE. Original kitchen is stamped back only "
+    "where invert(old person OR new person). The old person never stays in the "
+    "destination, so there is no ghost. No blur-heal. No second sampler.\n"
     "4. Type extra directions in Your adjustments (e.g. make the shirt red).\n"
-    "5. Pass 2 upscales and refines only the new person, not the kitchen.\n"
+    "5. Final is a lanczos upscale of the married draft.\n"
     "CLIP type must be krea2."
 )
 
@@ -120,7 +121,7 @@ def main() -> None:
     add({
         "id": 2, "type": "CLIPLoader", "pos": [-1400, 160], "size": [400, 106],
         "flags": {}, "order": 1, "mode": 0, "inputs": [],
-        "outputs": [out("CLIP", "CLIP", [2, 3, 4, 110, 111])],
+        "outputs": [out("CLIP", "CLIP", [2, 3, 4])],
         "title": "CLIP (type must be krea2)",
         "properties": props("CLIPLoader"),
         "widgets_values": ["qwen3vl_4b_bf16.safetensors", "krea2", "default"],
@@ -133,7 +134,7 @@ def main() -> None:
     add({
         "id": 3, "type": "VAELoader", "pos": [-1400, 310], "size": [400, 58],
         "flags": {}, "order": 2, "mode": 0, "inputs": [],
-        "outputs": [out("VAE", "VAE", [5, 6, 7, 120, 121])],
+        "outputs": [out("VAE", "VAE", [5, 6, 7])],
         "title": "VAE",
         "properties": props("VAELoader"),
         "widgets_values": ["krea2RealVae_v10.safetensors"],
@@ -153,7 +154,7 @@ def main() -> None:
         "id": 5, "type": "LoraLoader", "pos": [-940, 150], "size": [300, 126],
         "flags": {}, "order": 4, "mode": 0,
         "inputs": [inp("model", "MODEL", 8), inp("clip", "CLIP", 2)],
-        "outputs": [out("MODEL", "MODEL", [9, 112], 0), out("CLIP", "CLIP", None, 1)],
+        "outputs": [out("MODEL", "MODEL", [9], 0), out("CLIP", "CLIP", None, 1)],
         "title": "Identity LoRA 1.0",
         "properties": props("LoraLoader"),
         "widgets_values": ["KreAlpha2640.safetensors", 1.0, 1.0],
@@ -205,7 +206,7 @@ def main() -> None:
             inp("string_a", "STRING", 80, widget="string_a"),
             inp("string_b", "STRING", 81, widget="string_b"),
         ],
-        "outputs": [out("STRING", "STRING", [130, 113])],
+        "outputs": [out("STRING", "STRING", [130])],
         "title": "Join prompts",
         "properties": props("StringConcatenate"),
         "widgets_values": ["", "", ", "],
@@ -235,7 +236,7 @@ def main() -> None:
         "id": 10, "type": "ImageScaleToTotalPixels", "pos": [-1400, 860], "size": [320, 106],
         "flags": {}, "order": 11, "mode": 0,
         "inputs": [inp("image", "IMAGE", 11)],
-        "outputs": [out("IMAGE", "IMAGE", [14, 40, 71, 82, 132, 138])],
+        "outputs": [out("IMAGE", "IMAGE", [14, 40, 71, 82, 132])],
         "title": "Draft size ~0.6MP (fast preview)",
         "properties": props("ImageScaleToTotalPixels"),
         "widgets_values": ["lanczos", 0.6, 1],
@@ -299,10 +300,10 @@ def main() -> None:
         "flags": {}, "order": 16, "mode": 0,
         "inputs": [inp("mask", "MASK", 136)],
         "outputs": [out("MASK", "MASK", [66])],
-        "title": "Grow 12 — leftover old person only",
+        "title": "Grow 14 — old person (union)",
         "properties": props("GrowMask"),
-        "widgets_values": [12, True],
-        "widgets_values_named": {"expand": 12, "tapered_corners": True},
+        "widgets_values": [14, True],
+        "widgets_values_named": {"expand": 14, "tapered_corners": True},
     })
     add({
         "id": 44, "type": "EmptyImage", "pos": [-800, 1020], "size": [250, 130],
@@ -566,95 +567,69 @@ def main() -> None:
         "id": 51, "type": "GrowMask", "pos": [960, 360], "size": [240, 82],
         "flags": {}, "order": 38, "mode": 0,
         "inputs": [inp("mask", "MASK", 86)],
-        "outputs": [out("MASK", "MASK", [87, 140])],
-        "title": "Grow new person 18 (keep hips)",
+        "outputs": [out("MASK", "MASK", [87])],
+        "title": "Grow 14 — new person (union)",
         "properties": props("GrowMask"),
-        "widgets_values": [18, True],
-        "widgets_values_named": {"expand": 18, "tapered_corners": True},
+        "widgets_values": [14, True],
+        "widgets_values_named": {"expand": 14, "tapered_corners": True},
     })
     add({
-        "id": 52, "type": "FeatherMask", "pos": [960, 470], "size": [250, 154],
+        "id": 53, "type": "MaskComposite", "pos": [1220, 360], "size": [280, 154],
         "flags": {}, "order": 39, "mode": 0,
-        "inputs": [inp("mask", "MASK", 87)],
-        "outputs": [out("MASK", "MASK", [88, 143])],
-        "title": "Feather new person",
-        "properties": props("FeatherMask"),
-        "widgets_values": [20, 20, 20, 20],
-        "widgets_values_named": {"left": 20, "top": 20, "right": 20, "bottom": 20},
-    })
-    add({
-        "id": 53, "type": "MaskComposite", "pos": [1240, 360], "size": [280, 154],
-        "flags": {}, "order": 40, "mode": 0,
         "inputs": [
             inp("destination", "MASK", 66),
-            inp("source", "MASK", 140),
+            inp("source", "MASK", 87),
         ],
         "outputs": [out("MASK", "MASK", [89])],
-        "title": "Leftover old person (old minus new)",
+        "title": "People = old OR new",
         "properties": props("MaskComposite"),
-        "widgets_values": [0, 0, "subtract"],
-        "widgets_values_named": {"x": 0, "y": 0, "operation": "subtract"},
+        "widgets_values": [0, 0, "or"],
+        "widgets_values_named": {"x": 0, "y": 0, "operation": "or"},
     })
     add({
-        "id": 54, "type": "FeatherMask", "pos": [1540, 360], "size": [250, 154],
-        "flags": {}, "order": 41, "mode": 0,
+        "id": 52, "type": "FeatherMask", "pos": [1520, 360], "size": [250, 154],
+        "flags": {}, "order": 40, "mode": 0,
         "inputs": [inp("mask", "MASK", 89)],
-        "outputs": [out("MASK", "MASK", [73, 92])],
-        "title": "Feather leftover heal",
+        "outputs": [out("MASK", "MASK", [88])],
+        "title": "Feather people (small)",
         "properties": props("FeatherMask"),
         "widgets_values": [8, 8, 8, 8],
         "widgets_values_named": {"left": 8, "top": 8, "right": 8, "bottom": 8},
     })
     add({
-        "id": 56, "type": "MaskToImage", "pos": [1540, 540], "size": [180, 26],
+        "id": 78, "type": "InvertMask", "pos": [1520, 540], "size": [210, 46],
+        "flags": {}, "order": 41, "mode": 0,
+        "inputs": [inp("mask", "MASK", 88)],
+        "outputs": [out("MASK", "MASK", [144, 145])],
+        "title": "Kitchen keep = invert(people)",
+        "properties": props("InvertMask"),
+    })
+    add({
+        "id": 56, "type": "MaskToImage", "pos": [1750, 540], "size": [180, 26],
         "flags": {"collapsed": True}, "order": 42, "mode": 0,
-        "inputs": [inp("mask", "MASK", 92)],
+        "inputs": [inp("mask", "MASK", 145)],
         "outputs": [out("IMAGE", "IMAGE", [93])],
-        "title": "Leftover mask to image",
+        "title": "Kitchen keep to image",
         "properties": props("MaskToImage"),
     })
     add({
-        "id": 47, "type": "PreviewImage", "pos": [1740, 360], "size": [200, 200],
+        "id": 47, "type": "PreviewImage", "pos": [1750, 360], "size": [200, 200],
         "flags": {}, "order": 43, "mode": 0,
         "inputs": [inp("images", "IMAGE", 93)],
         "outputs": [out("IMAGE", "IMAGE", None)],
-        "title": "Leftover heal (should be tiny)",
+        "title": "Kitchen keep (white = original)",
         "properties": props("PreviewImage"),
     })
     add({
-        "id": 76, "type": "ImageBlur", "pos": [640, 680], "size": [270, 82],
+        "id": 55, "type": "ImageCompositeMasked", "pos": [640, 680], "size": [320, 146],
         "flags": {}, "order": 44, "mode": 0,
-        "inputs": [inp("image", "IMAGE", 138)],
-        "outputs": [out("IMAGE", "IMAGE", [139])],
-        "title": "Blur original (heal source)",
-        "properties": props("ImageBlur"),
-        "widgets_values": [15, 6.0],
-        "widgets_values_named": {"blur_radius": 15, "sigma": 6.0},
-    })
-    add({
-        "id": 77, "type": "ImageCompositeMasked", "pos": [940, 680], "size": [300, 146],
-        "flags": {}, "order": 45, "mode": 0,
         "inputs": [
-            inp("destination", "IMAGE", 132),
-            inp("source", "IMAGE", 139),
-            inp("mask", "MASK", 73, shape=7),
-        ],
-        "outputs": [out("IMAGE", "IMAGE", [141])],
-        "title": "Heal leftover old pixels",
-        "properties": props("ImageCompositeMasked"),
-        "widgets_values": [0, 0, False],
-        "widgets_values_named": {"x": 0, "y": 0, "resize_source": False},
-    })
-    add({
-        "id": 55, "type": "ImageCompositeMasked", "pos": [1260, 680], "size": [300, 146],
-        "flags": {}, "order": 46, "mode": 0,
-        "inputs": [
-            inp("destination", "IMAGE", 141),
-            inp("source", "IMAGE", 135),
-            inp("mask", "MASK", 88, shape=7),
+            inp("destination", "IMAGE", 135),
+            inp("source", "IMAGE", 132),
+            inp("mask", "MASK", 144, shape=7),
         ],
         "outputs": [out("IMAGE", "IMAGE", [94, 95])],
-        "title": "Paste new person only",
+        "title": "Stamp original kitchen onto generate",
         "properties": props("ImageCompositeMasked"),
         "widgets_values": [0, 0, False],
         "widgets_values_named": {"x": 0, "y": 0, "resize_source": False},
@@ -669,9 +644,8 @@ def main() -> None:
         "color": "#232",
         "bgcolor": "#353",
     })
-
     add({
-        "id": 60, "type": "ImageScaleToTotalPixels", "pos": [640, 700], "size": [320, 106],
+        "id": 60, "type": "ImageScaleToTotalPixels", "pos": [980, 680], "size": [320, 106],
         "flags": {}, "order": 46, "mode": 0,
         "inputs": [inp("image", "IMAGE", 95)],
         "outputs": [out("IMAGE", "IMAGE", [96, 97])],
@@ -681,131 +655,9 @@ def main() -> None:
         "widgets_values_named": {"upscale_method": "lanczos", "megapixels": 1.8, "resolution_steps": 1},
     })
     add({
-        "id": 61, "type": "GetImageSize", "pos": [980, 700], "size": [230, 82],
+        "id": 24, "type": "PreviewImage", "pos": [1320, 680], "size": [400, 520],
         "flags": {}, "order": 47, "mode": 0,
-        "inputs": [inp("image", "IMAGE", 96)],
-        "outputs": [
-            out("width", "INT", [98], 0),
-            out("height", "INT", [99], 1),
-            out("batch_size", "INT", None, 2),
-        ],
-        "title": "Upscale size",
-        "properties": props("GetImageSize"),
-    })
-    add({
-        "id": 62, "type": "MaskToImage", "pos": [980, 820], "size": [180, 26],
-        "flags": {}, "order": 48, "mode": 0,
-        "inputs": [inp("mask", "MASK", 143)],
-        "outputs": [out("IMAGE", "IMAGE", [100])],
-        "title": "Scale marry mask",
-        "properties": props("MaskToImage"),
-    })
-    add({
-        "id": 63, "type": "ImageScale", "pos": [1180, 820], "size": [280, 150],
-        "flags": {}, "order": 49, "mode": 0,
-        "inputs": [
-            inp("image", "IMAGE", 100),
-            inp("width", "INT", 98, widget="width"),
-            inp("height", "INT", 99, widget="height"),
-        ],
-        "outputs": [out("IMAGE", "IMAGE", [101])],
-        "title": "Mask to upscale size",
-        "properties": props("ImageScale"),
-        "widgets_values": ["lanczos", 1024, 1024, "disabled"],
-        "widgets_values_named": {
-            "upscale_method": "lanczos", "width": 1024, "height": 1024, "crop": "disabled",
-        },
-    })
-    add({
-        "id": 64, "type": "ImageToMask", "pos": [1480, 820], "size": [220, 58],
-        "flags": {}, "order": 50, "mode": 0,
-        "inputs": [inp("image", "IMAGE", 101)],
-        "outputs": [out("MASK", "MASK", [102])],
-        "title": "Mask channel",
-        "properties": props("ImageToMask"),
-        "widgets_values": ["red"],
-        "widgets_values_named": {"channel": "red"},
-    })
-    add({
-        "id": 66, "type": "VAEEncode", "pos": [640, 850], "size": [270, 46],
-        "flags": {}, "order": 51, "mode": 0,
-        "inputs": [inp("pixels", "IMAGE", 97), inp("vae", "VAE", 120)],
-        "outputs": [out("LATENT", "LATENT", [103])],
-        "title": "Encode upscaled marry",
-        "properties": props("VAEEncode"),
-    })
-    add({
-        "id": 67, "type": "SetLatentNoiseMask", "pos": [640, 930], "size": [270, 46],
-        "flags": {}, "order": 52, "mode": 0,
-        "inputs": [inp("samples", "LATENT", 103), inp("mask", "MASK", 102, shape=7)],
-        "outputs": [out("LATENT", "LATENT", [104])],
-        "title": "Refine only the new person",
-        "properties": props("SetLatentNoiseMask"),
-    })
-    add({
-        "id": 68, "type": "TextEncodeKrea2OstrisEdit", "pos": [260, 700], "size": [360, 160],
-        "flags": {}, "order": 53, "mode": 0,
-        "inputs": [
-            inp("clip", "CLIP", 110),
-            inp("prompt", "STRING", 113, widget="prompt"),
-            inp("vae", "VAE", None, shape=7),
-            inp("image1", "IMAGE", None, shape=7),
-            inp("image2", "IMAGE", None, shape=7),
-            inp("image3", "IMAGE", None, shape=7),
-        ],
-        "outputs": [out("CONDITIONING", "CONDITIONING", [105])],
-        "title": "Positive refine (text only, faster)",
-        "properties": {**OSTRIS, "Node name for S&R": "TextEncodeKrea2OstrisEdit"},
-        "widgets_values": [""],
-        "widgets_values_named": {"prompt": ""},
-    })
-    add({
-        "id": 69, "type": "TextEncodeKrea2OstrisEdit", "pos": [260, 890], "size": [360, 120],
-        "flags": {}, "order": 54, "mode": 0,
-        "inputs": [
-            inp("clip", "CLIP", 111),
-            inp("vae", "VAE", None, shape=7),
-            inp("image1", "IMAGE", None, shape=7),
-            inp("image2", "IMAGE", None, shape=7),
-            inp("image3", "IMAGE", None, shape=7),
-        ],
-        "outputs": [out("CONDITIONING", "CONDITIONING", [106])],
-        "title": "Negative refine",
-        "properties": {**OSTRIS, "Node name for S&R": "TextEncodeKrea2OstrisEdit"},
-        "widgets_values": [NEG],
-        "widgets_values_named": {"prompt": NEG},
-    })
-    add({
-        "id": 74, "type": "KSampler", "pos": [940, 930], "size": [320, 262],
-        "flags": {}, "order": 55, "mode": 0,
-        "inputs": [
-            inp("model", "MODEL", 112),
-            inp("positive", "CONDITIONING", 105),
-            inp("negative", "CONDITIONING", 106),
-            inp("latent_image", "LATENT", 104),
-        ],
-        "outputs": [out("LATENT", "LATENT", [107])],
-        "title": "Refine 8 steps denoise 0.28",
-        "properties": props("KSampler"),
-        "widgets_values": [42, "randomize", 8, 1, "euler", "simple", 0.18],
-        "widgets_values_named": {
-            "seed": 42, "control_after_generate": "randomize",
-            "steps": 8, "cfg": 1, "sampler_name": "euler",
-            "scheduler": "simple", "denoise": 0.18,
-        },
-    })
-    add({
-        "id": 75, "type": "VAEDecode", "pos": [1280, 930], "size": [210, 46],
-        "flags": {}, "order": 56, "mode": 0,
-        "inputs": [inp("samples", "LATENT", 107), inp("vae", "VAE", 121)],
-        "outputs": [out("IMAGE", "IMAGE", [108, 109])],
-        "title": "Decode final",
-        "properties": props("VAEDecode"),
-    })
-    add({
-        "id": 24, "type": "PreviewImage", "pos": [1520, 860], "size": [400, 520],
-        "flags": {}, "order": 57, "mode": 0,
-        "inputs": [inp("images", "IMAGE", 108)],
+        "inputs": [inp("images", "IMAGE", 96)],
         "outputs": [out("IMAGE", "IMAGE", None)],
         "title": "Final",
         "properties": props("PreviewImage"),
@@ -813,9 +665,9 @@ def main() -> None:
         "bgcolor": "#353",
     })
     add({
-        "id": 23, "type": "SaveImage", "pos": [1520, 1400], "size": [400, 58],
-        "flags": {}, "order": 58, "mode": 0,
-        "inputs": [inp("images", "IMAGE", 109)],
+        "id": 23, "type": "SaveImage", "pos": [1320, 1220], "size": [400, 58],
+        "flags": {}, "order": 48, "mode": 0,
+        "inputs": [inp("images", "IMAGE", 97)],
         "outputs": [out("IMAGE", "IMAGE", None)],
         "title": "Save final",
         "properties": props("SaveImage"),
@@ -849,23 +701,23 @@ def main() -> None:
     graph = {
         "id": "krea2-edited-frame",
         "revision": 0,
-        "last_node_id": 77,
-        "last_link_id": 143,
+        "last_node_id": 78,
+        "last_link_id": 145,
         "nodes": nodes,
         "links": links,
         "groups": [
             {"id": 1, "title": "Models + prompts", "bounding": [-1440, 0, 1240, 430], "color": "#3f789e", "flags": {}},
             {"id": 2, "title": "Draft photo, hide old person, pose", "bounding": [-1440, 430, 2000, 1480], "color": "#322", "flags": {}},
             {"id": 3, "title": "Draft generate (empty latent)", "bounding": [-240, 0, 1860, 680], "color": "#3f789e", "flags": {}},
-            {"id": 4, "title": "Upscale + refine marry region", "bounding": [220, 680, 1740, 820], "color": "#3f789e", "flags": {}},
+            {"id": 4, "title": "Stamp original kitchen + upscale", "bounding": [600, 660, 1160, 640], "color": "#3f789e", "flags": {}},
         ],
         "config": {},
         "extra": {
             "ds": {"scale": 0.42, "offset": [1480, 80]},
             "frontendVersion": "1.52.7",
             "visagely": {
-                "title": "Replace person: pose generate, soft marry, upscale",
-                "notes": "Empty latent draft. Feathered union mask. No hard old-silhouette paste.",
+                "title": "Replace person: generate canvas, stamp original kitchen",
+                "notes": "Empty latent draft. dest=generate, source=original, mask=invert(old∪new). No ghost, no blur-heal, no second sampler.",
             },
         },
         "version": 0.4,

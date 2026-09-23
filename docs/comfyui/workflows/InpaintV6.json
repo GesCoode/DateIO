@@ -1,8 +1,8 @@
 {
   "id": "krea2-edited-frame",
   "revision": 0,
-  "last_node_id": 77,
-  "last_link_id": 143,
+  "last_node_id": 78,
+  "last_link_id": 145,
   "nodes": [
     {
       "id": 1,
@@ -67,9 +67,7 @@
           "links": [
             2,
             3,
-            4,
-            110,
-            111
+            4
           ]
         }
       ],
@@ -113,9 +111,7 @@
           "links": [
             5,
             6,
-            7,
-            120,
-            121
+            7
           ]
         }
       ],
@@ -209,8 +205,7 @@
           "type": "MODEL",
           "slot_index": 0,
           "links": [
-            9,
-            112
+            9
           ]
         },
         {
@@ -401,8 +396,7 @@
           "type": "STRING",
           "slot_index": 0,
           "links": [
-            130,
-            113
+            130
           ]
         }
       ],
@@ -491,10 +485,10 @@
         "Node name for S&R": "Note"
       },
       "widgets_values": [
-        "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent).\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. Marry pastes ONLY the new RMBG person (feathered). Leftover old-person pixels are healed from a blur of the original photo \u2014 the island/background is never replaced by generated marble.\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Pass 2 upscales and refines only the new person, not the kitchen.\nCLIP type must be krea2."
+        "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent).\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. Marry starts from the GENERATE. Original kitchen is stamped back only where invert(old person OR new person). The old person never stays in the destination, so there is no ghost. No blur-heal. No second sampler.\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Final is a lanczos upscale of the married draft.\nCLIP type must be krea2."
       ],
       "widgets_values_named": {
-        "text": "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent).\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. Marry pastes ONLY the new RMBG person (feathered). Leftover old-person pixels are healed from a blur of the original photo \u2014 the island/background is never replaced by generated marble.\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Pass 2 upscales and refines only the new person, not the kitchen.\nCLIP type must be krea2."
+        "text": "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent).\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. Marry starts from the GENERATE. Original kitchen is stamped back only where invert(old person OR new person). The old person never stays in the destination, so there is no ghost. No blur-heal. No second sampler.\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Final is a lanczos upscale of the married draft.\nCLIP type must be krea2."
       },
       "color": "#432",
       "bgcolor": "#653"
@@ -530,8 +524,7 @@
             40,
             71,
             82,
-            132,
-            138
+            132
           ]
         }
       ],
@@ -819,18 +812,18 @@
           ]
         }
       ],
-      "title": "Grow 12 \u2014 leftover old person only",
+      "title": "Grow 14 \u2014 old person (union)",
       "properties": {
         "Node name for S&R": "GrowMask",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       },
       "widgets_values": [
-        12,
+        14,
         true
       ],
       "widgets_values_named": {
-        "expand": 12,
+        "expand": 14,
         "tapered_corners": true
       }
     },
@@ -1612,10 +1605,10 @@
         "Node name for S&R": "TextEncodeKrea2OstrisEdit"
       },
       "widgets_values": [
-        "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting, cropped legs, missing hips, cut off at the waist, floating torso, white blob, melted marble"
+        "woman, female, long hair, feminine body, breasts, mixed gender, ghost, double exposure, overlay of two people, leftover original person, hard cutout, sticker, pasted, mask outline, halo, different lighting, cropped legs, missing hips, cut off at the waist, floating torso, white blob, melted marble"
       ],
       "widgets_values_named": {
-        "prompt": "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting, cropped legs, missing hips, cut off at the waist, floating torso, white blob, melted marble"
+        "prompt": "woman, female, long hair, feminine body, breasts, mixed gender, ghost, double exposure, overlay of two people, leftover original person, hard cutout, sticker, pasted, mask outline, halo, different lighting, cropped legs, missing hips, cut off at the waist, floating torso, white blob, melted marble"
       }
     },
     {
@@ -1961,82 +1954,30 @@
           "type": "MASK",
           "slot_index": 0,
           "links": [
-            87,
-            140
+            87
           ]
         }
       ],
-      "title": "Grow new person 18 (keep hips)",
+      "title": "Grow 14 \u2014 new person (union)",
       "properties": {
         "Node name for S&R": "GrowMask",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       },
       "widgets_values": [
-        18,
+        14,
         true
       ],
       "widgets_values_named": {
-        "expand": 18,
+        "expand": 14,
         "tapered_corners": true
-      }
-    },
-    {
-      "id": 52,
-      "type": "FeatherMask",
-      "pos": [
-        960,
-        470
-      ],
-      "size": [
-        250,
-        154
-      ],
-      "flags": {},
-      "order": 39,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 87
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "slot_index": 0,
-          "links": [
-            88,
-            143
-          ]
-        }
-      ],
-      "title": "Feather new person",
-      "properties": {
-        "Node name for S&R": "FeatherMask",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      },
-      "widgets_values": [
-        20,
-        20,
-        20,
-        20
-      ],
-      "widgets_values_named": {
-        "left": 20,
-        "top": 20,
-        "right": 20,
-        "bottom": 20
       }
     },
     {
       "id": 53,
       "type": "MaskComposite",
       "pos": [
-        1240,
+        1220,
         360
       ],
       "size": [
@@ -2044,7 +1985,7 @@
         154
       ],
       "flags": {},
-      "order": 40,
+      "order": 39,
       "mode": 0,
       "inputs": [
         {
@@ -2055,7 +1996,7 @@
         {
           "name": "source",
           "type": "MASK",
-          "link": 140
+          "link": 87
         }
       ],
       "outputs": [
@@ -2068,7 +2009,7 @@
           ]
         }
       ],
-      "title": "Leftover old person (old minus new)",
+      "title": "People = old OR new",
       "properties": {
         "Node name for S&R": "MaskComposite",
         "cnr_id": "comfy-core",
@@ -2077,19 +2018,19 @@
       "widgets_values": [
         0,
         0,
-        "subtract"
+        "or"
       ],
       "widgets_values_named": {
         "x": 0,
         "y": 0,
-        "operation": "subtract"
+        "operation": "or"
       }
     },
     {
-      "id": 54,
+      "id": 52,
       "type": "FeatherMask",
       "pos": [
-        1540,
+        1520,
         360
       ],
       "size": [
@@ -2097,7 +2038,7 @@
         154
       ],
       "flags": {},
-      "order": 41,
+      "order": 40,
       "mode": 0,
       "inputs": [
         {
@@ -2112,12 +2053,11 @@
           "type": "MASK",
           "slot_index": 0,
           "links": [
-            73,
-            92
+            88
           ]
         }
       ],
-      "title": "Feather leftover heal",
+      "title": "Feather people (small)",
       "properties": {
         "Node name for S&R": "FeatherMask",
         "cnr_id": "comfy-core",
@@ -2137,10 +2077,49 @@
       }
     },
     {
+      "id": 78,
+      "type": "InvertMask",
+      "pos": [
+        1520,
+        540
+      ],
+      "size": [
+        210,
+        46
+      ],
+      "flags": {},
+      "order": 41,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 88
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": [
+            144,
+            145
+          ]
+        }
+      ],
+      "title": "Kitchen keep = invert(people)",
+      "properties": {
+        "Node name for S&R": "InvertMask",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
       "id": 56,
       "type": "MaskToImage",
       "pos": [
-        1540,
+        1750,
         540
       ],
       "size": [
@@ -2156,7 +2135,7 @@
         {
           "name": "mask",
           "type": "MASK",
-          "link": 92
+          "link": 145
         }
       ],
       "outputs": [
@@ -2169,7 +2148,7 @@
           ]
         }
       ],
-      "title": "Leftover mask to image",
+      "title": "Kitchen keep to image",
       "properties": {
         "Node name for S&R": "MaskToImage",
         "cnr_id": "comfy-core",
@@ -2180,7 +2159,7 @@
       "id": 47,
       "type": "PreviewImage",
       "pos": [
-        1740,
+        1750,
         360
       ],
       "size": [
@@ -2205,7 +2184,7 @@
           "links": null
         }
       ],
-      "title": "Leftover heal (should be tiny)",
+      "title": "Kitchen keep (white = original)",
       "properties": {
         "Node name for S&R": "PreviewImage",
         "cnr_id": "comfy-core",
@@ -2213,139 +2192,34 @@
       }
     },
     {
-      "id": 76,
-      "type": "ImageBlur",
+      "id": 55,
+      "type": "ImageCompositeMasked",
       "pos": [
         640,
         680
       ],
       "size": [
-        270,
-        82
+        320,
+        146
       ],
       "flags": {},
       "order": 44,
       "mode": 0,
       "inputs": [
         {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 138
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": [
-            139
-          ]
-        }
-      ],
-      "title": "Blur original (heal source)",
-      "properties": {
-        "Node name for S&R": "ImageBlur",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      },
-      "widgets_values": [
-        15,
-        6.0
-      ],
-      "widgets_values_named": {
-        "blur_radius": 15,
-        "sigma": 6.0
-      }
-    },
-    {
-      "id": 77,
-      "type": "ImageCompositeMasked",
-      "pos": [
-        940,
-        680
-      ],
-      "size": [
-        300,
-        146
-      ],
-      "flags": {},
-      "order": 45,
-      "mode": 0,
-      "inputs": [
-        {
           "name": "destination",
-          "type": "IMAGE",
-          "link": 132
-        },
-        {
-          "name": "source",
-          "type": "IMAGE",
-          "link": 139
-        },
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 73,
-          "shape": 7
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": [
-            141
-          ]
-        }
-      ],
-      "title": "Heal leftover old pixels",
-      "properties": {
-        "Node name for S&R": "ImageCompositeMasked",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      },
-      "widgets_values": [
-        0,
-        0,
-        false
-      ],
-      "widgets_values_named": {
-        "x": 0,
-        "y": 0,
-        "resize_source": false
-      }
-    },
-    {
-      "id": 55,
-      "type": "ImageCompositeMasked",
-      "pos": [
-        1260,
-        680
-      ],
-      "size": [
-        300,
-        146
-      ],
-      "flags": {},
-      "order": 46,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "destination",
-          "type": "IMAGE",
-          "link": 141
-        },
-        {
-          "name": "source",
           "type": "IMAGE",
           "link": 135
         },
         {
+          "name": "source",
+          "type": "IMAGE",
+          "link": 132
+        },
+        {
           "name": "mask",
           "type": "MASK",
-          "link": 88,
+          "link": 144,
           "shape": 7
         }
       ],
@@ -2360,7 +2234,7 @@
           ]
         }
       ],
-      "title": "Paste new person only",
+      "title": "Stamp original kitchen onto generate",
       "properties": {
         "Node name for S&R": "ImageCompositeMasked",
         "cnr_id": "comfy-core",
@@ -2419,8 +2293,8 @@
       "id": 60,
       "type": "ImageScaleToTotalPixels",
       "pos": [
-        640,
-        700
+        980,
+        680
       ],
       "size": [
         320,
@@ -2465,572 +2339,24 @@
       }
     },
     {
-      "id": 61,
-      "type": "GetImageSize",
-      "pos": [
-        980,
-        700
-      ],
-      "size": [
-        230,
-        82
-      ],
-      "flags": {},
-      "order": 47,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 96
-        }
-      ],
-      "outputs": [
-        {
-          "name": "width",
-          "type": "INT",
-          "slot_index": 0,
-          "links": [
-            98
-          ]
-        },
-        {
-          "name": "height",
-          "type": "INT",
-          "slot_index": 1,
-          "links": [
-            99
-          ]
-        },
-        {
-          "name": "batch_size",
-          "type": "INT",
-          "slot_index": 2,
-          "links": null
-        }
-      ],
-      "title": "Upscale size",
-      "properties": {
-        "Node name for S&R": "GetImageSize",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      }
-    },
-    {
-      "id": 62,
-      "type": "MaskToImage",
-      "pos": [
-        980,
-        820
-      ],
-      "size": [
-        180,
-        26
-      ],
-      "flags": {},
-      "order": 48,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 143
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": [
-            100
-          ]
-        }
-      ],
-      "title": "Scale marry mask",
-      "properties": {
-        "Node name for S&R": "MaskToImage",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      }
-    },
-    {
-      "id": 63,
-      "type": "ImageScale",
-      "pos": [
-        1180,
-        820
-      ],
-      "size": [
-        280,
-        150
-      ],
-      "flags": {},
-      "order": 49,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 100
-        },
-        {
-          "name": "width",
-          "type": "INT",
-          "link": 98,
-          "widget": {
-            "name": "width"
-          }
-        },
-        {
-          "name": "height",
-          "type": "INT",
-          "link": 99,
-          "widget": {
-            "name": "height"
-          }
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": [
-            101
-          ]
-        }
-      ],
-      "title": "Mask to upscale size",
-      "properties": {
-        "Node name for S&R": "ImageScale",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      },
-      "widgets_values": [
-        "lanczos",
-        1024,
-        1024,
-        "disabled"
-      ],
-      "widgets_values_named": {
-        "upscale_method": "lanczos",
-        "width": 1024,
-        "height": 1024,
-        "crop": "disabled"
-      }
-    },
-    {
-      "id": 64,
-      "type": "ImageToMask",
-      "pos": [
-        1480,
-        820
-      ],
-      "size": [
-        220,
-        58
-      ],
-      "flags": {},
-      "order": 50,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 101
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "slot_index": 0,
-          "links": [
-            102
-          ]
-        }
-      ],
-      "title": "Mask channel",
-      "properties": {
-        "Node name for S&R": "ImageToMask",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      },
-      "widgets_values": [
-        "red"
-      ],
-      "widgets_values_named": {
-        "channel": "red"
-      }
-    },
-    {
-      "id": 66,
-      "type": "VAEEncode",
-      "pos": [
-        640,
-        850
-      ],
-      "size": [
-        270,
-        46
-      ],
-      "flags": {},
-      "order": 51,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "pixels",
-          "type": "IMAGE",
-          "link": 97
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 120
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "slot_index": 0,
-          "links": [
-            103
-          ]
-        }
-      ],
-      "title": "Encode upscaled marry",
-      "properties": {
-        "Node name for S&R": "VAEEncode",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      }
-    },
-    {
-      "id": 67,
-      "type": "SetLatentNoiseMask",
-      "pos": [
-        640,
-        930
-      ],
-      "size": [
-        270,
-        46
-      ],
-      "flags": {},
-      "order": 52,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "samples",
-          "type": "LATENT",
-          "link": 103
-        },
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 102,
-          "shape": 7
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "slot_index": 0,
-          "links": [
-            104
-          ]
-        }
-      ],
-      "title": "Refine only the new person",
-      "properties": {
-        "Node name for S&R": "SetLatentNoiseMask",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      }
-    },
-    {
-      "id": 68,
-      "type": "TextEncodeKrea2OstrisEdit",
-      "pos": [
-        260,
-        700
-      ],
-      "size": [
-        360,
-        160
-      ],
-      "flags": {},
-      "order": 53,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 110
-        },
-        {
-          "name": "prompt",
-          "type": "STRING",
-          "link": 113,
-          "widget": {
-            "name": "prompt"
-          }
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": null,
-          "shape": 7
-        },
-        {
-          "name": "image1",
-          "type": "IMAGE",
-          "link": null,
-          "shape": 7
-        },
-        {
-          "name": "image2",
-          "type": "IMAGE",
-          "link": null,
-          "shape": 7
-        },
-        {
-          "name": "image3",
-          "type": "IMAGE",
-          "link": null,
-          "shape": 7
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "slot_index": 0,
-          "links": [
-            105
-          ]
-        }
-      ],
-      "title": "Positive refine (text only, faster)",
-      "properties": {
-        "aux_id": "ostris/comfyui-krea2-ostris-edit",
-        "ver": "7756566160c4a1b24bb1bd9f0ff3ced1a83d7547",
-        "cnr_id": "comfyui-krea2-ostris-edit",
-        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
-      },
-      "widgets_values": [
-        ""
-      ],
-      "widgets_values_named": {
-        "prompt": ""
-      }
-    },
-    {
-      "id": 69,
-      "type": "TextEncodeKrea2OstrisEdit",
-      "pos": [
-        260,
-        890
-      ],
-      "size": [
-        360,
-        120
-      ],
-      "flags": {},
-      "order": 54,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 111
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": null,
-          "shape": 7
-        },
-        {
-          "name": "image1",
-          "type": "IMAGE",
-          "link": null,
-          "shape": 7
-        },
-        {
-          "name": "image2",
-          "type": "IMAGE",
-          "link": null,
-          "shape": 7
-        },
-        {
-          "name": "image3",
-          "type": "IMAGE",
-          "link": null,
-          "shape": 7
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "slot_index": 0,
-          "links": [
-            106
-          ]
-        }
-      ],
-      "title": "Negative refine",
-      "properties": {
-        "aux_id": "ostris/comfyui-krea2-ostris-edit",
-        "ver": "7756566160c4a1b24bb1bd9f0ff3ced1a83d7547",
-        "cnr_id": "comfyui-krea2-ostris-edit",
-        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
-      },
-      "widgets_values": [
-        "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting, cropped legs, missing hips, cut off at the waist, floating torso, white blob, melted marble"
-      ],
-      "widgets_values_named": {
-        "prompt": "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting, cropped legs, missing hips, cut off at the waist, floating torso, white blob, melted marble"
-      }
-    },
-    {
-      "id": 74,
-      "type": "KSampler",
-      "pos": [
-        940,
-        930
-      ],
-      "size": [
-        320,
-        262
-      ],
-      "flags": {},
-      "order": 55,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 112
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 105
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "link": 106
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 104
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "slot_index": 0,
-          "links": [
-            107
-          ]
-        }
-      ],
-      "title": "Refine 8 steps denoise 0.28",
-      "properties": {
-        "Node name for S&R": "KSampler",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      },
-      "widgets_values": [
-        42,
-        "randomize",
-        8,
-        1,
-        "euler",
-        "simple",
-        0.18
-      ],
-      "widgets_values_named": {
-        "seed": 42,
-        "control_after_generate": "randomize",
-        "steps": 8,
-        "cfg": 1,
-        "sampler_name": "euler",
-        "scheduler": "simple",
-        "denoise": 0.18
-      }
-    },
-    {
-      "id": 75,
-      "type": "VAEDecode",
-      "pos": [
-        1280,
-        930
-      ],
-      "size": [
-        210,
-        46
-      ],
-      "flags": {},
-      "order": 56,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "samples",
-          "type": "LATENT",
-          "link": 107
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 121
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": [
-            108,
-            109
-          ]
-        }
-      ],
-      "title": "Decode final",
-      "properties": {
-        "Node name for S&R": "VAEDecode",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      }
-    },
-    {
       "id": 24,
       "type": "PreviewImage",
       "pos": [
-        1520,
-        860
+        1320,
+        680
       ],
       "size": [
         400,
         520
       ],
       "flags": {},
-      "order": 57,
+      "order": 47,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 108
+          "link": 96
         }
       ],
       "outputs": [
@@ -3054,21 +2380,21 @@
       "id": 23,
       "type": "SaveImage",
       "pos": [
-        1520,
-        1400
+        1320,
+        1220
       ],
       "size": [
         400,
         58
       ],
       "flags": {},
-      "order": 58,
+      "order": 48,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 109
+          "link": 97
         }
       ],
       "outputs": [
@@ -3519,14 +2845,6 @@
       "MASK"
     ],
     [
-      87,
-      51,
-      0,
-      52,
-      0,
-      "MASK"
-    ],
-    [
       66,
       42,
       0,
@@ -3535,7 +2853,7 @@
       "MASK"
     ],
     [
-      140,
+      87,
       51,
       0,
       53,
@@ -3546,13 +2864,21 @@
       89,
       53,
       0,
-      54,
+      52,
       0,
       "MASK"
     ],
     [
-      92,
-      54,
+      88,
+      52,
+      0,
+      78,
+      0,
+      "MASK"
+    ],
+    [
+      145,
+      78,
       0,
       56,
       0,
@@ -3567,10 +2893,10 @@
       "IMAGE"
     ],
     [
-      138,
-      10,
+      135,
+      20,
       0,
-      76,
+      55,
       0,
       "IMAGE"
     ],
@@ -3578,45 +2904,13 @@
       132,
       10,
       0,
-      77,
-      0,
-      "IMAGE"
-    ],
-    [
-      139,
-      76,
-      0,
-      77,
-      1,
-      "IMAGE"
-    ],
-    [
-      73,
-      54,
-      0,
-      77,
-      2,
-      "MASK"
-    ],
-    [
-      141,
-      77,
-      0,
-      55,
-      0,
-      "IMAGE"
-    ],
-    [
-      135,
-      20,
-      0,
       55,
       1,
       "IMAGE"
     ],
     [
-      88,
-      52,
+      144,
+      78,
       0,
       55,
       2,
@@ -3642,165 +2936,13 @@
       96,
       60,
       0,
-      61,
-      0,
-      "IMAGE"
-    ],
-    [
-      143,
-      52,
-      0,
-      62,
-      0,
-      "MASK"
-    ],
-    [
-      100,
-      62,
-      0,
-      63,
-      0,
-      "IMAGE"
-    ],
-    [
-      98,
-      61,
-      0,
-      63,
-      1,
-      "INT"
-    ],
-    [
-      99,
-      61,
-      1,
-      63,
-      2,
-      "INT"
-    ],
-    [
-      101,
-      63,
-      0,
-      64,
+      24,
       0,
       "IMAGE"
     ],
     [
       97,
       60,
-      0,
-      66,
-      0,
-      "IMAGE"
-    ],
-    [
-      120,
-      3,
-      0,
-      66,
-      1,
-      "VAE"
-    ],
-    [
-      103,
-      66,
-      0,
-      67,
-      0,
-      "LATENT"
-    ],
-    [
-      102,
-      64,
-      0,
-      67,
-      1,
-      "MASK"
-    ],
-    [
-      110,
-      2,
-      0,
-      68,
-      0,
-      "CLIP"
-    ],
-    [
-      113,
-      72,
-      0,
-      68,
-      1,
-      "STRING"
-    ],
-    [
-      111,
-      2,
-      0,
-      69,
-      0,
-      "CLIP"
-    ],
-    [
-      112,
-      5,
-      0,
-      74,
-      0,
-      "MODEL"
-    ],
-    [
-      105,
-      68,
-      0,
-      74,
-      1,
-      "CONDITIONING"
-    ],
-    [
-      106,
-      69,
-      0,
-      74,
-      2,
-      "CONDITIONING"
-    ],
-    [
-      104,
-      67,
-      0,
-      74,
-      3,
-      "LATENT"
-    ],
-    [
-      107,
-      74,
-      0,
-      75,
-      0,
-      "LATENT"
-    ],
-    [
-      121,
-      3,
-      0,
-      75,
-      1,
-      "VAE"
-    ],
-    [
-      108,
-      75,
-      0,
-      24,
-      0,
-      "IMAGE"
-    ],
-    [
-      109,
-      75,
       0,
       23,
       0,
@@ -3846,12 +2988,12 @@
     },
     {
       "id": 4,
-      "title": "Upscale + refine marry region",
+      "title": "Stamp original kitchen + upscale",
       "bounding": [
-        220,
-        680,
-        1740,
-        820
+        600,
+        660,
+        1160,
+        640
       ],
       "color": "#3f789e",
       "flags": {}
@@ -3868,8 +3010,8 @@
     },
     "frontendVersion": "1.52.7",
     "visagely": {
-      "title": "Replace person: pose generate, soft marry, upscale",
-      "notes": "Empty latent draft. Feathered union mask. No hard old-silhouette paste."
+      "title": "Replace person: generate canvas, stamp original kitchen",
+      "notes": "Empty latent draft. dest=generate, source=original, mask=invert(old\u222anew). No ghost, no blur-heal, no second sampler."
     }
   },
   "version": 0.4,
