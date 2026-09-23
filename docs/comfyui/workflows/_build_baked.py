@@ -44,10 +44,10 @@ NOTE = (
     "the whole frame (empty latent).\n"
     "2. image1 = reference with the old person painted out (lighting/camera). "
     "image2 = DWPose on gray. Pose LoRA 0.9.\n"
-    "3. LaMa removes the old person from the original photo (hole fill from "
-    "real kitchen pixels). Then only the new RMBG person is pasted on. The "
-    "old person is gone, so there is no ghost. Leftover holes are kitchen, "
-    "not generated marble. No second sampler.\n"
+    "3. BEN masks the person (not the island). LaMa removes the old person "
+    "from the original kitchen. Then only the new BEN person is pasted on. "
+    "No ghost, no leftover original person, no generated marble blob. "
+    "No second sampler.\n"
     "4. Type extra directions in Your adjustments (e.g. make the shirt red).\n"
     "5. Final is a lanczos upscale of the married draft.\n"
     "CLIP type must be krea2."
@@ -74,10 +74,10 @@ def inp(name, typ, link, *, shape=None, widget=None):
     return d
 
 
-def rmbg_widgets(blur: int = 8, offset: int = 0) -> tuple[list, dict]:
-    wv = ["RMBG-2.0", 1, 768, blur, offset, False, False, "Alpha", "#222222"]
+def rmbg_widgets(blur: int = 8, offset: int = 0, *, model: str = "BEN") -> tuple[list, dict]:
+    wv = [model, 1, 768, blur, offset, False, False, "Alpha", "#222222"]
     named = {
-        "model": "RMBG-2.0",
+        "model": model,
         "sensitivity": 1,
         "process_res": 768,
         "mask_blur": blur,
@@ -270,7 +270,7 @@ def main() -> None:
         "widgets_values_named": {"width": 1024, "height": 1024, "batch_size": 1},
     })
 
-    wv, named = rmbg_widgets(8, 0)
+    wv, named = rmbg_widgets(2, 0, model="BEN")
     add({
         "id": 40, "type": "RMBG", "pos": [-1400, 1020], "size": [300, 292],
         "flags": {}, "order": 14, "mode": 0,
@@ -302,10 +302,10 @@ def main() -> None:
         "flags": {}, "order": 16, "mode": 0,
         "inputs": [inp("mask", "MASK", 136)],
         "outputs": [out("MASK", "MASK", [66])],
-        "title": "Grow 10 — old person (LaMa hole)",
+        "title": "Grow 6 — old person (LaMa hole)",
         "properties": props("GrowMask"),
-        "widgets_values": [10, True],
-        "widgets_values_named": {"expand": 10, "tapered_corners": True},
+        "widgets_values": [6, True],
+        "widgets_values_named": {"expand": 6, "tapered_corners": True},
     })
     add({
         "id": 44, "type": "EmptyImage", "pos": [-800, 1020], "size": [250, 130],
@@ -546,7 +546,7 @@ def main() -> None:
         "bgcolor": "#533",
     })
 
-    wv2, named2 = rmbg_widgets(4, 2)
+    wv2, named2 = rmbg_widgets(2, 0, model="BEN")
     named2["process_res"] = 1024
     wv2[2] = 1024
     add({
@@ -570,10 +570,10 @@ def main() -> None:
         "flags": {}, "order": 38, "mode": 0,
         "inputs": [inp("mask", "MASK", 86)],
         "outputs": [out("MASK", "MASK", [87, 140])],
-        "title": "Grow 8 — new person paste",
+        "title": "Grow 2 — new person paste",
         "properties": props("GrowMask"),
-        "widgets_values": [8, True],
-        "widgets_values_named": {"expand": 8, "tapered_corners": True},
+        "widgets_values": [2, True],
+        "widgets_values_named": {"expand": 2, "tapered_corners": True},
     })
     add({
         "id": 52, "type": "FeatherMask", "pos": [960, 470], "size": [250, 154],
@@ -582,8 +582,8 @@ def main() -> None:
         "outputs": [out("MASK", "MASK", [88])],
         "title": "Feather new person",
         "properties": props("FeatherMask"),
-        "widgets_values": [16, 16, 16, 16],
-        "widgets_values_named": {"left": 16, "top": 16, "right": 16, "bottom": 16},
+        "widgets_values": [8, 8, 8, 8],
+        "widgets_values_named": {"left": 8, "top": 8, "right": 8, "bottom": 8},
     })
     add({
         "id": 53, "type": "MaskComposite", "pos": [1220, 360], "size": [280, 154],
@@ -624,8 +624,8 @@ def main() -> None:
         "outputs": [out("images", "IMAGE", [146, 147])],
         "title": "LaMa — remove old person from kitchen",
         "properties": LAMA,
-        "widgets_values": [230, 8],
-        "widgets_values_named": {"removal_strength": 230, "edge_smoothness": 8},
+        "widgets_values": [200, 8],
+        "widgets_values_named": {"removal_strength": 200, "edge_smoothness": 8},
         "color": "#222e40",
         "bgcolor": "#364254",
     })
@@ -734,7 +734,7 @@ def main() -> None:
             "frontendVersion": "1.52.7",
             "visagely": {
                 "title": "Replace person: LaMa kitchen + paste LoRA person",
-                "notes": "Empty latent draft. LaMa removes the old person. Paste only the new RMBG person. No ghost, no blur-heal, no second sampler.",
+                "notes": "Empty latent draft. BEN person masks. LaMa removes the old person. Paste only the new person onto the cleaned kitchen.",
             },
         },
         "version": 0.4,

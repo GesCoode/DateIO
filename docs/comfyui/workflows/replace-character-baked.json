@@ -485,10 +485,10 @@
         "Node name for S&R": "Note"
       },
       "widgets_values": [
-        "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent).\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. LaMa removes the old person from the original photo (hole fill from real kitchen pixels). Then only the new RMBG person is pasted on. The old person is gone, so there is no ghost. Leftover holes are kitchen, not generated marble. No second sampler.\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Final is a lanczos upscale of the married draft.\nCLIP type must be krea2."
+        "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent).\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. BEN masks the person (not the island). LaMa removes the old person from the original kitchen. Then only the new BEN person is pasted on. No ghost, no leftover original person, no generated marble blob. No second sampler.\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Final is a lanczos upscale of the married draft.\nCLIP type must be krea2."
       ],
       "widgets_values_named": {
-        "text": "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent).\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. LaMa removes the old person from the original photo (hole fill from real kitchen pixels). Then only the new RMBG person is pasted on. The old person is gone, so there is no ghost. Leftover holes are kitchen, not generated marble. No second sampler.\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Final is a lanczos upscale of the married draft.\nCLIP type must be krea2."
+        "text": "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent).\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. BEN masks the person (not the island). LaMa removes the old person from the original kitchen. Then only the new BEN person is pasted on. No ghost, no leftover original person, no generated marble blob. No second sampler.\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Final is a lanczos upscale of the married draft.\nCLIP type must be krea2."
       },
       "color": "#432",
       "bgcolor": "#653"
@@ -711,10 +711,10 @@
         "ver": "3.1.0"
       },
       "widgets_values": [
-        "RMBG-2.0",
+        "BEN",
         1,
         768,
-        8,
+        2,
         0,
         false,
         false,
@@ -722,10 +722,10 @@
         "#222222"
       ],
       "widgets_values_named": {
-        "model": "RMBG-2.0",
+        "model": "BEN",
         "sensitivity": 1,
         "process_res": 768,
-        "mask_blur": 8,
+        "mask_blur": 2,
         "mask_offset": 0,
         "invert_output": false,
         "refine_foreground": false,
@@ -812,18 +812,18 @@
           ]
         }
       ],
-      "title": "Grow 10 \u2014 old person (LaMa hole)",
+      "title": "Grow 6 \u2014 old person (LaMa hole)",
       "properties": {
         "Node name for S&R": "GrowMask",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       },
       "widgets_values": [
-        10,
+        6,
         true
       ],
       "widgets_values_named": {
-        "expand": 10,
+        "expand": 6,
         "tapered_corners": true
       }
     },
@@ -1903,22 +1903,22 @@
         "ver": "3.1.0"
       },
       "widgets_values": [
-        "RMBG-2.0",
+        "BEN",
         1,
         1024,
-        4,
         2,
+        0,
         false,
         false,
         "Alpha",
         "#222222"
       ],
       "widgets_values_named": {
-        "model": "RMBG-2.0",
+        "model": "BEN",
         "sensitivity": 1,
         "process_res": 1024,
-        "mask_blur": 4,
-        "mask_offset": 2,
+        "mask_blur": 2,
+        "mask_offset": 0,
         "invert_output": false,
         "refine_foreground": false,
         "background": "Alpha",
@@ -1959,18 +1959,18 @@
           ]
         }
       ],
-      "title": "Grow 8 \u2014 new person paste",
+      "title": "Grow 2 \u2014 new person paste",
       "properties": {
         "Node name for S&R": "GrowMask",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       },
       "widgets_values": [
-        8,
+        2,
         true
       ],
       "widgets_values_named": {
-        "expand": 8,
+        "expand": 2,
         "tapered_corners": true
       }
     },
@@ -2012,16 +2012,16 @@
         "ver": "0.37.0"
       },
       "widgets_values": [
-        16,
-        16,
-        16,
-        16
+        8,
+        8,
+        8,
+        8
       ],
       "widgets_values_named": {
-        "left": 16,
-        "top": 16,
-        "right": 16,
-        "bottom": 16
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8
       }
     },
     {
@@ -2197,11 +2197,11 @@
         "ver": "3.1.0"
       },
       "widgets_values": [
-        230,
+        200,
         8
       ],
       "widgets_values_named": {
-        "removal_strength": 230,
+        "removal_strength": 200,
         "edge_smoothness": 8
       },
       "color": "#222e40",
@@ -3079,7 +3079,7 @@
     "frontendVersion": "1.52.7",
     "visagely": {
       "title": "Replace person: LaMa kitchen + paste LoRA person",
-      "notes": "Empty latent draft. LaMa removes the old person. Paste only the new RMBG person. No ghost, no blur-heal, no second sampler."
+      "notes": "Empty latent draft. BEN person masks. LaMa removes the old person. Paste only the new person onto the cleaned kitchen."
     }
   },
   "version": 0.4,
