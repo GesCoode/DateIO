@@ -1,0 +1,29 @@
+{
+  "_comment": "Emergency local settings if you insist on training on the 2070. Expect 5-8 s/it and several hours. Prefer vast.ai.",
+  "base_model": "flux1-dev-fp8.safetensors",
+  "trigger": "vsgly_id",
+  "output_name": "vsgly_id_v1_local",
+  "max_train_steps": 1000,
+  "resolution": 512,
+  "batch_size": 1,
+  "network_dim": 16,
+  "network_alpha": 16,
+  "optimizer_type": "adamw8bit",
+  "learning_rate": 0.0001,
+  "lr_scheduler": "cosine",
+  "gradient_checkpointing": "enabled_with_cpu_offloading",
+  "gradient_dtype": "fp16",
+  "mixed_precision": "fp16",
+  "fp8_base": true,
+  "blocks_to_swap": 20,
+  "cache_latents": "disk",
+  "cache_text_encoder_outputs": "disk",
+  "apply_t5_attn_mask": true,
+  "keep_tokens": 1,
+  "seed": 42,
+  "notes": [
+    "RTX 2070 is Turing — never bf16.",
+    "Close every other GPU app. 32 GB system RAM is required for offload.",
+    "If it OOMs, drop resolution to 512 and blocks_to_swap to 24."
+  ]
+}

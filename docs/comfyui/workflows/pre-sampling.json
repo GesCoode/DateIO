@@ -1,0 +1,724 @@
+{
+  "id": "pre-sampling-vanilla",
+  "revision": 0,
+  "last_node_id": 13,
+  "last_link_id": 15,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UNETLoader",
+      "pos": [
+        -980,
+        80
+      ],
+      "size": [
+        420,
+        82
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "slot_index": 0,
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "title": "Get_Model",
+      "widgets_values": [
+        "krea2_raw_bf16.safetensors",
+        "default"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "CLIPLoader",
+      "pos": [
+        -980,
+        220
+      ],
+      "size": [
+        420,
+        106
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "slot_index": 0,
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "title": "Get_CLIP",
+      "widgets_values": [
+        "qwen3vl_4b_fp8_scaled.safetensors",
+        "krea2",
+        "default"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "VAELoader",
+      "pos": [
+        -980,
+        390
+      ],
+      "size": [
+        420,
+        58
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "slot_index": 0,
+          "links": [
+            3,
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "title": "Get_VAE",
+      "widgets_values": [
+        "qwen_image_vae.safetensors"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        -500,
+        80
+      ],
+      "size": [
+        430,
+        82
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "slot_index": 0,
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "title": "Turbo LoRA",
+      "widgets_values": [
+        "krea2_turbo_lora_rank_64_bf16.safetensors",
+        1.0
+      ]
+    },
+    {
+      "id": 5,
+      "type": "LoraLoader",
+      "pos": [
+        -500,
+        220
+      ],
+      "size": [
+        430,
+        126
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 5
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "slot_index": 0,
+          "links": [
+            6
+          ]
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "slot_index": 1,
+          "links": [
+            7,
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "title": "Trigger Word / Identity LoRA",
+      "widgets_values": [
+        "KreAlpha2640.safetensors",
+        0.9,
+        1.0
+      ]
+    },
+    {
+      "id": 6,
+      "type": "LoadImage",
+      "pos": [
+        -500,
+        500
+      ],
+      "size": [
+        320,
+        314
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            9
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "title": "Image To Copy",
+      "widgets_values": [
+        "photo_02.png",
+        "image"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "ImageScale",
+      "pos": [
+        -80,
+        500
+      ],
+      "size": [
+        300,
+        130
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            10
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageScale",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "title": "Image Resize",
+      "widgets_values": [
+        "lanczos",
+        1136,
+        2032,
+        "disabled"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "CLIPTextEncode",
+      "pos": [
+        -80,
+        80
+      ],
+      "size": [
+        430,
+        160
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "title": "Text Generation",
+      "widgets_values": [
+        "vsgly_id, photorealistic photo, cobblestone street at night, rust-orange long-sleeve mini dress, hand on hip, looking at camera, warm street lights, full body"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "CLIPTextEncode",
+      "pos": [
+        -80,
+        270
+      ],
+      "size": [
+        430,
+        76
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            12
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "title": "Negative",
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 10,
+      "type": "VAEEncode",
+      "pos": [
+        400,
+        360
+      ],
+      "size": [
+        240,
+        46
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "pixels",
+          "type": "IMAGE",
+          "link": 10
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            13
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEEncode",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "title": "Pre-Sampling \u00b7 encode (image_to_latent)"
+    },
+    {
+      "id": 11,
+      "type": "KSampler",
+      "pos": [
+        400,
+        80
+      ],
+      "size": [
+        320,
+        262
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 6
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 11
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 12
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 13
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            14
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "title": "KSampler",
+      "widgets_values": [
+        896946857391314,
+        "randomize",
+        12,
+        1.0,
+        "euler_ancestral",
+        "beta",
+        0.55
+      ]
+    },
+    {
+      "id": 12,
+      "type": "VAEDecode",
+      "pos": [
+        780,
+        80
+      ],
+      "size": [
+        240,
+        46
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 14
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            15
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "title": "Pre-Sampling \u00b7 decode"
+    },
+    {
+      "id": 13,
+      "type": "PreviewImage",
+      "pos": [
+        1080,
+        80
+      ],
+      "size": [
+        380,
+        420
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 15
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "title": "Final Images"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      4,
+      0,
+      "MODEL"
+    ],
+    [
+      2,
+      2,
+      0,
+      5,
+      1,
+      "CLIP"
+    ],
+    [
+      3,
+      3,
+      0,
+      10,
+      1,
+      "VAE"
+    ],
+    [
+      4,
+      3,
+      0,
+      12,
+      1,
+      "VAE"
+    ],
+    [
+      5,
+      4,
+      0,
+      5,
+      0,
+      "MODEL"
+    ],
+    [
+      6,
+      5,
+      0,
+      11,
+      0,
+      "MODEL"
+    ],
+    [
+      7,
+      5,
+      1,
+      8,
+      0,
+      "CLIP"
+    ],
+    [
+      8,
+      5,
+      1,
+      9,
+      0,
+      "CLIP"
+    ],
+    [
+      9,
+      6,
+      0,
+      7,
+      0,
+      "IMAGE"
+    ],
+    [
+      10,
+      7,
+      0,
+      10,
+      0,
+      "IMAGE"
+    ],
+    [
+      11,
+      8,
+      0,
+      11,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      12,
+      9,
+      0,
+      11,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      13,
+      10,
+      0,
+      11,
+      3,
+      "LATENT"
+    ],
+    [
+      14,
+      11,
+      0,
+      12,
+      0,
+      "LATENT"
+    ],
+    [
+      15,
+      12,
+      0,
+      13,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "Pre-Sampling is just these two nodes + KSampler in between",
+      "bounding": [
+        360,
+        20,
+        700,
+        420
+      ],
+      "color": "#3f789e"
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.75,
+      "offset": [
+        1100,
+        180
+      ]
+    },
+    "frontendVersion": "1.52.7",
+    "visagely": {
+      "domain_model": {
+        "what_easyuse_presampling_is": "Not a sampler. Two vanilla ops around KSampler.",
+        "encode": "VAEEncode(pixels=Image To Copy resized, vae=Get_VAE) -> latent_image",
+        "sample": "KSampler(model, positive, negative, latent_image) -> sampled latent",
+        "decode": "VAEDecode(samples=sampled latent, vae=Get_VAE) -> IMAGE",
+        "passthrough": "model, positive, negative are NOT transformed by Pre-Sampling"
+      }
+    }
+  },
+  "version": 0.4
+}
