@@ -1,14 +1,14 @@
 {
   "id": "krea2-edited-frame",
   "revision": 0,
-  "last_node_id": 60,
-  "last_link_id": 91,
+  "last_node_id": 75,
+  "last_link_id": 137,
   "nodes": [
     {
       "id": 1,
       "type": "UNETLoader",
       "pos": [
-        -1180,
+        -1400,
         40
       ],
       "size": [
@@ -48,7 +48,7 @@
       "id": 2,
       "type": "CLIPLoader",
       "pos": [
-        -1180,
+        -1400,
         160
       ],
       "size": [
@@ -67,7 +67,9 @@
           "links": [
             2,
             3,
-            4
+            4,
+            110,
+            111
           ]
         }
       ],
@@ -92,7 +94,7 @@
       "id": 3,
       "type": "VAELoader",
       "pos": [
-        -1180,
+        -1400,
         310
       ],
       "size": [
@@ -112,7 +114,8 @@
             5,
             6,
             7,
-            50
+            120,
+            121
           ]
         }
       ],
@@ -133,7 +136,7 @@
       "id": 4,
       "type": "Krea2OstrisEditModelPatch",
       "pos": [
-        -720,
+        -940,
         40
       ],
       "size": [
@@ -178,7 +181,7 @@
       "id": 5,
       "type": "LoraLoader",
       "pos": [
-        -720,
+        -940,
         150
       ],
       "size": [
@@ -206,7 +209,8 @@
           "type": "MODEL",
           "slot_index": 0,
           "links": [
-            9
+            9,
+            112
           ]
         },
         {
@@ -216,7 +220,7 @@
           "links": null
         }
       ],
-      "title": "Identity LoRA",
+      "title": "Identity LoRA 1.0",
       "properties": {
         "Node name for S&R": "LoraLoader",
         "cnr_id": "comfy-core",
@@ -237,7 +241,7 @@
       "id": 6,
       "type": "LoraLoaderModelOnly",
       "pos": [
-        -720,
+        -940,
         320
       ],
       "size": [
@@ -264,7 +268,7 @@
           ]
         }
       ],
-      "title": "Pose LoRA 0.75",
+      "title": "Pose LoRA 0.9",
       "properties": {
         "Node name for S&R": "LoraLoaderModelOnly",
         "cnr_id": "comfy-core",
@@ -272,18 +276,158 @@
       },
       "widgets_values": [
         "krea2_turbo_openpose_controlnet.safetensors",
-        0.75
+        0.9
       ],
       "widgets_values_named": {
         "lora_name": "krea2_turbo_openpose_controlnet.safetensors",
-        "strength_model": 0.75
+        "strength_model": 0.9
+      }
+    },
+    {
+      "id": 70,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        -940,
+        440
+      ],
+      "size": [
+        360,
+        160
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "slot_index": 0,
+          "links": [
+            80
+          ]
+        }
+      ],
+      "title": "Identity + camera + lighting",
+      "properties": {
+        "Node name for S&R": "PrimitiveStringMultiline",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "vsgly_id, a man with short dark wavy hair and a short beard, masculine face and body, natural skin, matching the skeleton pose, same camera angle, same lighting as the reference photograph, photorealistic"
+      ],
+      "widgets_values_named": {
+        "value": "vsgly_id, a man with short dark wavy hair and a short beard, masculine face and body, natural skin, matching the skeleton pose, same camera angle, same lighting as the reference photograph, photorealistic"
+      },
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 71,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        -940,
+        630
+      ],
+      "size": [
+        360,
+        120
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "slot_index": 0,
+          "links": [
+            81
+          ]
+        }
+      ],
+      "title": "Your adjustments (e.g. make the shirt red)",
+      "properties": {
+        "Node name for S&R": "PrimitiveStringMultiline",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "widgets_values_named": {
+        "value": ""
+      },
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 72,
+      "type": "StringConcatenate",
+      "pos": [
+        -540,
+        520
+      ],
+      "size": [
+        300,
+        130
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "string_a",
+          "type": "STRING",
+          "link": 80,
+          "widget": {
+            "name": "string_a"
+          }
+        },
+        {
+          "name": "string_b",
+          "type": "STRING",
+          "link": 81,
+          "widget": {
+            "name": "string_b"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "slot_index": 0,
+          "links": [
+            130,
+            113
+          ]
+        }
+      ],
+      "title": "Join prompts",
+      "properties": {
+        "Node name for S&R": "StringConcatenate",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "",
+        "",
+        ", "
+      ],
+      "widgets_values_named": {
+        "string_a": "",
+        "string_b": "",
+        "delimiter": ", "
       }
     },
     {
       "id": 7,
       "type": "LoadImage",
       "pos": [
-        -1180,
+        -1400,
         460
       ],
       "size": [
@@ -291,7 +435,7 @@
         360
       ],
       "flags": {},
-      "order": 6,
+      "order": 9,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -300,8 +444,7 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            11,
-            40
+            11
           ]
         },
         {
@@ -332,15 +475,15 @@
       "id": 28,
       "type": "Note",
       "pos": [
-        80,
+        1680,
         860
       ],
       "size": [
-        420,
-        220
+        460,
+        280
       ],
       "flags": {},
-      "order": 7,
+      "order": 10,
       "mode": 0,
       "inputs": [],
       "outputs": [],
@@ -348,10 +491,10 @@
         "Node name for S&R": "Note"
       },
       "widgets_values": [
-        "Load one reference photo. The person in it is replaced by the LoRA character.\nPose comes from DWPose of that person (image2), not from the prompt.\nimage1 is the same photo with the person painted out, so her face/hair/body are not copied. The LoRA supplies the new person.\nThe result is pasted onto the original photo, so the background stays sharp.\nCLIP type must be krea2. Check Person hole: white = person, including hair."
+        "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent). The old mask is NOT a cookie-cutter.\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. Marry uses a feathered UNION of the old hole (grown so leftovers vanish) and a NEW RMBG of the generated person (so clothes/body can be bigger or smaller).\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Pass 2 upscales and gently refines only the marry region.\nCLIP type must be krea2."
       ],
       "widgets_values_named": {
-        "text": "Load one reference photo. The person in it is replaced by the LoRA character.\nPose comes from DWPose of that person (image2), not from the prompt.\nimage1 is the same photo with the person painted out, so her face/hair/body are not copied. The LoRA supplies the new person.\nThe result is pasted onto the original photo, so the background stays sharp.\nCLIP type must be krea2. Check Person hole: white = person, including hair."
+        "text": "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent). The old mask is NOT a cookie-cutter.\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. Marry uses a feathered UNION of the old hole (grown so leftovers vanish) and a NEW RMBG of the generated person (so clothes/body can be bigger or smaller).\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Pass 2 upscales and gently refines only the marry region.\nCLIP type must be krea2."
       },
       "color": "#432",
       "bgcolor": "#653"
@@ -360,7 +503,7 @@
       "id": 10,
       "type": "ImageScaleToTotalPixels",
       "pos": [
-        -1180,
+        -1400,
         860
       ],
       "size": [
@@ -368,7 +511,7 @@
         106
       ],
       "flags": {},
-      "order": 8,
+      "order": 11,
       "mode": 0,
       "inputs": [
         {
@@ -384,14 +527,14 @@
           "slot_index": 0,
           "links": [
             14,
-            17,
+            40,
             71,
-            72,
-            82
+            82,
+            132
           ]
         }
       ],
-      "title": "Scale reference ~2MP",
+      "title": "Draft size ~0.6MP (fast preview)",
       "properties": {
         "Node name for S&R": "ImageScaleToTotalPixels",
         "cnr_id": "comfy-core",
@@ -399,12 +542,12 @@
       },
       "widgets_values": [
         "lanczos",
-        2.0,
+        0.6,
         1
       ],
       "widgets_values_named": {
         "upscale_method": "lanczos",
-        "megapixels": 2.0,
+        "megapixels": 0.6,
         "resolution_steps": 1
       }
     },
@@ -412,7 +555,7 @@
       "id": 11,
       "type": "GetImageSize",
       "pos": [
-        -820,
+        -1040,
         860
       ],
       "size": [
@@ -420,7 +563,7 @@
         82
       ],
       "flags": {},
-      "order": 9,
+      "order": 12,
       "mode": 0,
       "inputs": [
         {
@@ -436,7 +579,8 @@
           "slot_index": 0,
           "links": [
             19,
-            90
+            90,
+            133
           ]
         },
         {
@@ -445,7 +589,8 @@
           "slot_index": 1,
           "links": [
             22,
-            91
+            91,
+            134
           ]
         },
         {
@@ -455,7 +600,7 @@
           "links": null
         }
       ],
-      "title": "Kitchen size",
+      "title": "Draft size",
       "properties": {
         "Node name for S&R": "GetImageSize",
         "cnr_id": "comfy-core",
@@ -464,28 +609,34 @@
     },
     {
       "id": 12,
-      "type": "VAEEncode",
+      "type": "EmptyLatentImage",
       "pos": [
-        -560,
+        -780,
         860
       ],
       "size": [
         270,
-        46
+        106
       ],
       "flags": {},
-      "order": 10,
+      "order": 13,
       "mode": 0,
       "inputs": [
         {
-          "name": "pixels",
-          "type": "IMAGE",
-          "link": 17
+          "name": "width",
+          "type": "INT",
+          "link": 90,
+          "widget": {
+            "name": "width"
+          }
         },
         {
-          "name": "vae",
-          "type": "VAE",
-          "link": 50
+          "name": "height",
+          "type": "INT",
+          "link": 91,
+          "widget": {
+            "name": "height"
+          }
         }
       ],
       "outputs": [
@@ -494,30 +645,40 @@
           "type": "LATENT",
           "slot_index": 0,
           "links": [
-            24
+            70
           ]
         }
       ],
-      "title": "Encode the real photo",
+      "title": "Empty latent (full generate, not a hole)",
       "properties": {
-        "Node name for S&R": "VAEEncode",
+        "Node name for S&R": "EmptyLatentImage",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
+      },
+      "widgets_values": [
+        1024,
+        1024,
+        1
+      ],
+      "widgets_values_named": {
+        "width": 1024,
+        "height": 1024,
+        "batch_size": 1
       }
     },
     {
-      "id": 50,
+      "id": 40,
       "type": "RMBG",
       "pos": [
-        -1180,
-        1240
+        -1400,
+        1020
       ],
       "size": [
         300,
         292
       ],
       "flags": {},
-      "order": 11,
+      "order": 14,
       "mode": 0,
       "inputs": [
         {
@@ -538,7 +699,8 @@
           "type": "MASK",
           "slot_index": 1,
           "links": [
-            64
+            64,
+            136
           ]
         },
         {
@@ -548,7 +710,7 @@
           "links": null
         }
       ],
-      "title": "Auto person mask (RMBG-2.0)",
+      "title": "Old person mask (RMBG)",
       "properties": {
         "Node name for S&R": "RMBG",
         "cnr_id": "comfyui-rmbg",
@@ -557,8 +719,8 @@
       "widgets_values": [
         "RMBG-2.0",
         1,
-        1024,
-        10,
+        768,
+        8,
         0,
         false,
         false,
@@ -568,8 +730,8 @@
       "widgets_values_named": {
         "model": "RMBG-2.0",
         "sensitivity": 1,
-        "process_res": 1024,
-        "mask_blur": 10,
+        "process_res": 768,
+        "mask_blur": 8,
         "mask_offset": 0,
         "invert_output": false,
         "refine_foreground": false,
@@ -580,18 +742,18 @@
       "bgcolor": "#364254"
     },
     {
-      "id": 53,
+      "id": 41,
       "type": "GrowMask",
       "pos": [
-        -820,
-        1240
+        -1060,
+        1020
       ],
       "size": [
         240,
         82
       ],
       "flags": {},
-      "order": 13,
+      "order": 15,
       "mode": 0,
       "inputs": [
         {
@@ -606,166 +768,140 @@
           "type": "MASK",
           "slot_index": 0,
           "links": [
-            65,
-            66,
-            73
+            65
           ]
         }
       ],
-      "title": "Grow mask (cover hair, not the windows)",
+      "title": "Grow 20 \u2014 hide old person in image1",
       "properties": {
         "Node name for S&R": "GrowMask",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       },
       "widgets_values": [
-        12,
+        20,
         true
       ],
       "widgets_values_named": {
-        "expand": 12,
+        "expand": 20,
         "tapered_corners": true
       }
     },
     {
-      "id": 56,
-      "type": "MaskToImage",
+      "id": 42,
+      "type": "GrowMask",
       "pos": [
-        40,
-        1500
-      ],
-      "size": [
-        180,
-        26
-      ],
-      "flags": {
-        "collapsed": true
-      },
-      "order": 14,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 65
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": [
-            67
-          ]
-        }
-      ],
-      "title": "Mask to image",
-      "properties": {
-        "Node name for S&R": "MaskToImage",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      }
-    },
-    {
-      "id": 54,
-      "type": "PreviewImage",
-      "pos": [
-        40,
-        1240
+        -1060,
+        1140
       ],
       "size": [
         240,
-        240
-      ],
-      "flags": {},
-      "order": 15,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 67
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": null
-        }
-      ],
-      "title": "Person hole",
-      "properties": {
-        "Node name for S&R": "PreviewImage",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      }
-    },
-    {
-      "id": 55,
-      "type": "SetLatentNoiseMask",
-      "pos": [
-        -560,
-        940
-      ],
-      "size": [
-        270,
-        46
+        82
       ],
       "flags": {},
       "order": 16,
       "mode": 0,
       "inputs": [
         {
-          "name": "samples",
-          "type": "LATENT",
-          "link": 24
-        },
-        {
           "name": "mask",
           "type": "MASK",
-          "link": 66,
-          "shape": 7
+          "link": 136
         }
       ],
       "outputs": [
         {
-          "name": "LATENT",
-          "type": "LATENT",
+          "name": "MASK",
+          "type": "MASK",
           "slot_index": 0,
           "links": [
-            70
+            66
           ]
         }
       ],
-      "title": "Noise only the person",
+      "title": "Grow 64 \u2014 room for new body/clothes",
       "properties": {
-        "Node name for S&R": "SetLatentNoiseMask",
+        "Node name for S&R": "GrowMask",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
+      },
+      "widgets_values": [
+        64,
+        true
+      ],
+      "widgets_values_named": {
+        "expand": 64,
+        "tapered_corners": true
       }
     },
     {
-      "id": 58,
-      "type": "EmptyImage",
+      "id": 43,
+      "type": "FeatherMask",
       "pos": [
-        -560,
-        1100
+        -800,
+        1140
       ],
       "size": [
         250,
-        130
+        154
       ],
       "flags": {},
       "order": 17,
       "mode": 0,
       "inputs": [
         {
+          "name": "mask",
+          "type": "MASK",
+          "link": 66
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": [
+            67
+          ]
+        }
+      ],
+      "title": "Feather old region",
+      "properties": {
+        "Node name for S&R": "FeatherMask",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        36,
+        36,
+        36,
+        36
+      ],
+      "widgets_values_named": {
+        "left": 36,
+        "top": 36,
+        "right": 36,
+        "bottom": 36
+      }
+    },
+    {
+      "id": 44,
+      "type": "EmptyImage",
+      "pos": [
+        -800,
+        1020
+      ],
+      "size": [
+        250,
+        130
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
           "name": "width",
           "type": "INT",
-          "link": 90,
+          "link": 133,
           "widget": {
             "name": "width"
           }
@@ -773,7 +909,7 @@
         {
           "name": "height",
           "type": "INT",
-          "link": 91,
+          "link": 134,
           "widget": {
             "name": "height"
           }
@@ -809,18 +945,18 @@
       }
     },
     {
-      "id": 59,
+      "id": 45,
       "type": "ImageCompositeMasked",
       "pos": [
-        -280,
-        1100
+        -520,
+        1020
       ],
       "size": [
         300,
         146
       ],
       "flags": {},
-      "order": 18,
+      "order": 19,
       "mode": 0,
       "inputs": [
         {
@@ -836,7 +972,7 @@
         {
           "name": "mask",
           "type": "MASK",
-          "link": 73,
+          "link": 65,
           "shape": 7
         }
       ],
@@ -852,7 +988,7 @@
           ]
         }
       ],
-      "title": "Scene with person painted out (image1)",
+      "title": "image1 \u2014 scene, old person painted out",
       "properties": {
         "Node name for S&R": "ImageCompositeMasked",
         "cnr_id": "comfy-core",
@@ -870,18 +1006,18 @@
       }
     },
     {
-      "id": 60,
+      "id": 46,
       "type": "PreviewImage",
       "pos": [
-        40,
-        1100
+        -200,
+        1020
       ],
       "size": [
-        240,
-        240
+        220,
+        220
       ],
       "flags": {},
-      "order": 19,
+      "order": 20,
       "mode": 0,
       "inputs": [
         {
@@ -898,7 +1034,7 @@
           "links": null
         }
       ],
-      "title": "image1 (no reference person)",
+      "title": "image1 (lighting / camera)",
       "properties": {
         "Node name for S&R": "PreviewImage",
         "cnr_id": "comfy-core",
@@ -909,15 +1045,15 @@
       "id": 30,
       "type": "DWPreprocessor",
       "pos": [
-        -720,
-        460
+        -1400,
+        1360
       ],
       "size": [
         300,
         222
       ],
       "flags": {},
-      "order": 11,
+      "order": 21,
       "mode": 0,
       "inputs": [
         {
@@ -945,7 +1081,7 @@
           "links": null
         }
       ],
-      "title": "DWPose from kitchen",
+      "title": "DWPose from draft",
       "properties": {
         "Node name for S&R": "DWPreprocessor",
         "cnr_id": "comfyui_controlnet_aux",
@@ -955,7 +1091,7 @@
         "enable",
         "enable",
         "enable",
-        1024,
+        768,
         "yolox_l.onnx",
         "dw-ll_ucoco_384_bs5.torchscript.pt",
         "disable"
@@ -964,7 +1100,7 @@
         "detect_hand": "enable",
         "detect_body": "enable",
         "detect_face": "enable",
-        "resolution": 1024,
+        "resolution": 768,
         "bbox_detector": "yolox_l.onnx",
         "pose_estimator": "dw-ll_ucoco_384_bs5.torchscript.pt",
         "scale_stick_for_xinsr_cn": "disable"
@@ -976,15 +1112,15 @@
       "id": 31,
       "type": "PreviewImage",
       "pos": [
-        -400,
-        460
+        -1060,
+        1360
       ],
       "size": [
-        220,
-        220
+        200,
+        200
       ],
       "flags": {},
-      "order": 12,
+      "order": 22,
       "mode": 0,
       "inputs": [
         {
@@ -1012,15 +1148,15 @@
       "id": 32,
       "type": "GetImageSize",
       "pos": [
-        -720,
-        720
+        -1400,
+        1620
       ],
       "size": [
         230,
         82
       ],
       "flags": {},
-      "order": 13,
+      "order": 23,
       "mode": 0,
       "inputs": [
         {
@@ -1064,15 +1200,15 @@
       "id": 33,
       "type": "EmptyImage",
       "pos": [
-        -460,
-        720
+        -1140,
+        1620
       ],
       "size": [
         250,
         130
       ],
       "flags": {},
-      "order": 14,
+      "order": 24,
       "mode": 0,
       "inputs": [
         {
@@ -1125,15 +1261,15 @@
       "id": 34,
       "type": "ColorToMask",
       "pos": [
-        -180,
-        720
+        -860,
+        1620
       ],
       "size": [
         260,
         178
       ],
       "flags": {},
-      "order": 15,
+      "order": 25,
       "mode": 0,
       "inputs": [
         {
@@ -1178,15 +1314,15 @@
       "id": 36,
       "type": "GrowMask",
       "pos": [
-        100,
-        720
+        -580,
+        1620
       ],
       "size": [
         240,
         82
       ],
       "flags": {},
-      "order": 16,
+      "order": 26,
       "mode": 0,
       "inputs": [
         {
@@ -1205,7 +1341,7 @@
           ]
         }
       ],
-      "title": "Grow black fill (kill dots)",
+      "title": "Grow black fill",
       "properties": {
         "Node name for S&R": "GrowMask",
         "cnr_id": "comfy-core",
@@ -1224,15 +1360,15 @@
       "id": 35,
       "type": "ImageCompositeMasked",
       "pos": [
-        360,
-        720
+        -320,
+        1620
       ],
       "size": [
         300,
         146
       ],
       "flags": {},
-      "order": 17,
+      "order": 27,
       "mode": 0,
       "inputs": [
         {
@@ -1283,15 +1419,15 @@
       "id": 13,
       "type": "ImageScale",
       "pos": [
-        -400,
-        1000
+        0,
+        1620
       ],
       "size": [
         280,
         150
       ],
       "flags": {},
-      "order": 18,
+      "order": 28,
       "mode": 0,
       "inputs": [
         {
@@ -1328,7 +1464,7 @@
           ]
         }
       ],
-      "title": "Pose to photo size (no crop)",
+      "title": "Pose to draft size (no crop)",
       "properties": {
         "Node name for S&R": "ImageScale",
         "cnr_id": "comfy-core",
@@ -1351,15 +1487,15 @@
       "id": 14,
       "type": "PreviewImage",
       "pos": [
-        -80,
-        1000
+        300,
+        1620
       ],
       "size": [
-        240,
-        240
+        220,
+        220
       ],
       "flags": {},
-      "order": 19,
+      "order": 29,
       "mode": 0,
       "inputs": [
         {
@@ -1376,7 +1512,7 @@
           "links": null
         }
       ],
-      "title": "Pose ref (image2, must be gray)",
+      "title": "Pose ref (image2)",
       "properties": {
         "Node name for S&R": "PreviewImage",
         "cnr_id": "comfy-core",
@@ -1387,7 +1523,7 @@
       "id": 15,
       "type": "TextEncodeKrea2OstrisEdit",
       "pos": [
-        -380,
+        -200,
         40
       ],
       "size": [
@@ -1395,13 +1531,21 @@
         200
       ],
       "flags": {},
-      "order": 20,
+      "order": 30,
       "mode": 0,
       "inputs": [
         {
           "name": "clip",
           "type": "CLIP",
           "link": 3
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 130,
+          "widget": {
+            "name": "prompt"
+          }
         },
         {
           "name": "vae",
@@ -1438,7 +1582,7 @@
           ]
         }
       ],
-      "title": "Positive (image1=scene without person, image2=pose)",
+      "title": "Positive draft (image1=scene, image2=pose)",
       "properties": {
         "aux_id": "ostris/comfyui-krea2-ostris-edit",
         "ver": "7756566160c4a1b24bb1bd9f0ff3ced1a83d7547",
@@ -1446,10 +1590,10 @@
         "Node name for S&R": "TextEncodeKrea2OstrisEdit"
       },
       "widgets_values": [
-        "vsgly_id, a man with short dark wavy hair and a short beard, masculine face and body, natural skin, photorealistic, realistic lighting"
+        ""
       ],
       "widgets_values_named": {
-        "prompt": "vsgly_id, a man with short dark wavy hair and a short beard, masculine face and body, natural skin, photorealistic, realistic lighting"
+        "prompt": ""
       },
       "color": "#232",
       "bgcolor": "#353"
@@ -1458,7 +1602,7 @@
       "id": 16,
       "type": "TextEncodeKrea2OstrisEdit",
       "pos": [
-        -380,
+        -200,
         280
       ],
       "size": [
@@ -1466,7 +1610,7 @@
         140
       ],
       "flags": {},
-      "order": 21,
+      "order": 31,
       "mode": 0,
       "inputs": [
         {
@@ -1509,7 +1653,7 @@
           ]
         }
       ],
-      "title": "Negative (not the woman)",
+      "title": "Negative draft",
       "properties": {
         "aux_id": "ostris/comfyui-krea2-ostris-edit",
         "ver": "7756566160c4a1b24bb1bd9f0ff3ced1a83d7547",
@@ -1517,17 +1661,17 @@
         "Node name for S&R": "TextEncodeKrea2OstrisEdit"
       },
       "widgets_values": [
-        "woman, female, long hair, feminine body, breasts, mixed gender"
+        "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting"
       ],
       "widgets_values_named": {
-        "prompt": "woman, female, long hair, feminine body, breasts, mixed gender"
+        "prompt": "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting"
       }
     },
     {
       "id": 17,
       "type": "FluxKontextMultiReferenceLatentMethod",
       "pos": [
-        80,
+        260,
         40
       ],
       "size": [
@@ -1535,7 +1679,7 @@
         58
       ],
       "flags": {},
-      "order": 22,
+      "order": 32,
       "mode": 0,
       "inputs": [
         {
@@ -1571,7 +1715,7 @@
       "id": 18,
       "type": "FluxKontextMultiReferenceLatentMethod",
       "pos": [
-        80,
+        260,
         140
       ],
       "size": [
@@ -1579,7 +1723,7 @@
         58
       ],
       "flags": {},
-      "order": 23,
+      "order": 33,
       "mode": 0,
       "inputs": [
         {
@@ -1615,7 +1759,7 @@
       "id": 19,
       "type": "KSampler",
       "pos": [
-        460,
+        640,
         40
       ],
       "size": [
@@ -1623,7 +1767,7 @@
         262
       ],
       "flags": {},
-      "order": 24,
+      "order": 34,
       "mode": 0,
       "inputs": [
         {
@@ -1657,7 +1801,7 @@
           ]
         }
       ],
-      "title": "KSampler",
+      "title": "Draft 8 steps",
       "properties": {
         "Node name for S&R": "KSampler",
         "cnr_id": "comfy-core",
@@ -1666,7 +1810,7 @@
       "widgets_values": [
         42,
         "randomize",
-        12,
+        8,
         1,
         "euler",
         "simple",
@@ -1675,7 +1819,7 @@
       "widgets_values_named": {
         "seed": 42,
         "control_after_generate": "randomize",
-        "steps": 12,
+        "steps": 8,
         "cfg": 1,
         "sampler_name": "euler",
         "scheduler": "simple",
@@ -1686,7 +1830,7 @@
       "id": 20,
       "type": "VAEDecode",
       "pos": [
-        820,
+        1000,
         40
       ],
       "size": [
@@ -1694,7 +1838,7 @@
         46
       ],
       "flags": {},
-      "order": 25,
+      "order": 35,
       "mode": 0,
       "inputs": [
         {
@@ -1714,11 +1858,13 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            35
+            35,
+            85,
+            135
           ]
         }
       ],
-      "title": "VAE Decode",
+      "title": "Decode draft",
       "properties": {
         "Node name for S&R": "VAEDecode",
         "cnr_id": "comfy-core",
@@ -1726,10 +1872,399 @@
       }
     },
     {
-      "id": 57,
+      "id": 21,
+      "type": "PreviewImage",
+      "pos": [
+        1240,
+        40
+      ],
+      "size": [
+        320,
+        400
+      ],
+      "flags": {},
+      "order": 36,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 35
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        }
+      ],
+      "title": "Draft generate (check pose here)",
+      "properties": {
+        "Node name for S&R": "PreviewImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 50,
+      "type": "RMBG",
+      "pos": [
+        640,
+        360
+      ],
+      "size": [
+        300,
+        292
+      ],
+      "flags": {},
+      "order": 37,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 85
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": [
+            86
+          ]
+        },
+        {
+          "name": "MASK_IMAGE",
+          "type": "IMAGE",
+          "slot_index": 2,
+          "links": null
+        }
+      ],
+      "title": "NEW person mask (from generate)",
+      "properties": {
+        "Node name for S&R": "RMBG",
+        "cnr_id": "comfyui-rmbg",
+        "ver": "3.1.0"
+      },
+      "widgets_values": [
+        "RMBG-2.0",
+        1,
+        768,
+        6,
+        2,
+        false,
+        false,
+        "Alpha",
+        "#222222"
+      ],
+      "widgets_values_named": {
+        "model": "RMBG-2.0",
+        "sensitivity": 1,
+        "process_res": 768,
+        "mask_blur": 6,
+        "mask_offset": 2,
+        "invert_output": false,
+        "refine_foreground": false,
+        "background": "Alpha",
+        "background_color": "#222222"
+      },
+      "color": "#222e40",
+      "bgcolor": "#364254"
+    },
+    {
+      "id": 51,
+      "type": "GrowMask",
+      "pos": [
+        960,
+        360
+      ],
+      "size": [
+        240,
+        82
+      ],
+      "flags": {},
+      "order": 38,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 86
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": [
+            87
+          ]
+        }
+      ],
+      "title": "Grow new person 10",
+      "properties": {
+        "Node name for S&R": "GrowMask",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        10,
+        true
+      ],
+      "widgets_values_named": {
+        "expand": 10,
+        "tapered_corners": true
+      }
+    },
+    {
+      "id": 52,
+      "type": "FeatherMask",
+      "pos": [
+        960,
+        470
+      ],
+      "size": [
+        250,
+        154
+      ],
+      "flags": {},
+      "order": 39,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 87
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": [
+            88
+          ]
+        }
+      ],
+      "title": "Feather new person",
+      "properties": {
+        "Node name for S&R": "FeatherMask",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        24,
+        24,
+        24,
+        24
+      ],
+      "widgets_values_named": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24
+      }
+    },
+    {
+      "id": 53,
+      "type": "MaskComposite",
+      "pos": [
+        1240,
+        470
+      ],
+      "size": [
+        280,
+        154
+      ],
+      "flags": {},
+      "order": 40,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "MASK",
+          "link": 67
+        },
+        {
+          "name": "source",
+          "type": "MASK",
+          "link": 88
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": [
+            89
+          ]
+        }
+      ],
+      "title": "Union old hole OR new person",
+      "properties": {
+        "Node name for S&R": "MaskComposite",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        0,
+        0,
+        "or"
+      ],
+      "widgets_values_named": {
+        "x": 0,
+        "y": 0,
+        "operation": "or"
+      }
+    },
+    {
+      "id": 54,
+      "type": "FeatherMask",
+      "pos": [
+        1540,
+        470
+      ],
+      "size": [
+        250,
+        154
+      ],
+      "flags": {},
+      "order": 41,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 89
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": [
+            73,
+            92,
+            137
+          ]
+        }
+      ],
+      "title": "Feather marry mask",
+      "properties": {
+        "Node name for S&R": "FeatherMask",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "widgets_values_named": {
+        "left": 16,
+        "top": 16,
+        "right": 16,
+        "bottom": 16
+      }
+    },
+    {
+      "id": 56,
+      "type": "MaskToImage",
+      "pos": [
+        1540,
+        660
+      ],
+      "size": [
+        180,
+        26
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 42,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 92
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            93
+          ]
+        }
+      ],
+      "title": "Marry mask to image",
+      "properties": {
+        "Node name for S&R": "MaskToImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 47,
+      "type": "PreviewImage",
+      "pos": [
+        1740,
+        470
+      ],
+      "size": [
+        200,
+        200
+      ],
+      "flags": {},
+      "order": 43,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 93
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        }
+      ],
+      "title": "Marry region (soft)",
+      "properties": {
+        "Node name for S&R": "PreviewImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 55,
       "type": "ImageCompositeMasked",
       "pos": [
-        820,
+        1000,
         140
       ],
       "size": [
@@ -1737,18 +2272,18 @@
         146
       ],
       "flags": {},
-      "order": 26,
+      "order": 44,
       "mode": 0,
       "inputs": [
         {
           "name": "destination",
           "type": "IMAGE",
-          "link": 72
+          "link": 132
         },
         {
           "name": "source",
           "type": "IMAGE",
-          "link": 35
+          "link": 135
         },
         {
           "name": "mask",
@@ -1763,12 +2298,12 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            80,
-            81
+            94,
+            95
           ]
         }
       ],
-      "title": "Paste person on original pixels",
+      "title": "Marry into original background",
       "properties": {
         "Node name for S&R": "ImageCompositeMasked",
         "cnr_id": "comfy-core",
@@ -1789,21 +2324,21 @@
       "id": 22,
       "type": "PreviewImage",
       "pos": [
-        1160,
+        1580,
         40
       ],
       "size": [
-        400,
-        600
+        360,
+        400
       ],
       "flags": {},
-      "order": 27,
+      "order": 45,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 80
+          "link": 94
         }
       ],
       "outputs": [
@@ -1814,7 +2349,642 @@
           "links": null
         }
       ],
-      "title": "Edited frame",
+      "title": "Married draft",
+      "properties": {
+        "Node name for S&R": "PreviewImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 60,
+      "type": "ImageScaleToTotalPixels",
+      "pos": [
+        640,
+        700
+      ],
+      "size": [
+        320,
+        106
+      ],
+      "flags": {},
+      "order": 46,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 95
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            96,
+            97
+          ]
+        }
+      ],
+      "title": "Upscale married ~1.8MP",
+      "properties": {
+        "Node name for S&R": "ImageScaleToTotalPixels",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "lanczos",
+        1.8,
+        1
+      ],
+      "widgets_values_named": {
+        "upscale_method": "lanczos",
+        "megapixels": 1.8,
+        "resolution_steps": 1
+      }
+    },
+    {
+      "id": 61,
+      "type": "GetImageSize",
+      "pos": [
+        980,
+        700
+      ],
+      "size": [
+        230,
+        82
+      ],
+      "flags": {},
+      "order": 47,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 96
+        }
+      ],
+      "outputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "slot_index": 0,
+          "links": [
+            98
+          ]
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "slot_index": 1,
+          "links": [
+            99
+          ]
+        },
+        {
+          "name": "batch_size",
+          "type": "INT",
+          "slot_index": 2,
+          "links": null
+        }
+      ],
+      "title": "Upscale size",
+      "properties": {
+        "Node name for S&R": "GetImageSize",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 62,
+      "type": "MaskToImage",
+      "pos": [
+        980,
+        820
+      ],
+      "size": [
+        180,
+        26
+      ],
+      "flags": {},
+      "order": 48,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 137
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            100
+          ]
+        }
+      ],
+      "title": "Scale marry mask",
+      "properties": {
+        "Node name for S&R": "MaskToImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 63,
+      "type": "ImageScale",
+      "pos": [
+        1180,
+        820
+      ],
+      "size": [
+        280,
+        150
+      ],
+      "flags": {},
+      "order": 49,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 100
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 98,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 99,
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            101
+          ]
+        }
+      ],
+      "title": "Mask to upscale size",
+      "properties": {
+        "Node name for S&R": "ImageScale",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "lanczos",
+        1024,
+        1024,
+        "disabled"
+      ],
+      "widgets_values_named": {
+        "upscale_method": "lanczos",
+        "width": 1024,
+        "height": 1024,
+        "crop": "disabled"
+      }
+    },
+    {
+      "id": 64,
+      "type": "ImageToMask",
+      "pos": [
+        1480,
+        820
+      ],
+      "size": [
+        220,
+        58
+      ],
+      "flags": {},
+      "order": 50,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 101
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 0,
+          "links": [
+            102
+          ]
+        }
+      ],
+      "title": "Mask channel",
+      "properties": {
+        "Node name for S&R": "ImageToMask",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        "red"
+      ],
+      "widgets_values_named": {
+        "channel": "red"
+      }
+    },
+    {
+      "id": 66,
+      "type": "VAEEncode",
+      "pos": [
+        640,
+        850
+      ],
+      "size": [
+        270,
+        46
+      ],
+      "flags": {},
+      "order": 51,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "pixels",
+          "type": "IMAGE",
+          "link": 97
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 120
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            103
+          ]
+        }
+      ],
+      "title": "Encode upscaled marry",
+      "properties": {
+        "Node name for S&R": "VAEEncode",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 67,
+      "type": "SetLatentNoiseMask",
+      "pos": [
+        640,
+        930
+      ],
+      "size": [
+        270,
+        46
+      ],
+      "flags": {},
+      "order": 52,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 103
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 102,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            104
+          ]
+        }
+      ],
+      "title": "Refine only the marry region",
+      "properties": {
+        "Node name for S&R": "SetLatentNoiseMask",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 68,
+      "type": "TextEncodeKrea2OstrisEdit",
+      "pos": [
+        260,
+        700
+      ],
+      "size": [
+        360,
+        160
+      ],
+      "flags": {},
+      "order": 53,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 110
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 113,
+          "widget": {
+            "name": "prompt"
+          }
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "image1",
+          "type": "IMAGE",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "image2",
+          "type": "IMAGE",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "image3",
+          "type": "IMAGE",
+          "link": null,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            105
+          ]
+        }
+      ],
+      "title": "Positive refine (text only, faster)",
+      "properties": {
+        "aux_id": "ostris/comfyui-krea2-ostris-edit",
+        "ver": "7756566160c4a1b24bb1bd9f0ff3ced1a83d7547",
+        "cnr_id": "comfyui-krea2-ostris-edit",
+        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "widgets_values_named": {
+        "prompt": ""
+      }
+    },
+    {
+      "id": 69,
+      "type": "TextEncodeKrea2OstrisEdit",
+      "pos": [
+        260,
+        890
+      ],
+      "size": [
+        360,
+        120
+      ],
+      "flags": {},
+      "order": 54,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 111
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "image1",
+          "type": "IMAGE",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "image2",
+          "type": "IMAGE",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "image3",
+          "type": "IMAGE",
+          "link": null,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            106
+          ]
+        }
+      ],
+      "title": "Negative refine",
+      "properties": {
+        "aux_id": "ostris/comfyui-krea2-ostris-edit",
+        "ver": "7756566160c4a1b24bb1bd9f0ff3ced1a83d7547",
+        "cnr_id": "comfyui-krea2-ostris-edit",
+        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
+      },
+      "widgets_values": [
+        "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting"
+      ],
+      "widgets_values_named": {
+        "prompt": "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting"
+      }
+    },
+    {
+      "id": 74,
+      "type": "KSampler",
+      "pos": [
+        940,
+        930
+      ],
+      "size": [
+        320,
+        262
+      ],
+      "flags": {},
+      "order": 55,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 112
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 105
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 106
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 104
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            107
+          ]
+        }
+      ],
+      "title": "Refine 8 steps denoise 0.28",
+      "properties": {
+        "Node name for S&R": "KSampler",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        42,
+        "randomize",
+        8,
+        1,
+        "euler",
+        "simple",
+        0.28
+      ],
+      "widgets_values_named": {
+        "seed": 42,
+        "control_after_generate": "randomize",
+        "steps": 8,
+        "cfg": 1,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "denoise": 0.28
+      }
+    },
+    {
+      "id": 75,
+      "type": "VAEDecode",
+      "pos": [
+        1280,
+        930
+      ],
+      "size": [
+        210,
+        46
+      ],
+      "flags": {},
+      "order": 56,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 107
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 121
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            108,
+            109
+          ]
+        }
+      ],
+      "title": "Decode final",
+      "properties": {
+        "Node name for S&R": "VAEDecode",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 24,
+      "type": "PreviewImage",
+      "pos": [
+        1520,
+        860
+      ],
+      "size": [
+        400,
+        520
+      ],
+      "flags": {},
+      "order": 57,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 108
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        }
+      ],
+      "title": "Final",
       "properties": {
         "Node name for S&R": "PreviewImage",
         "cnr_id": "comfy-core",
@@ -1827,21 +2997,21 @@
       "id": 23,
       "type": "SaveImage",
       "pos": [
-        1160,
-        660
+        1520,
+        1400
       ],
       "size": [
         400,
         58
       ],
       "flags": {},
-      "order": 28,
+      "order": 58,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 81
+          "link": 109
         }
       ],
       "outputs": [
@@ -1852,7 +3022,7 @@
           "links": null
         }
       ],
-      "title": "Save edited frame",
+      "title": "Save final",
       "properties": {
         "Node name for S&R": "SaveImage",
         "cnr_id": "comfy-core",
@@ -1900,6 +3070,22 @@
       "MODEL"
     ],
     [
+      80,
+      70,
+      0,
+      72,
+      0,
+      "STRING"
+    ],
+    [
+      81,
+      71,
+      0,
+      72,
+      1,
+      "STRING"
+    ],
+    [
       11,
       7,
       0,
@@ -1916,74 +3102,10 @@
       "IMAGE"
     ],
     [
-      17,
-      10,
-      0,
-      12,
-      0,
-      "IMAGE"
-    ],
-    [
-      50,
-      3,
-      0,
-      12,
-      1,
-      "VAE"
-    ],
-    [
-      71,
-      10,
-      0,
-      50,
-      0,
-      "IMAGE"
-    ],
-    [
-      64,
-      50,
-      1,
-      53,
-      0,
-      "MASK"
-    ],
-    [
-      65,
-      53,
-      0,
-      56,
-      0,
-      "MASK"
-    ],
-    [
-      67,
-      56,
-      0,
-      54,
-      0,
-      "IMAGE"
-    ],
-    [
-      24,
-      12,
-      0,
-      55,
-      0,
-      "LATENT"
-    ],
-    [
-      66,
-      53,
-      0,
-      55,
-      1,
-      "MASK"
-    ],
-    [
       90,
       11,
       0,
-      58,
+      12,
       0,
       "INT"
     ],
@@ -1991,7 +3113,55 @@
       91,
       11,
       1,
-      58,
+      12,
+      1,
+      "INT"
+    ],
+    [
+      71,
+      10,
+      0,
+      40,
+      0,
+      "IMAGE"
+    ],
+    [
+      64,
+      40,
+      1,
+      41,
+      0,
+      "MASK"
+    ],
+    [
+      136,
+      40,
+      1,
+      42,
+      0,
+      "MASK"
+    ],
+    [
+      66,
+      42,
+      0,
+      43,
+      0,
+      "MASK"
+    ],
+    [
+      133,
+      11,
+      0,
+      44,
+      0,
+      "INT"
+    ],
+    [
+      134,
+      11,
+      1,
+      44,
       1,
       "INT"
     ],
@@ -1999,37 +3169,37 @@
       82,
       10,
       0,
-      59,
+      45,
       0,
       "IMAGE"
     ],
     [
       83,
-      58,
+      44,
       0,
-      59,
+      45,
       1,
       "IMAGE"
     ],
     [
-      73,
-      53,
+      65,
+      41,
       0,
-      59,
+      45,
       2,
       "MASK"
     ],
     [
       84,
-      59,
+      45,
       0,
-      60,
+      46,
       0,
       "IMAGE"
     ],
     [
       40,
-      7,
+      10,
       0,
       30,
       0,
@@ -2148,19 +3318,27 @@
       "CLIP"
     ],
     [
+      130,
+      72,
+      0,
+      15,
+      1,
+      "STRING"
+    ],
+    [
       5,
       3,
       0,
       15,
-      1,
+      2,
       "VAE"
     ],
     [
       15,
-      59,
+      45,
       0,
       15,
-      2,
+      3,
       "IMAGE"
     ],
     [
@@ -2168,7 +3346,7 @@
       13,
       0,
       15,
-      3,
+      4,
       "IMAGE"
     ],
     [
@@ -2189,7 +3367,7 @@
     ],
     [
       16,
-      59,
+      45,
       0,
       16,
       2,
@@ -2245,7 +3423,7 @@
     ],
     [
       70,
-      55,
+      12,
       0,
       19,
       3,
@@ -2268,40 +3446,280 @@
       "VAE"
     ],
     [
-      72,
-      10,
+      35,
+      20,
       0,
-      57,
+      21,
       0,
       "IMAGE"
     ],
     [
-      35,
+      85,
       20,
       0,
-      57,
+      50,
+      0,
+      "IMAGE"
+    ],
+    [
+      86,
+      50,
+      1,
+      51,
+      0,
+      "MASK"
+    ],
+    [
+      87,
+      51,
+      0,
+      52,
+      0,
+      "MASK"
+    ],
+    [
+      67,
+      43,
+      0,
+      53,
+      0,
+      "MASK"
+    ],
+    [
+      88,
+      52,
+      0,
+      53,
+      1,
+      "MASK"
+    ],
+    [
+      89,
+      53,
+      0,
+      54,
+      0,
+      "MASK"
+    ],
+    [
+      92,
+      54,
+      0,
+      56,
+      0,
+      "MASK"
+    ],
+    [
+      93,
+      56,
+      0,
+      47,
+      0,
+      "IMAGE"
+    ],
+    [
+      132,
+      10,
+      0,
+      55,
+      0,
+      "IMAGE"
+    ],
+    [
+      135,
+      20,
+      0,
+      55,
       1,
       "IMAGE"
     ],
     [
       73,
-      53,
+      54,
       0,
-      57,
+      55,
       2,
       "MASK"
     ],
     [
-      80,
-      57,
+      94,
+      55,
       0,
       22,
       0,
       "IMAGE"
     ],
     [
-      81,
-      57,
+      95,
+      55,
+      0,
+      60,
+      0,
+      "IMAGE"
+    ],
+    [
+      96,
+      60,
+      0,
+      61,
+      0,
+      "IMAGE"
+    ],
+    [
+      137,
+      54,
+      0,
+      62,
+      0,
+      "MASK"
+    ],
+    [
+      100,
+      62,
+      0,
+      63,
+      0,
+      "IMAGE"
+    ],
+    [
+      98,
+      61,
+      0,
+      63,
+      1,
+      "INT"
+    ],
+    [
+      99,
+      61,
+      1,
+      63,
+      2,
+      "INT"
+    ],
+    [
+      101,
+      63,
+      0,
+      64,
+      0,
+      "IMAGE"
+    ],
+    [
+      97,
+      60,
+      0,
+      66,
+      0,
+      "IMAGE"
+    ],
+    [
+      120,
+      3,
+      0,
+      66,
+      1,
+      "VAE"
+    ],
+    [
+      103,
+      66,
+      0,
+      67,
+      0,
+      "LATENT"
+    ],
+    [
+      102,
+      64,
+      0,
+      67,
+      1,
+      "MASK"
+    ],
+    [
+      110,
+      2,
+      0,
+      68,
+      0,
+      "CLIP"
+    ],
+    [
+      113,
+      72,
+      0,
+      68,
+      1,
+      "STRING"
+    ],
+    [
+      111,
+      2,
+      0,
+      69,
+      0,
+      "CLIP"
+    ],
+    [
+      112,
+      5,
+      0,
+      74,
+      0,
+      "MODEL"
+    ],
+    [
+      105,
+      68,
+      0,
+      74,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      106,
+      69,
+      0,
+      74,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      104,
+      67,
+      0,
+      74,
+      3,
+      "LATENT"
+    ],
+    [
+      107,
+      74,
+      0,
+      75,
+      0,
+      "LATENT"
+    ],
+    [
+      121,
+      3,
+      0,
+      75,
+      1,
+      "VAE"
+    ],
+    [
+      108,
+      75,
+      0,
+      24,
+      0,
+      "IMAGE"
+    ],
+    [
+      109,
+      75,
       0,
       23,
       0,
@@ -2311,11 +3729,11 @@
   "groups": [
     {
       "id": 1,
-      "title": "Models",
+      "title": "Models + prompts",
       "bounding": [
-        -1220,
+        -1440,
         0,
-        820,
+        1240,
         430
       ],
       "color": "#3f789e",
@@ -2323,24 +3741,36 @@
     },
     {
       "id": 2,
-      "title": "Kitchen + auto pose (gray bg)",
+      "title": "Draft photo, hide old person, pose",
       "bounding": [
-        -1220,
+        -1440,
         430,
-        1920,
-        840
+        2000,
+        1480
       ],
       "color": "#322",
       "flags": {}
     },
     {
       "id": 3,
-      "title": "Generate edited frame",
+      "title": "Draft generate (empty latent)",
       "bounding": [
-        -420,
+        -240,
         0,
-        1100,
-        720
+        1860,
+        680
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "Upscale + refine marry region",
+      "bounding": [
+        220,
+        680,
+        1740,
+        820
       ],
       "color": "#3f789e",
       "flags": {}
@@ -2349,16 +3779,16 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.5,
+      "scale": 0.42,
       "offset": [
-        1300,
-        40
+        1480,
+        80
       ]
     },
     "frontendVersion": "1.52.7",
     "visagely": {
-      "title": "Replace reference person with LoRA character",
-      "notes": "DWPose pose. Person painted out of image1. Paste onto original pixels."
+      "title": "Replace person: pose generate, soft marry, upscale",
+      "notes": "Empty latent draft. Feathered union mask. No hard old-silhouette paste."
     }
   },
   "version": 0.4,
