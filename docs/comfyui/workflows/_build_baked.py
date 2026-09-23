@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Krea2 scene edit: encode photo, noise only the person mask, auto DWPose."""
+"""Replace the reference person with the LoRA character, same pose, sharp background."""
 from __future__ import annotations
 
 import json
@@ -7,7 +7,7 @@ from pathlib import Path
 
 PROMPT = (
     "vsgly_id, a man with short dark wavy hair and a short beard, "
-    "masculine face and body, short hair, wearing the same clothes as the photo, photorealistic"
+    "masculine face and body, natural skin, photorealistic, realistic lighting"
 )
 NEG = "woman, female, long hair, feminine body, breasts, mixed gender"
 
@@ -18,11 +18,12 @@ OSTRIS = {
     "cnr_id": "comfyui-krea2-ostris-edit",
 }
 NOTE = (
-    "Load the scene photo only. RMBG-2.0 masks the person (not SAM3).\n"
-    "Grow is small so windows/seats stay out of the hole.\n"
-    "After sampling, the generated person is pasted onto the ORIGINAL photo "
-    "pixels so the background is not VAE-blurred.\n"
-    "Person hole preview must be the body/hair only, not the car glass."
+    "Load one reference photo. The person in it is replaced by the LoRA character.\n"
+    "Pose comes from DWPose of that person (image2), not from the prompt.\n"
+    "image1 is the same photo with the person painted out, so her face/hair/body "
+    "are not copied. The LoRA supplies the new person.\n"
+    "The result is pasted onto the original photo, so the background stays sharp.\n"
+    "CLIP type must be krea2. Check Person hole: white = person, including hair."
 )
 
 
@@ -112,12 +113,12 @@ def main() -> None:
         "flags": {}, "order": 5, "mode": 0,
         "inputs": [inp("model", "MODEL", 9)],
         "outputs": [out("MODEL", "MODEL", [10])],
-        "title": "Pose LoRA 0.45",
+        "title": "Pose LoRA 0.75",
         "properties": props("LoraLoaderModelOnly"),
-        "widgets_values": ["krea2_turbo_openpose_controlnet.safetensors", 0.45],
+        "widgets_values": ["krea2_turbo_openpose_controlnet.safetensors", 0.75],
         "widgets_values_named": {
             "lora_name": "krea2_turbo_openpose_controlnet.safetensors",
-            "strength_model": 0.45,
+            "strength_model": 0.75,
         },
     })
     add({
@@ -144,8 +145,8 @@ def main() -> None:
         "id": 10, "type": "ImageScaleToTotalPixels", "pos": [-1180, 860], "size": [320, 106],
         "flags": {}, "order": 8, "mode": 0,
         "inputs": [inp("image", "IMAGE", 11)],
-        "outputs": [out("IMAGE", "IMAGE", [14, 15, 16, 17, 71, 72])],
-        "title": "Scale kitchen ~2MP",
+        "outputs": [out("IMAGE", "IMAGE", [14, 17, 71, 72, 82])],
+        "title": "Scale reference ~2MP",
         "properties": props("ImageScaleToTotalPixels"),
         "widgets_values": ["lanczos", 2.0, 1],
         "widgets_values_named": {"upscale_method": "lanczos", "megapixels": 2.0, "resolution_steps": 1},
@@ -155,8 +156,8 @@ def main() -> None:
         "flags": {}, "order": 9, "mode": 0,
         "inputs": [inp("image", "IMAGE", 14)],
         "outputs": [
-            out("width", "INT", [19], 0),
-            out("height", "INT", [22], 1),
+            out("width", "INT", [19, 90], 0),
+            out("height", "INT", [22, 91], 1),
             out("batch_size", "INT", None, 2),
         ],
         "title": "Kitchen size",
@@ -205,10 +206,10 @@ def main() -> None:
         "flags": {}, "order": 13, "mode": 0,
         "inputs": [inp("mask", "MASK", 64)],
         "outputs": [out("MASK", "MASK", [65, 66, 73])],
-        "title": "Grow mask (hair fringe only)",
+        "title": "Grow mask (cover hair, not the windows)",
         "properties": props("GrowMask"),
-        "widgets_values": [6, True],
-        "widgets_values_named": {"expand": 6, "tapered_corners": True},
+        "widgets_values": [12, True],
+        "widgets_values_named": {"expand": 12, "tapered_corners": True},
     })
     add({
         "id": 56, "type": "MaskToImage", "pos": [40, 1500], "size": [180, 26],
@@ -233,6 +234,41 @@ def main() -> None:
         "outputs": [out("LATENT", "LATENT", [70])],
         "title": "Noise only the person",
         "properties": props("SetLatentNoiseMask"),
+    })
+    add({
+        "id": 58, "type": "EmptyImage", "pos": [-560, 1100], "size": [250, 130],
+        "flags": {}, "order": 17, "mode": 0,
+        "inputs": [
+            inp("width", "INT", 90, widget="width"),
+            inp("height", "INT", 91, widget="height"),
+        ],
+        "outputs": [out("IMAGE", "IMAGE", [83])],
+        "title": "Gray fill",
+        "properties": props("EmptyImage"),
+        "widgets_values": [512, 512, 1, 10526880],
+        "widgets_values_named": {"width": 512, "height": 512, "batch_size": 1, "color": 10526880},
+    })
+    add({
+        "id": 59, "type": "ImageCompositeMasked", "pos": [-280, 1100], "size": [300, 146],
+        "flags": {}, "order": 18, "mode": 0,
+        "inputs": [
+            inp("destination", "IMAGE", 82),
+            inp("source", "IMAGE", 83),
+            inp("mask", "MASK", 73, shape=7),
+        ],
+        "outputs": [out("IMAGE", "IMAGE", [15, 16, 84])],
+        "title": "Scene with person painted out (image1)",
+        "properties": props("ImageCompositeMasked"),
+        "widgets_values": [0, 0, False],
+        "widgets_values_named": {"x": 0, "y": 0, "resize_source": False},
+    })
+    add({
+        "id": 60, "type": "PreviewImage", "pos": [40, 1100], "size": [240, 240],
+        "flags": {}, "order": 19, "mode": 0,
+        "inputs": [inp("images", "IMAGE", 84)],
+        "outputs": [out("IMAGE", "IMAGE", None)],
+        "title": "image1 (no reference person)",
+        "properties": props("PreviewImage"),
     })
     add({
         "id": 30, "type": "DWPreprocessor", "pos": [-720, 460], "size": [300, 222],
@@ -350,7 +386,7 @@ def main() -> None:
             inp("height", "INT", 22, widget="height"),
         ],
         "outputs": [out("IMAGE", "IMAGE", [25, 26, 27])],
-        "title": "Pose to kitchen size (no crop)",
+        "title": "Pose to photo size (no crop)",
         "properties": props("ImageScale"),
         "widgets_values": ["lanczos", 1024, 1024, "disabled"],
         "widgets_values_named": {
@@ -383,7 +419,7 @@ def main() -> None:
         "flags": {}, "order": 20, "mode": 0,
         "inputs": ostris(3, 5, 15, 26),
         "outputs": [out("CONDITIONING", "CONDITIONING", [30])],
-        "title": "Positive (image1=kitchen, image2=pose)",
+        "title": "Positive (image1=scene without person, image2=pose)",
         "properties": {**OSTRIS, "Node name for S&R": "TextEncodeKrea2OstrisEdit"},
         "widgets_values": [PROMPT],
         "widgets_values_named": {"prompt": PROMPT},
@@ -512,8 +548,8 @@ def main() -> None:
     graph = {
         "id": "krea2-edited-frame",
         "revision": 0,
-        "last_node_id": 57,
-        "last_link_id": 81,
+        "last_node_id": 60,
+        "last_link_id": 91,
         "nodes": nodes,
         "links": links,
         "groups": [
@@ -526,8 +562,8 @@ def main() -> None:
             "ds": {"scale": 0.5, "offset": [1300, 40]},
             "frontendVersion": "1.52.7",
             "visagely": {
-                "title": "Edited frame — person-only denoise",
-                "notes": "Tight RMBG mask + paste generated person onto original photo pixels.",
+                "title": "Replace reference person with LoRA character",
+                "notes": "DWPose pose. Person painted out of image1. Paste onto original pixels.",
             },
         },
         "version": 0.4,

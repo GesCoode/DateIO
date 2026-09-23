@@ -1,8 +1,8 @@
 {
   "id": "krea2-edited-frame",
   "revision": 0,
-  "last_node_id": 56,
-  "last_link_id": 70,
+  "last_node_id": 60,
+  "last_link_id": 91,
   "nodes": [
     {
       "id": 1,
@@ -264,7 +264,7 @@
           ]
         }
       ],
-      "title": "Pose LoRA 0.45",
+      "title": "Pose LoRA 0.75",
       "properties": {
         "Node name for S&R": "LoraLoaderModelOnly",
         "cnr_id": "comfy-core",
@@ -272,11 +272,11 @@
       },
       "widgets_values": [
         "krea2_turbo_openpose_controlnet.safetensors",
-        0.45
+        0.75
       ],
       "widgets_values_named": {
         "lora_name": "krea2_turbo_openpose_controlnet.safetensors",
-        "strength_model": 0.45
+        "strength_model": 0.75
       }
     },
     {
@@ -348,10 +348,10 @@
         "Node name for S&R": "Note"
       },
       "widgets_values": [
-        "Load the scene photo only. RMBG-2.0 masks the person (not SAM3).\nGrow is small so windows/seats stay out of the hole.\nAfter sampling, the generated person is pasted onto the ORIGINAL photo pixels so the background is not VAE-blurred.\nPerson hole preview must be the body/hair only, not the car glass."
+        "Load one reference photo. The person in it is replaced by the LoRA character.\nPose comes from DWPose of that person (image2), not from the prompt.\nimage1 is the same photo with the person painted out, so her face/hair/body are not copied. The LoRA supplies the new person.\nThe result is pasted onto the original photo, so the background stays sharp.\nCLIP type must be krea2. Check Person hole: white = person, including hair."
       ],
       "widgets_values_named": {
-        "text": "Load the scene photo only. RMBG-2.0 masks the person (not SAM3).\nGrow is small so windows/seats stay out of the hole.\nAfter sampling, the generated person is pasted onto the ORIGINAL photo pixels so the background is not VAE-blurred.\nPerson hole preview must be the body/hair only, not the car glass."
+        "text": "Load one reference photo. The person in it is replaced by the LoRA character.\nPose comes from DWPose of that person (image2), not from the prompt.\nimage1 is the same photo with the person painted out, so her face/hair/body are not copied. The LoRA supplies the new person.\nThe result is pasted onto the original photo, so the background stays sharp.\nCLIP type must be krea2. Check Person hole: white = person, including hair."
       },
       "color": "#432",
       "bgcolor": "#653"
@@ -384,15 +384,14 @@
           "slot_index": 0,
           "links": [
             14,
-            15,
-            16,
             17,
             71,
-            72
+            72,
+            82
           ]
         }
       ],
-      "title": "Scale kitchen ~2MP",
+      "title": "Scale reference ~2MP",
       "properties": {
         "Node name for S&R": "ImageScaleToTotalPixels",
         "cnr_id": "comfy-core",
@@ -436,7 +435,8 @@
           "type": "INT",
           "slot_index": 0,
           "links": [
-            19
+            19,
+            90
           ]
         },
         {
@@ -444,7 +444,8 @@
           "type": "INT",
           "slot_index": 1,
           "links": [
-            22
+            22,
+            91
           ]
         },
         {
@@ -611,18 +612,18 @@
           ]
         }
       ],
-      "title": "Grow mask (hair fringe only)",
+      "title": "Grow mask (cover hair, not the windows)",
       "properties": {
         "Node name for S&R": "GrowMask",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       },
       "widgets_values": [
-        6,
+        12,
         true
       ],
       "widgets_values_named": {
-        "expand": 6,
+        "expand": 12,
         "tapered_corners": true
       }
     },
@@ -742,6 +743,164 @@
       "title": "Noise only the person",
       "properties": {
         "Node name for S&R": "SetLatentNoiseMask",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      }
+    },
+    {
+      "id": 58,
+      "type": "EmptyImage",
+      "pos": [
+        -560,
+        1100
+      ],
+      "size": [
+        250,
+        130
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 90,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 91,
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            83
+          ]
+        }
+      ],
+      "title": "Gray fill",
+      "properties": {
+        "Node name for S&R": "EmptyImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        512,
+        512,
+        1,
+        10526880
+      ],
+      "widgets_values_named": {
+        "width": 512,
+        "height": 512,
+        "batch_size": 1,
+        "color": 10526880
+      }
+    },
+    {
+      "id": 59,
+      "type": "ImageCompositeMasked",
+      "pos": [
+        -280,
+        1100
+      ],
+      "size": [
+        300,
+        146
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "IMAGE",
+          "link": 82
+        },
+        {
+          "name": "source",
+          "type": "IMAGE",
+          "link": 83
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 73,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            15,
+            16,
+            84
+          ]
+        }
+      ],
+      "title": "Scene with person painted out (image1)",
+      "properties": {
+        "Node name for S&R": "ImageCompositeMasked",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        0,
+        0,
+        false
+      ],
+      "widgets_values_named": {
+        "x": 0,
+        "y": 0,
+        "resize_source": false
+      }
+    },
+    {
+      "id": 60,
+      "type": "PreviewImage",
+      "pos": [
+        40,
+        1100
+      ],
+      "size": [
+        240,
+        240
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 84
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        }
+      ],
+      "title": "image1 (no reference person)",
+      "properties": {
+        "Node name for S&R": "PreviewImage",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       }
@@ -1169,7 +1328,7 @@
           ]
         }
       ],
-      "title": "Pose to kitchen size (no crop)",
+      "title": "Pose to photo size (no crop)",
       "properties": {
         "Node name for S&R": "ImageScale",
         "cnr_id": "comfy-core",
@@ -1279,7 +1438,7 @@
           ]
         }
       ],
-      "title": "Positive (image1=kitchen, image2=pose)",
+      "title": "Positive (image1=scene without person, image2=pose)",
       "properties": {
         "aux_id": "ostris/comfyui-krea2-ostris-edit",
         "ver": "7756566160c4a1b24bb1bd9f0ff3ced1a83d7547",
@@ -1287,10 +1446,10 @@
         "Node name for S&R": "TextEncodeKrea2OstrisEdit"
       },
       "widgets_values": [
-        "vsgly_id, a man with short dark wavy hair and a short beard, masculine face and body, short hair, wearing the same clothes as the photo, photorealistic"
+        "vsgly_id, a man with short dark wavy hair and a short beard, masculine face and body, natural skin, photorealistic, realistic lighting"
       ],
       "widgets_values_named": {
-        "prompt": "vsgly_id, a man with short dark wavy hair and a short beard, masculine face and body, short hair, wearing the same clothes as the photo, photorealistic"
+        "prompt": "vsgly_id, a man with short dark wavy hair and a short beard, masculine face and body, natural skin, photorealistic, realistic lighting"
       },
       "color": "#232",
       "bgcolor": "#353"
@@ -1821,6 +1980,54 @@
       "MASK"
     ],
     [
+      90,
+      11,
+      0,
+      58,
+      0,
+      "INT"
+    ],
+    [
+      91,
+      11,
+      1,
+      58,
+      1,
+      "INT"
+    ],
+    [
+      82,
+      10,
+      0,
+      59,
+      0,
+      "IMAGE"
+    ],
+    [
+      83,
+      58,
+      0,
+      59,
+      1,
+      "IMAGE"
+    ],
+    [
+      73,
+      53,
+      0,
+      59,
+      2,
+      "MASK"
+    ],
+    [
+      84,
+      59,
+      0,
+      60,
+      0,
+      "IMAGE"
+    ],
+    [
       40,
       7,
       0,
@@ -1950,7 +2157,7 @@
     ],
     [
       15,
-      10,
+      59,
       0,
       15,
       2,
@@ -1982,7 +2189,7 @@
     ],
     [
       16,
-      10,
+      59,
       0,
       16,
       2,
@@ -2150,8 +2357,8 @@
     },
     "frontendVersion": "1.52.7",
     "visagely": {
-      "title": "Edited frame \u2014 person-only denoise",
-      "notes": "SetLatentNoiseMask on a grown person mask. Background pixels stay. Denoise 1 in the hole."
+      "title": "Replace reference person with LoRA character",
+      "notes": "DWPose pose. Person painted out of image1. Paste onto original pixels."
     }
   },
   "version": 0.4,
