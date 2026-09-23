@@ -1,8 +1,8 @@
 {
   "id": "krea2-edited-frame",
   "revision": 0,
-  "last_node_id": 75,
-  "last_link_id": 137,
+  "last_node_id": 77,
+  "last_link_id": 143,
   "nodes": [
     {
       "id": 1,
@@ -315,10 +315,10 @@
         "ver": "0.37.0"
       },
       "widgets_values": [
-        "vsgly_id, a man with short dark wavy hair and a short beard, masculine face and body, natural skin, matching the skeleton pose, same camera angle, same lighting as the reference photograph, photorealistic"
+        "vsgly_id, a man with short dark wavy hair and a short beard, masculine face and body, natural skin, matching the skeleton pose, full torso and hips visible, standing behind the counter, same camera angle, same lighting as the reference photograph, photorealistic"
       ],
       "widgets_values_named": {
-        "value": "vsgly_id, a man with short dark wavy hair and a short beard, masculine face and body, natural skin, matching the skeleton pose, same camera angle, same lighting as the reference photograph, photorealistic"
+        "value": "vsgly_id, a man with short dark wavy hair and a short beard, masculine face and body, natural skin, matching the skeleton pose, full torso and hips visible, standing behind the counter, same camera angle, same lighting as the reference photograph, photorealistic"
       },
       "color": "#232",
       "bgcolor": "#353"
@@ -491,10 +491,10 @@
         "Node name for S&R": "Note"
       },
       "widgets_values": [
-        "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent). The old mask is NOT a cookie-cutter.\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. Marry uses a feathered UNION of the old hole (grown so leftovers vanish) and a NEW RMBG of the generated person (so clothes/body can be bigger or smaller).\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Pass 2 upscales and gently refines only the marry region.\nCLIP type must be krea2."
+        "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent).\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. Marry pastes ONLY the new RMBG person (feathered). Leftover old-person pixels are healed from a blur of the original photo \u2014 the island/background is never replaced by generated marble.\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Pass 2 upscales and refines only the new person, not the kitchen.\nCLIP type must be krea2."
       ],
       "widgets_values_named": {
-        "text": "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent). The old mask is NOT a cookie-cutter.\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. Marry uses a feathered UNION of the old hole (grown so leftovers vanish) and a NEW RMBG of the generated person (so clothes/body can be bigger or smaller).\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Pass 2 upscales and gently refines only the marry region.\nCLIP type must be krea2."
+        "text": "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate the whole frame (empty latent).\n2. image1 = reference with the old person painted out (lighting/camera). image2 = DWPose on gray. Pose LoRA 0.9.\n3. Marry pastes ONLY the new RMBG person (feathered). Leftover old-person pixels are healed from a blur of the original photo \u2014 the island/background is never replaced by generated marble.\n4. Type extra directions in Your adjustments (e.g. make the shirt red).\n5. Pass 2 upscales and refines only the new person, not the kitchen.\nCLIP type must be krea2."
       },
       "color": "#432",
       "bgcolor": "#653"
@@ -530,7 +530,8 @@
             40,
             71,
             82,
-            132
+            132,
+            138
           ]
         }
       ],
@@ -818,69 +819,19 @@
           ]
         }
       ],
-      "title": "Grow 64 \u2014 room for new body/clothes",
+      "title": "Grow 12 \u2014 leftover old person only",
       "properties": {
         "Node name for S&R": "GrowMask",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       },
       "widgets_values": [
-        64,
+        12,
         true
       ],
       "widgets_values_named": {
-        "expand": 64,
+        "expand": 12,
         "tapered_corners": true
-      }
-    },
-    {
-      "id": 43,
-      "type": "FeatherMask",
-      "pos": [
-        -800,
-        1140
-      ],
-      "size": [
-        250,
-        154
-      ],
-      "flags": {},
-      "order": 17,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 66
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "slot_index": 0,
-          "links": [
-            67
-          ]
-        }
-      ],
-      "title": "Feather old region",
-      "properties": {
-        "Node name for S&R": "FeatherMask",
-        "cnr_id": "comfy-core",
-        "ver": "0.37.0"
-      },
-      "widgets_values": [
-        36,
-        36,
-        36,
-        36
-      ],
-      "widgets_values_named": {
-        "left": 36,
-        "top": 36,
-        "right": 36,
-        "bottom": 36
       }
     },
     {
@@ -1661,10 +1612,10 @@
         "Node name for S&R": "TextEncodeKrea2OstrisEdit"
       },
       "widgets_values": [
-        "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting"
+        "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting, cropped legs, missing hips, cut off at the waist, floating torso, white blob, melted marble"
       ],
       "widgets_values_named": {
-        "prompt": "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting"
+        "prompt": "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting, cropped legs, missing hips, cut off at the waist, floating torso, white blob, melted marble"
       }
     },
     {
@@ -1952,7 +1903,7 @@
           "links": null
         }
       ],
-      "title": "NEW person mask (from generate)",
+      "title": "NEW person cutout (from generate)",
       "properties": {
         "Node name for S&R": "RMBG",
         "cnr_id": "comfyui-rmbg",
@@ -1961,9 +1912,9 @@
       "widgets_values": [
         "RMBG-2.0",
         1,
-        768,
+        1024,
+        4,
         6,
-        2,
         false,
         false,
         "Alpha",
@@ -1972,9 +1923,9 @@
       "widgets_values_named": {
         "model": "RMBG-2.0",
         "sensitivity": 1,
-        "process_res": 768,
-        "mask_blur": 6,
-        "mask_offset": 2,
+        "process_res": 1024,
+        "mask_blur": 4,
+        "mask_offset": 6,
         "invert_output": false,
         "refine_foreground": false,
         "background": "Alpha",
@@ -2010,22 +1961,23 @@
           "type": "MASK",
           "slot_index": 0,
           "links": [
-            87
+            87,
+            140
           ]
         }
       ],
-      "title": "Grow new person 10",
+      "title": "Grow new person 18 (keep hips)",
       "properties": {
         "Node name for S&R": "GrowMask",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       },
       "widgets_values": [
-        10,
+        18,
         true
       ],
       "widgets_values_named": {
-        "expand": 10,
+        "expand": 18,
         "tapered_corners": true
       }
     },
@@ -2056,7 +2008,8 @@
           "type": "MASK",
           "slot_index": 0,
           "links": [
-            88
+            88,
+            143
           ]
         }
       ],
@@ -2067,16 +2020,16 @@
         "ver": "0.37.0"
       },
       "widgets_values": [
-        24,
-        24,
-        24,
-        24
+        20,
+        20,
+        20,
+        20
       ],
       "widgets_values_named": {
-        "left": 24,
-        "top": 24,
-        "right": 24,
-        "bottom": 24
+        "left": 20,
+        "top": 20,
+        "right": 20,
+        "bottom": 20
       }
     },
     {
@@ -2084,7 +2037,7 @@
       "type": "MaskComposite",
       "pos": [
         1240,
-        470
+        360
       ],
       "size": [
         280,
@@ -2097,12 +2050,12 @@
         {
           "name": "destination",
           "type": "MASK",
-          "link": 67
+          "link": 66
         },
         {
           "name": "source",
           "type": "MASK",
-          "link": 88
+          "link": 140
         }
       ],
       "outputs": [
@@ -2115,7 +2068,7 @@
           ]
         }
       ],
-      "title": "Union old hole OR new person",
+      "title": "Leftover old person (old minus new)",
       "properties": {
         "Node name for S&R": "MaskComposite",
         "cnr_id": "comfy-core",
@@ -2124,12 +2077,12 @@
       "widgets_values": [
         0,
         0,
-        "or"
+        "subtract"
       ],
       "widgets_values_named": {
         "x": 0,
         "y": 0,
-        "operation": "or"
+        "operation": "subtract"
       }
     },
     {
@@ -2137,7 +2090,7 @@
       "type": "FeatherMask",
       "pos": [
         1540,
-        470
+        360
       ],
       "size": [
         250,
@@ -2160,28 +2113,27 @@
           "slot_index": 0,
           "links": [
             73,
-            92,
-            137
+            92
           ]
         }
       ],
-      "title": "Feather marry mask",
+      "title": "Feather leftover heal",
       "properties": {
         "Node name for S&R": "FeatherMask",
         "cnr_id": "comfy-core",
         "ver": "0.37.0"
       },
       "widgets_values": [
-        16,
-        16,
-        16,
-        16
+        8,
+        8,
+        8,
+        8
       ],
       "widgets_values_named": {
-        "left": 16,
-        "top": 16,
-        "right": 16,
-        "bottom": 16
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8
       }
     },
     {
@@ -2189,7 +2141,7 @@
       "type": "MaskToImage",
       "pos": [
         1540,
-        660
+        540
       ],
       "size": [
         180,
@@ -2217,7 +2169,7 @@
           ]
         }
       ],
-      "title": "Marry mask to image",
+      "title": "Leftover mask to image",
       "properties": {
         "Node name for S&R": "MaskToImage",
         "cnr_id": "comfy-core",
@@ -2229,7 +2181,7 @@
       "type": "PreviewImage",
       "pos": [
         1740,
-        470
+        360
       ],
       "size": [
         200,
@@ -2253,7 +2205,7 @@
           "links": null
         }
       ],
-      "title": "Marry region (soft)",
+      "title": "Leftover heal (should be tiny)",
       "properties": {
         "Node name for S&R": "PreviewImage",
         "cnr_id": "comfy-core",
@@ -2261,18 +2213,64 @@
       }
     },
     {
-      "id": 55,
+      "id": 76,
+      "type": "ImageBlur",
+      "pos": [
+        640,
+        680
+      ],
+      "size": [
+        270,
+        82
+      ],
+      "flags": {},
+      "order": 44,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 138
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            139
+          ]
+        }
+      ],
+      "title": "Blur original (heal source)",
+      "properties": {
+        "Node name for S&R": "ImageBlur",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        15,
+        6.0
+      ],
+      "widgets_values_named": {
+        "blur_radius": 15,
+        "sigma": 6.0
+      }
+    },
+    {
+      "id": 77,
       "type": "ImageCompositeMasked",
       "pos": [
-        1000,
-        140
+        940,
+        680
       ],
       "size": [
         300,
         146
       ],
       "flags": {},
-      "order": 44,
+      "order": 45,
       "mode": 0,
       "inputs": [
         {
@@ -2283,7 +2281,7 @@
         {
           "name": "source",
           "type": "IMAGE",
-          "link": 135
+          "link": 139
         },
         {
           "name": "mask",
@@ -2298,12 +2296,71 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
+            141
+          ]
+        }
+      ],
+      "title": "Heal leftover old pixels",
+      "properties": {
+        "Node name for S&R": "ImageCompositeMasked",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.0"
+      },
+      "widgets_values": [
+        0,
+        0,
+        false
+      ],
+      "widgets_values_named": {
+        "x": 0,
+        "y": 0,
+        "resize_source": false
+      }
+    },
+    {
+      "id": 55,
+      "type": "ImageCompositeMasked",
+      "pos": [
+        1260,
+        680
+      ],
+      "size": [
+        300,
+        146
+      ],
+      "flags": {},
+      "order": 46,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "IMAGE",
+          "link": 141
+        },
+        {
+          "name": "source",
+          "type": "IMAGE",
+          "link": 135
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 88,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
             94,
             95
           ]
         }
       ],
-      "title": "Marry into original background",
+      "title": "Paste new person only",
       "properties": {
         "Node name for S&R": "ImageCompositeMasked",
         "cnr_id": "comfy-core",
@@ -2477,7 +2534,7 @@
         {
           "name": "mask",
           "type": "MASK",
-          "link": 137
+          "link": 143
         }
       ],
       "outputs": [
@@ -2687,7 +2744,7 @@
           ]
         }
       ],
-      "title": "Refine only the marry region",
+      "title": "Refine only the new person",
       "properties": {
         "Node name for S&R": "SetLatentNoiseMask",
         "cnr_id": "comfy-core",
@@ -2834,10 +2891,10 @@
         "Node name for S&R": "TextEncodeKrea2OstrisEdit"
       },
       "widgets_values": [
-        "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting"
+        "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting, cropped legs, missing hips, cut off at the waist, floating torso, white blob, melted marble"
       ],
       "widgets_values_named": {
-        "prompt": "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting"
+        "prompt": "woman, female, long hair, feminine body, breasts, mixed gender, hard cutout, sticker, pasted, mask outline, halo, different lighting, cropped legs, missing hips, cut off at the waist, floating torso, white blob, melted marble"
       }
     },
     {
@@ -2899,7 +2956,7 @@
         1,
         "euler",
         "simple",
-        0.28
+        0.18
       ],
       "widgets_values_named": {
         "seed": 42,
@@ -2908,7 +2965,7 @@
         "cfg": 1,
         "sampler_name": "euler",
         "scheduler": "simple",
-        "denoise": 0.28
+        "denoise": 0.18
       }
     },
     {
@@ -3138,14 +3195,6 @@
       40,
       1,
       42,
-      0,
-      "MASK"
-    ],
-    [
-      66,
-      42,
-      0,
-      43,
       0,
       "MASK"
     ],
@@ -3478,16 +3527,16 @@
       "MASK"
     ],
     [
-      67,
-      43,
+      66,
+      42,
       0,
       53,
       0,
       "MASK"
     ],
     [
-      88,
-      52,
+      140,
+      51,
       0,
       53,
       1,
@@ -3518,8 +3567,40 @@
       "IMAGE"
     ],
     [
+      138,
+      10,
+      0,
+      76,
+      0,
+      "IMAGE"
+    ],
+    [
       132,
       10,
+      0,
+      77,
+      0,
+      "IMAGE"
+    ],
+    [
+      139,
+      76,
+      0,
+      77,
+      1,
+      "IMAGE"
+    ],
+    [
+      73,
+      54,
+      0,
+      77,
+      2,
+      "MASK"
+    ],
+    [
+      141,
+      77,
       0,
       55,
       0,
@@ -3534,8 +3615,8 @@
       "IMAGE"
     ],
     [
-      73,
-      54,
+      88,
+      52,
       0,
       55,
       2,
@@ -3566,8 +3647,8 @@
       "IMAGE"
     ],
     [
-      137,
-      54,
+      143,
+      52,
       0,
       62,
       0,

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Replace the reference person with the LoRA character.
 
-Draft at ~0.6MP (empty latent, pose + scene refs), then marry with a
-feathered union of the old hole and the NEW silhouette, then upscale.
-The old person mask is not a cookie-cutter.
+Draft at ~0.6MP (empty latent, pose + scene refs), paste only the new
+person (feathered RMBG), heal leftover old pixels from a blur of the
+original, then upscale. The kitchen/island stays original pixels.
 """
 from __future__ import annotations
 
@@ -13,12 +13,15 @@ from pathlib import Path
 IDENTITY = (
     "vsgly_id, a man with short dark wavy hair and a short beard, "
     "masculine face and body, natural skin, matching the skeleton pose, "
+    "full torso and hips visible, standing behind the counter, "
     "same camera angle, same lighting as the reference photograph, photorealistic"
 )
 ADJUST = ""
 NEG = (
     "woman, female, long hair, feminine body, breasts, mixed gender, "
-    "hard cutout, sticker, pasted, mask outline, halo, different lighting"
+    "hard cutout, sticker, pasted, mask outline, halo, different lighting, "
+    "cropped legs, missing hips, cut off at the waist, floating torso, "
+    "white blob, melted marble"
 )
 
 CORE = {"cnr_id": "comfy-core", "ver": "0.37.0"}
@@ -36,13 +39,14 @@ AUX = {
 KJ = {"Node name for S&R": "ColorToMask", "cnr_id": "comfyui-kjnodes"}
 NOTE = (
     "1. Draft is ~0.6MP so you get a preview faster. Pose + identity generate "
-    "the whole frame (empty latent). The old mask is NOT a cookie-cutter.\n"
+    "the whole frame (empty latent).\n"
     "2. image1 = reference with the old person painted out (lighting/camera). "
     "image2 = DWPose on gray. Pose LoRA 0.9.\n"
-    "3. Marry uses a feathered UNION of the old hole (grown so leftovers vanish) "
-    "and a NEW RMBG of the generated person (so clothes/body can be bigger or smaller).\n"
+    "3. Marry pastes ONLY the new RMBG person (feathered). Leftover old-person "
+    "pixels are healed from a blur of the original photo — the island/background "
+    "is never replaced by generated marble.\n"
     "4. Type extra directions in Your adjustments (e.g. make the shirt red).\n"
-    "5. Pass 2 upscales and gently refines only the marry region.\n"
+    "5. Pass 2 upscales and refines only the new person, not the kitchen.\n"
     "CLIP type must be krea2."
 )
 
@@ -231,7 +235,7 @@ def main() -> None:
         "id": 10, "type": "ImageScaleToTotalPixels", "pos": [-1400, 860], "size": [320, 106],
         "flags": {}, "order": 11, "mode": 0,
         "inputs": [inp("image", "IMAGE", 11)],
-        "outputs": [out("IMAGE", "IMAGE", [14, 40, 71, 82, 132])],
+        "outputs": [out("IMAGE", "IMAGE", [14, 40, 71, 82, 132, 138])],
         "title": "Draft size ~0.6MP (fast preview)",
         "properties": props("ImageScaleToTotalPixels"),
         "widgets_values": ["lanczos", 0.6, 1],
@@ -295,20 +299,10 @@ def main() -> None:
         "flags": {}, "order": 16, "mode": 0,
         "inputs": [inp("mask", "MASK", 136)],
         "outputs": [out("MASK", "MASK", [66])],
-        "title": "Grow 64 — room for new body/clothes",
+        "title": "Grow 12 — leftover old person only",
         "properties": props("GrowMask"),
-        "widgets_values": [64, True],
-        "widgets_values_named": {"expand": 64, "tapered_corners": True},
-    })
-    add({
-        "id": 43, "type": "FeatherMask", "pos": [-800, 1140], "size": [250, 154],
-        "flags": {}, "order": 17, "mode": 0,
-        "inputs": [inp("mask", "MASK", 66)],
-        "outputs": [out("MASK", "MASK", [67])],
-        "title": "Feather old region",
-        "properties": props("FeatherMask"),
-        "widgets_values": [36, 36, 36, 36],
-        "widgets_values_named": {"left": 36, "top": 36, "right": 36, "bottom": 36},
+        "widgets_values": [12, True],
+        "widgets_values_named": {"expand": 12, "tapered_corners": True},
     })
     add({
         "id": 44, "type": "EmptyImage", "pos": [-800, 1020], "size": [250, 130],
@@ -549,7 +543,9 @@ def main() -> None:
         "bgcolor": "#533",
     })
 
-    wv2, named2 = rmbg_widgets(6, 2)
+    wv2, named2 = rmbg_widgets(4, 6)
+    named2["process_res"] = 1024
+    wv2[2] = 1024
     add({
         "id": 50, "type": "RMBG", "pos": [640, 360], "size": [300, 292],
         "flags": {}, "order": 37, "mode": 0,
@@ -559,7 +555,7 @@ def main() -> None:
             out("MASK", "MASK", [86], 1),
             out("MASK_IMAGE", "IMAGE", None, 2),
         ],
-        "title": "NEW person mask (from generate)",
+        "title": "NEW person cutout (from generate)",
         "properties": RMBG,
         "widgets_values": wv2,
         "widgets_values_named": named2,
@@ -570,71 +566,95 @@ def main() -> None:
         "id": 51, "type": "GrowMask", "pos": [960, 360], "size": [240, 82],
         "flags": {}, "order": 38, "mode": 0,
         "inputs": [inp("mask", "MASK", 86)],
-        "outputs": [out("MASK", "MASK", [87])],
-        "title": "Grow new person 10",
+        "outputs": [out("MASK", "MASK", [87, 140])],
+        "title": "Grow new person 18 (keep hips)",
         "properties": props("GrowMask"),
-        "widgets_values": [10, True],
-        "widgets_values_named": {"expand": 10, "tapered_corners": True},
+        "widgets_values": [18, True],
+        "widgets_values_named": {"expand": 18, "tapered_corners": True},
     })
     add({
         "id": 52, "type": "FeatherMask", "pos": [960, 470], "size": [250, 154],
         "flags": {}, "order": 39, "mode": 0,
         "inputs": [inp("mask", "MASK", 87)],
-        "outputs": [out("MASK", "MASK", [88])],
+        "outputs": [out("MASK", "MASK", [88, 143])],
         "title": "Feather new person",
         "properties": props("FeatherMask"),
-        "widgets_values": [24, 24, 24, 24],
-        "widgets_values_named": {"left": 24, "top": 24, "right": 24, "bottom": 24},
+        "widgets_values": [20, 20, 20, 20],
+        "widgets_values_named": {"left": 20, "top": 20, "right": 20, "bottom": 20},
     })
     add({
-        "id": 53, "type": "MaskComposite", "pos": [1240, 470], "size": [280, 154],
+        "id": 53, "type": "MaskComposite", "pos": [1240, 360], "size": [280, 154],
         "flags": {}, "order": 40, "mode": 0,
         "inputs": [
-            inp("destination", "MASK", 67),
-            inp("source", "MASK", 88),
+            inp("destination", "MASK", 66),
+            inp("source", "MASK", 140),
         ],
         "outputs": [out("MASK", "MASK", [89])],
-        "title": "Union old hole OR new person",
+        "title": "Leftover old person (old minus new)",
         "properties": props("MaskComposite"),
-        "widgets_values": [0, 0, "or"],
-        "widgets_values_named": {"x": 0, "y": 0, "operation": "or"},
+        "widgets_values": [0, 0, "subtract"],
+        "widgets_values_named": {"x": 0, "y": 0, "operation": "subtract"},
     })
     add({
-        "id": 54, "type": "FeatherMask", "pos": [1540, 470], "size": [250, 154],
+        "id": 54, "type": "FeatherMask", "pos": [1540, 360], "size": [250, 154],
         "flags": {}, "order": 41, "mode": 0,
         "inputs": [inp("mask", "MASK", 89)],
-        "outputs": [out("MASK", "MASK", [73, 92, 137])],
-        "title": "Feather marry mask",
+        "outputs": [out("MASK", "MASK", [73, 92])],
+        "title": "Feather leftover heal",
         "properties": props("FeatherMask"),
-        "widgets_values": [16, 16, 16, 16],
-        "widgets_values_named": {"left": 16, "top": 16, "right": 16, "bottom": 16},
+        "widgets_values": [8, 8, 8, 8],
+        "widgets_values_named": {"left": 8, "top": 8, "right": 8, "bottom": 8},
     })
     add({
-        "id": 56, "type": "MaskToImage", "pos": [1540, 660], "size": [180, 26],
+        "id": 56, "type": "MaskToImage", "pos": [1540, 540], "size": [180, 26],
         "flags": {"collapsed": True}, "order": 42, "mode": 0,
         "inputs": [inp("mask", "MASK", 92)],
         "outputs": [out("IMAGE", "IMAGE", [93])],
-        "title": "Marry mask to image",
+        "title": "Leftover mask to image",
         "properties": props("MaskToImage"),
     })
     add({
-        "id": 47, "type": "PreviewImage", "pos": [1740, 470], "size": [200, 200],
+        "id": 47, "type": "PreviewImage", "pos": [1740, 360], "size": [200, 200],
         "flags": {}, "order": 43, "mode": 0,
         "inputs": [inp("images", "IMAGE", 93)],
         "outputs": [out("IMAGE", "IMAGE", None)],
-        "title": "Marry region (soft)",
+        "title": "Leftover heal (should be tiny)",
         "properties": props("PreviewImage"),
     })
     add({
-        "id": 55, "type": "ImageCompositeMasked", "pos": [1000, 140], "size": [300, 146],
+        "id": 76, "type": "ImageBlur", "pos": [640, 680], "size": [270, 82],
         "flags": {}, "order": 44, "mode": 0,
+        "inputs": [inp("image", "IMAGE", 138)],
+        "outputs": [out("IMAGE", "IMAGE", [139])],
+        "title": "Blur original (heal source)",
+        "properties": props("ImageBlur"),
+        "widgets_values": [15, 6.0],
+        "widgets_values_named": {"blur_radius": 15, "sigma": 6.0},
+    })
+    add({
+        "id": 77, "type": "ImageCompositeMasked", "pos": [940, 680], "size": [300, 146],
+        "flags": {}, "order": 45, "mode": 0,
         "inputs": [
             inp("destination", "IMAGE", 132),
-            inp("source", "IMAGE", 135),
+            inp("source", "IMAGE", 139),
             inp("mask", "MASK", 73, shape=7),
         ],
+        "outputs": [out("IMAGE", "IMAGE", [141])],
+        "title": "Heal leftover old pixels",
+        "properties": props("ImageCompositeMasked"),
+        "widgets_values": [0, 0, False],
+        "widgets_values_named": {"x": 0, "y": 0, "resize_source": False},
+    })
+    add({
+        "id": 55, "type": "ImageCompositeMasked", "pos": [1260, 680], "size": [300, 146],
+        "flags": {}, "order": 46, "mode": 0,
+        "inputs": [
+            inp("destination", "IMAGE", 141),
+            inp("source", "IMAGE", 135),
+            inp("mask", "MASK", 88, shape=7),
+        ],
         "outputs": [out("IMAGE", "IMAGE", [94, 95])],
-        "title": "Marry into original background",
+        "title": "Paste new person only",
         "properties": props("ImageCompositeMasked"),
         "widgets_values": [0, 0, False],
         "widgets_values_named": {"x": 0, "y": 0, "resize_source": False},
@@ -675,7 +695,7 @@ def main() -> None:
     add({
         "id": 62, "type": "MaskToImage", "pos": [980, 820], "size": [180, 26],
         "flags": {}, "order": 48, "mode": 0,
-        "inputs": [inp("mask", "MASK", 137)],
+        "inputs": [inp("mask", "MASK", 143)],
         "outputs": [out("IMAGE", "IMAGE", [100])],
         "title": "Scale marry mask",
         "properties": props("MaskToImage"),
@@ -719,7 +739,7 @@ def main() -> None:
         "flags": {}, "order": 52, "mode": 0,
         "inputs": [inp("samples", "LATENT", 103), inp("mask", "MASK", 102, shape=7)],
         "outputs": [out("LATENT", "LATENT", [104])],
-        "title": "Refine only the marry region",
+        "title": "Refine only the new person",
         "properties": props("SetLatentNoiseMask"),
     })
     add({
@@ -767,11 +787,11 @@ def main() -> None:
         "outputs": [out("LATENT", "LATENT", [107])],
         "title": "Refine 8 steps denoise 0.28",
         "properties": props("KSampler"),
-        "widgets_values": [42, "randomize", 8, 1, "euler", "simple", 0.28],
+        "widgets_values": [42, "randomize", 8, 1, "euler", "simple", 0.18],
         "widgets_values_named": {
             "seed": 42, "control_after_generate": "randomize",
             "steps": 8, "cfg": 1, "sampler_name": "euler",
-            "scheduler": "simple", "denoise": 0.28,
+            "scheduler": "simple", "denoise": 0.18,
         },
     })
     add({
@@ -829,8 +849,8 @@ def main() -> None:
     graph = {
         "id": "krea2-edited-frame",
         "revision": 0,
-        "last_node_id": 75,
-        "last_link_id": 137,
+        "last_node_id": 77,
+        "last_link_id": 143,
         "nodes": nodes,
         "links": links,
         "groups": [
