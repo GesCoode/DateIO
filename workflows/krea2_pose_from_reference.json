@@ -1,8 +1,8 @@
 {
   "id": "krea2-pose-on-empty-background",
   "revision": 0,
-  "last_node_id": 82,
-  "last_link_id": 165,
+  "last_node_id": 86,
+  "last_link_id": 174,
   "nodes": [
     {
       "id": 1,
@@ -92,7 +92,8 @@
           "type": "CLIP",
           "links": [
             61,
-            65
+            65,
+            166
           ]
         }
       ],
@@ -416,7 +417,8 @@
           "links": [
             71,
             157,
-            163
+            163,
+            167
           ]
         }
       ],
@@ -672,6 +674,14 @@
           "shape": 7,
           "type": "IMAGE",
           "link": null
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "prompt"
+          },
+          "link": 169
         }
       ],
       "outputs": [
@@ -1200,7 +1210,8 @@
           "type": "MASK",
           "links": [
             112,
-            113
+            113,
+            172
           ]
         },
         {
@@ -1380,8 +1391,8 @@
         -280
       ],
       "size": [
-        560,
-        360
+        580,
+        400
       ],
       "flags": {},
       "order": 0,
@@ -1390,7 +1401,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "## Pose onto a cleaned photo, then copy the face\n\n1. Ask Gemini to remove the person from the reference and keep the background.\n2. Load that result in EMPTY BACKGROUND. Load the original in REFERENCE PHOTO. The original is only used for the pose and the face.\n3. NEW CHARACTER is generated in that pose, masked, and stitched onto the empty background.\n4. COPY REFERENCE FACE pastes only the reference face onto that result. TIGHT FACE is pulled in so the hair is not copied.\n\nThe Gemini image has to be the same photo and the same framing. If hair is still copied, make the first number on TIGHT FACE more negative. If the face gets eaten, move that number toward 0."
+        "## Pose onto a cleaned photo, then copy the face\n\n1. Ask Gemini to remove the person and keep the background. Load that in EMPTY BACKGROUND and the original in REFERENCE PHOTO.\n2. SCENE FROM REFERENCE describes that photo's place and lighting. BUILD PROMPT puts that after the character line. SCENE PROMPT shows the text that is actually used.\n3. NEW CHARACTER is generated in the reference pose, then stitched onto the empty background.\n4. COPY REFERENCE FACE pastes only the reference face, and only where it sits inside the new character. FACE INSIDE CHARACTER is the face mask cut by the new character mask, so a turned head cannot leave a hole of the old background.\n\nIf hair is still copied, make the first number on TIGHT FACE more negative. If the face gets eaten, move that number toward 0."
       ]
     },
     {
@@ -1528,8 +1539,7 @@
           "name": "mask",
           "type": "MASK",
           "links": [
-            160,
-            161
+            171
           ]
         },
         {
@@ -1570,7 +1580,7 @@
         {
           "name": "mask",
           "type": "MASK",
-          "link": 161
+          "link": 174
         }
       ],
       "outputs": [
@@ -1650,7 +1660,7 @@
         {
           "name": "mask",
           "type": "MASK",
-          "link": 160
+          "link": 173
         }
       ],
       "outputs": [
@@ -1669,6 +1679,178 @@
         0,
         0,
         false
+      ]
+    },
+    {
+      "id": 83,
+      "type": "TextGenerate",
+      "pos": [
+        -260,
+        540
+      ],
+      "size": [
+        420,
+        280
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "title": "SCENE FROM REFERENCE",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 166
+        },
+        {
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 167
+        }
+      ],
+      "outputs": [
+        {
+          "name": "generated_text",
+          "type": "STRING",
+          "links": [
+            168
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextGenerate"
+      },
+      "widgets_values": [
+        "Look at this photograph and write one detailed image-prompt paragraph about only the setting: the place, background, surfaces, weather, lighting, light direction, time of day, color of the light, camera angle, and depth of field. Match what is actually visible. Do not mention the person, their face, hair, body, clothes, or pose.",
+        220,
+        "off",
+        false,
+        true
+      ]
+    },
+    {
+      "id": 84,
+      "type": "StringConcatenate",
+      "pos": [
+        200,
+        540
+      ],
+      "size": [
+        420,
+        190
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "title": "BUILD PROMPT",
+      "inputs": [
+        {
+          "name": "string_b",
+          "type": "STRING",
+          "widget": {
+            "name": "string_b"
+          },
+          "link": 168
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            169,
+            170
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StringConcatenate"
+      },
+      "widgets_values": [
+        "vsgly_id, a man with natural green eyes, short wavy dark brown hair, wearing swimming shorts, full body, realistic photograph",
+        "",
+        ", "
+      ]
+    },
+    {
+      "id": 85,
+      "type": "PreviewAny",
+      "pos": [
+        660,
+        540
+      ],
+      "size": [
+        420,
+        220
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "title": "SCENE PROMPT",
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 170
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 86,
+      "type": "MaskComposite",
+      "pos": [
+        1280,
+        1460
+      ],
+      "size": [
+        270,
+        150
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "title": "FACE INSIDE CHARACTER",
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "MASK",
+          "link": 171
+        },
+        {
+          "name": "source",
+          "type": "MASK",
+          "link": 172
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            173,
+            174
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MaskComposite"
+      },
+      "widgets_values": [
+        0,
+        0,
+        "multiply"
       ]
     }
   ],
@@ -2042,22 +2224,6 @@
       "MASK"
     ],
     [
-      160,
-      79,
-      0,
-      82,
-      2,
-      "MASK"
-    ],
-    [
-      161,
-      79,
-      0,
-      80,
-      0,
-      "MASK"
-    ],
-    [
       162,
       80,
       0,
@@ -2088,6 +2254,78 @@
       43,
       0,
       "IMAGE"
+    ],
+    [
+      166,
+      3,
+      0,
+      83,
+      0,
+      "CLIP"
+    ],
+    [
+      167,
+      28,
+      0,
+      83,
+      1,
+      "IMAGE"
+    ],
+    [
+      168,
+      83,
+      0,
+      84,
+      0,
+      "STRING"
+    ],
+    [
+      169,
+      84,
+      0,
+      34,
+      5,
+      "STRING"
+    ],
+    [
+      170,
+      84,
+      0,
+      85,
+      0,
+      "STRING"
+    ],
+    [
+      171,
+      79,
+      0,
+      86,
+      0,
+      "MASK"
+    ],
+    [
+      172,
+      58,
+      0,
+      86,
+      1,
+      "MASK"
+    ],
+    [
+      173,
+      86,
+      0,
+      82,
+      2,
+      "MASK"
+    ],
+    [
+      174,
+      86,
+      0,
+      80,
+      0,
+      "MASK"
     ]
   ],
   "groups": [],
