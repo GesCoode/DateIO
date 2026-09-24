@@ -1,0 +1,4194 @@
+{
+  "id": "krea2-expression-tight-ltr",
+  "revision": 0,
+  "last_node_id": 120,
+  "last_link_id": 245,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "VAELoader",
+      "pos": [
+        1220,
+        616
+      ],
+      "size": [
+        270,
+        80
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            8,
+            62,
+            66,
+            185,
+            191,
+            196,
+            202,
+            221,
+            225,
+            228,
+            237
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "Wan2_1_VAE_bf16.safetensors"
+      ],
+      "title": "VAE"
+    },
+    {
+      "id": 2,
+      "type": "UNETLoader",
+      "pos": [
+        0,
+        600
+      ],
+      "size": [
+        270,
+        108
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            69,
+            188
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "krea2_turbo_fp8_scaled.safetensors",
+        "default"
+      ],
+      "title": "KREA 2 TURBO UNET"
+    },
+    {
+      "id": 3,
+      "type": "CLIPLoader",
+      "pos": [
+        1530,
+        600
+      ],
+      "size": [
+        270,
+        140
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            61,
+            65,
+            166,
+            190,
+            195,
+            207,
+            224,
+            227
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "qwen3vl_4b_fp8_scaled.safetensors",
+        "krea2",
+        "default"
+      ],
+      "title": "KREA CLIP"
+    },
+    {
+      "id": 41,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        310,
+        600
+      ],
+      "size": [
+        270,
+        112
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "title": "CHARACTER LORA",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 69
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            82,
+            219
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly"
+      },
+      "widgets_values": [
+        "KreAlpha2640.safetensors",
+        1.0
+      ],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 33,
+      "type": "Krea2OstrisEditModelPatch",
+      "pos": [
+        620,
+        616
+      ],
+      "size": [
+        241,
+        72
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 82
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            70
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Krea2OstrisEditModelPatch"
+      },
+      "widgets_values": [
+        true
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 32,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        900,
+        600
+      ],
+      "size": [
+        270,
+        112
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "title": "POSE LORA",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 70
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            60
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly"
+      },
+      "widgets_values": [
+        "krea2_turbo_openpose_controlnet.safetensors",
+        1
+      ],
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 25,
+      "type": "LoadImage",
+      "pos": [
+        0,
+        920
+      ],
+      "size": [
+        420,
+        500
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "title": "REFERENCE PHOTO",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            79,
+            84
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "reference.png",
+        "image"
+      ]
+    },
+    {
+      "id": 75,
+      "type": "LoadImage",
+      "pos": [
+        0,
+        1480
+      ],
+      "size": [
+        420,
+        500
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "title": "EMPTY BACKGROUND",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            150
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "background.png",
+        "image"
+      ]
+    },
+    {
+      "id": 38,
+      "type": "DWPreprocessor",
+      "pos": [
+        480,
+        920
+      ],
+      "size": [
+        300,
+        222
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "title": "POSE FROM REFERENCE",
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 79
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            80,
+            81
+          ]
+        },
+        {
+          "name": "POSE_KEYPOINT",
+          "type": "POSE_KEYPOINT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DWPreprocessor"
+      },
+      "widgets_values": [
+        "enable",
+        "enable",
+        "enable",
+        512,
+        "yolox_l.onnx",
+        "dw-ll_ucoco_384_bs5.torchscript.pt",
+        "disable"
+      ]
+    },
+    {
+      "id": 40,
+      "type": "PreviewImage",
+      "pos": [
+        480,
+        1200
+      ],
+      "size": [
+        290,
+        246
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "title": "POSE PREVIEW",
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 81
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 28,
+      "type": "FluxKontextImageScale",
+      "pos": [
+        480,
+        1520
+      ],
+      "size": [
+        225,
+        48
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "title": "SCALE REFERENCE",
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 84
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            71,
+            167,
+            208,
+            226,
+            229
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxKontextImageScale"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 36,
+      "type": "GetImageSize",
+      "pos": [
+        760,
+        1520
+      ],
+      "size": [
+        225,
+        160
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 71
+        }
+      ],
+      "outputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "links": [
+            72,
+            96,
+            151
+          ]
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "links": [
+            73,
+            97,
+            152
+          ]
+        },
+        {
+          "name": "batch_size",
+          "type": "INT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GetImageSize"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 45,
+      "type": "ImageScale",
+      "pos": [
+        820,
+        920
+      ],
+      "size": [
+        270,
+        170
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "title": "MATCH POSE TO FRAME",
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 80
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": 72
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": 73
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            63,
+            67
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageScale"
+      },
+      "widgets_values": [
+        "nearest-exact",
+        1024,
+        1024,
+        "disabled"
+      ]
+    },
+    {
+      "id": 76,
+      "type": "ImageScale",
+      "pos": [
+        480,
+        1620
+      ],
+      "size": [
+        270,
+        170
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "title": "MATCH BACKGROUND TO FRAME",
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 150
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": 151
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": 152
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            153,
+            154
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageScale"
+      },
+      "widgets_values": [
+        "lanczos",
+        1024,
+        1024,
+        "disabled"
+      ]
+    },
+    {
+      "id": 60,
+      "type": "PreviewImage",
+      "pos": [
+        800,
+        1800
+      ],
+      "size": [
+        280,
+        280
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "title": "BACKGROUND PLATE PREVIEW",
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 154
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 34,
+      "type": "TextEncodeKrea2OstrisEdit",
+      "pos": [
+        2120,
+        920
+      ],
+      "size": [
+        400,
+        236
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "title": "CHARACTER PROMPT",
+      "color": "#232",
+      "bgcolor": "#353",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 61
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 62
+        },
+        {
+          "name": "image1",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 63
+        },
+        {
+          "name": "image2",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "image3",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "prompt"
+          },
+          "link": 169
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            64
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
+      },
+      "widgets_values": [
+        "vsgly_id, a man with natural green eyes, short wavy dark brown hair, wearing tight swim briefs close to the skin, no loose fabric, full body, realistic photograph"
+      ]
+    },
+    {
+      "id": 35,
+      "type": "TextEncodeKrea2OstrisEdit",
+      "pos": [
+        2120,
+        1220
+      ],
+      "size": [
+        400,
+        236
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "title": "NEGATIVE",
+      "color": "#322",
+      "bgcolor": "#533",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 65
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 66
+        },
+        {
+          "name": "image1",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 67
+        },
+        {
+          "name": "image2",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "image3",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            68
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
+      },
+      "widgets_values": [
+        "long hair, woman, extra limbs, deformed hands, duplicate person, blurry, loose swimming shorts, loose pants, baggy shorts, board shorts, loose fabric, flowing clothes, oversized clothing"
+      ]
+    },
+    {
+      "id": 21,
+      "type": "FluxKontextMultiReferenceLatentMethod",
+      "pos": [
+        2580,
+        920
+      ],
+      "size": [
+        390,
+        132
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 64
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            36
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
+      },
+      "widgets_values": [
+        "index_timestep_zero"
+      ],
+      "color": "#222",
+      "bgcolor": "#000",
+      "title": "CHARACTER POSITIVE METHOD"
+    },
+    {
+      "id": 24,
+      "type": "FluxKontextMultiReferenceLatentMethod",
+      "pos": [
+        2580,
+        1120
+      ],
+      "size": [
+        390,
+        132
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 68
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            37
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
+      },
+      "widgets_values": [
+        "index_timestep_zero"
+      ],
+      "color": "#222",
+      "bgcolor": "#000",
+      "title": "CHARACTER NEGATIVE METHOD"
+    },
+    {
+      "id": 6,
+      "type": "EmptyLatentImage",
+      "pos": [
+        2580,
+        1340
+      ],
+      "size": [
+        270,
+        144
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "title": "NEW CHARACTER CANVAS",
+      "inputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": 96
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": 97
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        1024,
+        1024,
+        1
+      ]
+    },
+    {
+      "id": 7,
+      "type": "KSampler",
+      "pos": [
+        3040,
+        920
+      ],
+      "size": [
+        270,
+        526
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "title": "NEW CHARACTER",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 60
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 36
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 37
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        42,
+        "fixed",
+        10,
+        1,
+        "euler",
+        "simple",
+        1
+      ]
+    },
+    {
+      "id": 8,
+      "type": "VAEDecode",
+      "pos": [
+        3360,
+        920
+      ],
+      "size": [
+        225,
+        72
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 7
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            9,
+            109,
+            115
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 9,
+      "type": "PreviewImage",
+      "pos": [
+        3360,
+        1040
+      ],
+      "size": [
+        420,
+        480
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "title": "NEW CHARACTER PREVIEW",
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 47,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        1840,
+        600
+      ],
+      "size": [
+        320,
+        100
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "title": "SAM (PERSON MASK)",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            108,
+            213
+          ]
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            88,
+            155
+          ]
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        "sam3.1_multiplex_fp16.safetensors"
+      ]
+    },
+    {
+      "id": 48,
+      "type": "CLIPTextEncode",
+      "pos": [
+        3840,
+        920
+      ],
+      "size": [
+        280,
+        90
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "title": "WHO TO CUT OUT",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 88
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            110
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "person"
+      ]
+    },
+    {
+      "id": 57,
+      "type": "SAM3_Detect",
+      "pos": [
+        3840,
+        1060
+      ],
+      "size": [
+        280,
+        160
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "title": "MASK NEW CHARACTER",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 108
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 109
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 110
+        },
+        {
+          "name": "bboxes",
+          "type": "BOUNDING_BOX",
+          "link": null
+        },
+        {
+          "name": "positive_coords",
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "negative_coords",
+          "type": "STRING",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "masks",
+          "type": "MASK",
+          "links": [
+            111
+          ]
+        },
+        {
+          "name": "bboxes",
+          "type": "BOUNDING_BOX",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SAM3_Detect"
+      },
+      "widgets_values": [
+        0.7,
+        5,
+        false
+      ]
+    },
+    {
+      "id": 58,
+      "type": "GrowMaskWithBlur",
+      "pos": [
+        4180,
+        920
+      ],
+      "size": [
+        280,
+        220
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "title": "FOREGROUND EDGE",
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 111
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": [
+            112,
+            113,
+            175,
+            176
+          ]
+        },
+        {
+          "name": "mask_inverted",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GrowMaskWithBlur"
+      },
+      "widgets_values": [
+        8,
+        0,
+        true,
+        false,
+        12,
+        1,
+        1,
+        true
+      ]
+    },
+    {
+      "id": 63,
+      "type": "MaskToImage",
+      "pos": [
+        4180,
+        1200
+      ],
+      "size": [
+        210,
+        50
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 113
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            114
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MaskToImage"
+      },
+      "widgets_values": [],
+      "title": "CHARACTER MASK IMAGE"
+    },
+    {
+      "id": 64,
+      "type": "PreviewImage",
+      "pos": [
+        4180,
+        1300
+      ],
+      "size": [
+        280,
+        280
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "title": "NEW CHARACTER MASK",
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 114
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 59,
+      "type": "ImageCompositeMasked",
+      "pos": [
+        4520,
+        920
+      ],
+      "size": [
+        300,
+        170
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "title": "STITCH FOREGROUND ON BACKGROUND",
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "IMAGE",
+          "link": 153
+        },
+        {
+          "name": "source",
+          "type": "IMAGE",
+          "link": 115
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 112
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            214,
+            220,
+            238
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageCompositeMasked"
+      },
+      "widgets_values": [
+        0,
+        0,
+        false
+      ]
+    },
+    {
+      "id": 43,
+      "type": "SaveImage",
+      "pos": [
+        10200,
+        920
+      ],
+      "size": [
+        320,
+        270
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "title": "SAVE COMPOSITE",
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 206
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "krea2_pose"
+      ]
+    },
+    {
+      "id": 42,
+      "type": "MarkdownNote",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        720,
+        500
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "## Read left to right. Pose, match the expression, then ground the cutout\n\n1. Ask Gemini to remove the person and keep the background. Load that in EMPTY BACKGROUND and the original in REFERENCE PHOTO.\n2. SCENE FROM REFERENCE describes the place and lighting. EXPRESSION FROM REFERENCE describes only the expression and where the eyes look. BUILD PROMPT joins the character line, that expression, and the scene.\n3. NEW CHARACTER is generated in the reference pose, in tight swim briefs, then stitched onto the empty background.\n4. EXPRESSION PASS redraws only the new face (EXPRESSION MASK), using the reference photo as the guide for expression and eye direction. The character LoRA stays on, so it is still this man. APPLY EXPRESSION puts that face back.\n5. MARRY PASS redraws only the contact ring. KEEP CHARACTER, KEEP FACE puts that ring back and leaves the face and the body interior untouched.\n\nIf the eyes are still wrong, raise the denoise on EXPRESSION PASS. If the face turns into the reference person, lower it. If the person still floats, raise the first number on CONTACT HALO. If the clothes change, lower the denoise on MARRY PASS."
+      ]
+    },
+    {
+      "id": 77,
+      "type": "CLIPTextEncode",
+      "pos": [
+        3840,
+        1280
+      ],
+      "size": [
+        280,
+        90
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "title": "FACE ON RESULT",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 155
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            215
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "face"
+      ]
+    },
+    {
+      "id": 83,
+      "type": "TextGenerate",
+      "pos": [
+        1160,
+        920
+      ],
+      "size": [
+        420,
+        280
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "title": "SCENE FROM REFERENCE",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 166
+        },
+        {
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 167
+        }
+      ],
+      "outputs": [
+        {
+          "name": "generated_text",
+          "type": "STRING",
+          "links": [
+            168
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextGenerate"
+      },
+      "widgets_values": [
+        "Look at this photograph and write one detailed image-prompt paragraph about only the setting: the place, background, surfaces, weather, lighting, light direction, time of day, color of the light, camera angle, and depth of field. Match what is actually visible. Do not mention the person, their face, hair, body, clothes, or pose.",
+        220,
+        "off",
+        false,
+        true
+      ]
+    },
+    {
+      "id": 84,
+      "type": "StringConcatenate",
+      "pos": [
+        1640,
+        1140
+      ],
+      "size": [
+        420,
+        190
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "title": "BUILD PROMPT",
+      "inputs": [
+        {
+          "name": "string_a",
+          "type": "STRING",
+          "widget": {
+            "name": "string_a"
+          },
+          "link": 210
+        },
+        {
+          "name": "string_b",
+          "type": "STRING",
+          "widget": {
+            "name": "string_b"
+          },
+          "link": 168
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            169,
+            170
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StringConcatenate"
+      },
+      "widgets_values": [
+        "",
+        "",
+        ", "
+      ]
+    },
+    {
+      "id": 85,
+      "type": "PreviewAny",
+      "pos": [
+        1640,
+        1400
+      ],
+      "size": [
+        420,
+        220
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "title": "SCENE PROMPT",
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 170
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 87,
+      "type": "GrowMaskWithBlur",
+      "pos": [
+        7580,
+        920
+      ],
+      "size": [
+        280,
+        220
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "title": "CONTACT HALO",
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 175
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": [
+            177
+          ]
+        },
+        {
+          "name": "mask_inverted",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GrowMaskWithBlur"
+      },
+      "widgets_values": [
+        48,
+        0,
+        true,
+        false,
+        20,
+        1,
+        1,
+        true
+      ]
+    },
+    {
+      "id": 88,
+      "type": "GrowMaskWithBlur",
+      "pos": [
+        7580,
+        1200
+      ],
+      "size": [
+        280,
+        220
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "title": "PROTECT BODY",
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 176
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": []
+        },
+        {
+          "name": "mask_inverted",
+          "type": "MASK",
+          "links": [
+            178
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GrowMaskWithBlur"
+      },
+      "widgets_values": [
+        -28,
+        0,
+        true,
+        false,
+        4,
+        1,
+        1,
+        true
+      ]
+    },
+    {
+      "id": 89,
+      "type": "MaskComposite",
+      "pos": [
+        7920,
+        920
+      ],
+      "size": [
+        270,
+        150
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "title": "CONTACT BAND",
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "MASK",
+          "link": 177
+        },
+        {
+          "name": "source",
+          "type": "MASK",
+          "link": 178
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            180
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MaskComposite"
+      },
+      "widgets_values": [
+        0,
+        0,
+        "multiply"
+      ]
+    },
+    {
+      "id": 90,
+      "type": "MaskComposite",
+      "pos": [
+        8240,
+        920
+      ],
+      "size": [
+        270,
+        150
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "title": "SPARE THE FACE",
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "MASK",
+          "link": 180
+        },
+        {
+          "name": "source",
+          "type": "MASK",
+          "link": 245
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            182,
+            187,
+            205
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MaskComposite"
+      },
+      "widgets_values": [
+        0,
+        0,
+        "multiply"
+      ]
+    },
+    {
+      "id": 101,
+      "type": "MaskToImage",
+      "pos": [
+        8240,
+        1120
+      ],
+      "size": [
+        210,
+        50
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 182
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            183
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MaskToImage"
+      },
+      "widgets_values": [],
+      "title": "CONTACT MASK IMAGE"
+    },
+    {
+      "id": 102,
+      "type": "PreviewImage",
+      "pos": [
+        8240,
+        1220
+      ],
+      "size": [
+        280,
+        280
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "title": "CONTACT MASK",
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 183
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 91,
+      "type": "VAEEncode",
+      "pos": [
+        8600,
+        920
+      ],
+      "size": [
+        210,
+        70
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "title": "ENCODE COMPOSITE",
+      "inputs": [
+        {
+          "name": "pixels",
+          "type": "IMAGE",
+          "link": 241
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 185
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            186
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEEncode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 92,
+      "type": "SetLatentNoiseMask",
+      "pos": [
+        8860,
+        920
+      ],
+      "size": [
+        240,
+        70
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "title": "ONLY THE SEAM",
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 186
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 187
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            200
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SetLatentNoiseMask"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 93,
+      "type": "Krea2OstrisEditModelPatch",
+      "pos": [
+        8600,
+        1060
+      ],
+      "size": [
+        241,
+        72
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "title": "MARRY PATCH",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 188
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            189
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Krea2OstrisEditModelPatch"
+      },
+      "widgets_values": [
+        true
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 94,
+      "type": "TextEncodeKrea2OstrisEdit",
+      "pos": [
+        8600,
+        1180
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "title": "MARRY PROMPT",
+      "color": "#232",
+      "bgcolor": "#353",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 190
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 191
+        },
+        {
+          "name": "image1",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 242
+        },
+        {
+          "name": "image2",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "image3",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            193
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
+      },
+      "widgets_values": [
+        "the same photograph, person standing in the scene, feet planted on the ground, contact shadow and ambient occlusion where the body meets the surface, edges blended into the background, lighting and color matched to the surroundings, tight clothing unchanged, realistic photograph"
+      ]
+    },
+    {
+      "id": 96,
+      "type": "TextEncodeKrea2OstrisEdit",
+      "pos": [
+        8600,
+        1440
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "title": "MARRY NEGATIVE",
+      "color": "#322",
+      "bgcolor": "#533",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 195
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 196
+        },
+        {
+          "name": "image1",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 243
+        },
+        {
+          "name": "image2",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "image3",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            198
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
+      },
+      "widgets_values": [
+        "floating, cutout, sticker, hard edge, halo, missing shadow, extra person, changed face, changed expression, changed eyes, loose shorts, baggy fabric, blur, new background"
+      ]
+    },
+    {
+      "id": 95,
+      "type": "FluxKontextMultiReferenceLatentMethod",
+      "pos": [
+        9060,
+        1180
+      ],
+      "size": [
+        390,
+        132
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 193
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            194
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
+      },
+      "widgets_values": [
+        "index_timestep_zero"
+      ],
+      "color": "#222",
+      "bgcolor": "#000",
+      "title": "MARRY POSITIVE METHOD"
+    },
+    {
+      "id": 97,
+      "type": "FluxKontextMultiReferenceLatentMethod",
+      "pos": [
+        9060,
+        1380
+      ],
+      "size": [
+        390,
+        132
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 198
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            199
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
+      },
+      "widgets_values": [
+        "index_timestep_zero"
+      ],
+      "color": "#222",
+      "bgcolor": "#000",
+      "title": "MARRY NEGATIVE METHOD"
+    },
+    {
+      "id": 98,
+      "type": "KSampler",
+      "pos": [
+        9500,
+        920
+      ],
+      "size": [
+        270,
+        526
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "title": "MARRY PASS",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 189
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 194
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 199
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 200
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            201
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        42,
+        "fixed",
+        8,
+        1,
+        "euler",
+        "simple",
+        0.55
+      ]
+    },
+    {
+      "id": 99,
+      "type": "VAEDecode",
+      "pos": [
+        9820,
+        920
+      ],
+      "size": [
+        225,
+        72
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "title": "MARRY DECODE",
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 201
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 202
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            204
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 100,
+      "type": "ImageCompositeMasked",
+      "pos": [
+        9820,
+        1040
+      ],
+      "size": [
+        320,
+        170
+      ],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "title": "KEEP CHARACTER, KEEP FACE",
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "IMAGE",
+          "link": 244
+        },
+        {
+          "name": "source",
+          "type": "IMAGE",
+          "link": 204
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 205
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            206
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageCompositeMasked"
+      },
+      "widgets_values": [
+        0,
+        0,
+        false
+      ]
+    },
+    {
+      "id": 104,
+      "type": "TextGenerate",
+      "pos": [
+        1160,
+        1260
+      ],
+      "size": [
+        420,
+        240
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "title": "EXPRESSION FROM REFERENCE",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 207
+        },
+        {
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 208
+        }
+      ],
+      "outputs": [
+        {
+          "name": "generated_text",
+          "type": "STRING",
+          "links": [
+            209,
+            211
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextGenerate"
+      },
+      "widgets_values": [
+        "Look at this person's face. Write one short phrase describing only the facial expression and the direction of the eyes, for example: slight closed-mouth smile, eyes looking toward the left of the frame. Do not describe identity, hair, clothes, body, background, or lighting.",
+        80,
+        "off",
+        false,
+        true
+      ]
+    },
+    {
+      "id": 105,
+      "type": "StringConcatenate",
+      "pos": [
+        1640,
+        920
+      ],
+      "size": [
+        420,
+        160
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "title": "ADD EXPRESSION",
+      "inputs": [
+        {
+          "name": "string_b",
+          "type": "STRING",
+          "widget": {
+            "name": "string_b"
+          },
+          "link": 209
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            210
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StringConcatenate"
+      },
+      "widgets_values": [
+        "vsgly_id, a man with natural green eyes, short wavy dark brown hair, wearing tight swim briefs close to the skin, no loose fabric, full body, realistic photograph",
+        "",
+        ", "
+      ]
+    },
+    {
+      "id": 106,
+      "type": "StringConcatenate",
+      "pos": [
+        5240,
+        1500
+      ],
+      "size": [
+        420,
+        160
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "title": "EXPRESSION LINE",
+      "inputs": [
+        {
+          "name": "string_b",
+          "type": "STRING",
+          "widget": {
+            "name": "string_b"
+          },
+          "link": 211
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            212
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StringConcatenate"
+      },
+      "widgets_values": [
+        "exact same facial expression and exact same eye direction as the reference, same gaze, same eyelids, this man's own face, natural skin, sharp eyes",
+        "",
+        ", "
+      ]
+    },
+    {
+      "id": 107,
+      "type": "SAM3_Detect",
+      "pos": [
+        4900,
+        920
+      ],
+      "size": [
+        280,
+        160
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "title": "MASK NEW FACE",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 213
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 214
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 215
+        },
+        {
+          "name": "bboxes",
+          "type": "BOUNDING_BOX",
+          "link": null
+        },
+        {
+          "name": "positive_coords",
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "negative_coords",
+          "type": "STRING",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "masks",
+          "type": "MASK",
+          "links": [
+            216
+          ]
+        },
+        {
+          "name": "bboxes",
+          "type": "BOUNDING_BOX",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SAM3_Detect"
+      },
+      "widgets_values": [
+        0.45,
+        5,
+        false
+      ]
+    },
+    {
+      "id": 108,
+      "type": "GrowMaskWithBlur",
+      "pos": [
+        5240,
+        920
+      ],
+      "size": [
+        280,
+        220
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "title": "EXPRESSION AREA",
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 216
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": [
+            217,
+            223,
+            240
+          ]
+        },
+        {
+          "name": "mask_inverted",
+          "type": "MASK",
+          "links": [
+            245
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GrowMaskWithBlur"
+      },
+      "widgets_values": [
+        6,
+        0,
+        true,
+        false,
+        8,
+        1,
+        1,
+        true
+      ]
+    },
+    {
+      "id": 109,
+      "type": "MaskToImage",
+      "pos": [
+        5580,
+        920
+      ],
+      "size": [
+        210,
+        50
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 217
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            218
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MaskToImage"
+      },
+      "widgets_values": [],
+      "title": "EXPRESSION MASK IMAGE"
+    },
+    {
+      "id": 110,
+      "type": "PreviewImage",
+      "pos": [
+        5580,
+        1020
+      ],
+      "size": [
+        280,
+        280
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "title": "EXPRESSION MASK",
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 218
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 111,
+      "type": "VAEEncode",
+      "pos": [
+        4900,
+        1360
+      ],
+      "size": [
+        210,
+        70
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "title": "ENCODE STITCH",
+      "inputs": [
+        {
+          "name": "pixels",
+          "type": "IMAGE",
+          "link": 220
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 221
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            222
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEEncode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 112,
+      "type": "SetLatentNoiseMask",
+      "pos": [
+        5160,
+        1360
+      ],
+      "size": [
+        240,
+        70
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "title": "ONLY THE FACE",
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 222
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 223
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            235
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SetLatentNoiseMask"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 113,
+      "type": "Krea2OstrisEditModelPatch",
+      "pos": [
+        4900,
+        1500
+      ],
+      "size": [
+        241,
+        72
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "title": "EXPRESSION PATCH",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 219
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            232
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Krea2OstrisEditModelPatch"
+      },
+      "widgets_values": [
+        true
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 114,
+      "type": "TextEncodeKrea2OstrisEdit",
+      "pos": [
+        5960,
+        920
+      ],
+      "size": [
+        400,
+        220
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "title": "EXPRESSION PROMPT",
+      "color": "#232",
+      "bgcolor": "#353",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 224
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 225
+        },
+        {
+          "name": "image1",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 226
+        },
+        {
+          "name": "image2",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "image3",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "prompt"
+          },
+          "link": 212
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            230
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
+      },
+      "widgets_values": [
+        "exact same facial expression and exact same eye direction as the reference, same gaze, same eyelids, this man's own face, natural skin, sharp eyes"
+      ]
+    },
+    {
+      "id": 115,
+      "type": "TextEncodeKrea2OstrisEdit",
+      "pos": [
+        5960,
+        1200
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "title": "EXPRESSION NEGATIVE",
+      "color": "#322",
+      "bgcolor": "#533",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 227
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 228
+        },
+        {
+          "name": "image1",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 229
+        },
+        {
+          "name": "image2",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "image3",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            231
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
+      },
+      "widgets_values": [
+        "different expression, eyes looking elsewhere, looking the other way, closed eyes, copied face, different person, face swap, pasted face, blur, deformed eyes"
+      ]
+    },
+    {
+      "id": 116,
+      "type": "FluxKontextMultiReferenceLatentMethod",
+      "pos": [
+        6420,
+        920
+      ],
+      "size": [
+        390,
+        110
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 230
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            233
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
+      },
+      "widgets_values": [
+        "index_timestep_zero"
+      ],
+      "color": "#222",
+      "bgcolor": "#000",
+      "title": "EXPRESSION POSITIVE METHOD"
+    },
+    {
+      "id": 117,
+      "type": "FluxKontextMultiReferenceLatentMethod",
+      "pos": [
+        6420,
+        1100
+      ],
+      "size": [
+        390,
+        110
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 231
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            234
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
+      },
+      "widgets_values": [
+        "index_timestep_zero"
+      ],
+      "color": "#222",
+      "bgcolor": "#000",
+      "title": "EXPRESSION NEGATIVE METHOD"
+    },
+    {
+      "id": 118,
+      "type": "KSampler",
+      "pos": [
+        6860,
+        920
+      ],
+      "size": [
+        270,
+        526
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "title": "EXPRESSION PASS",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 232
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 233
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 234
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 235
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            236
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        42,
+        "fixed",
+        8,
+        1,
+        "euler",
+        "simple",
+        0.6
+      ]
+    },
+    {
+      "id": 119,
+      "type": "VAEDecode",
+      "pos": [
+        7180,
+        920
+      ],
+      "size": [
+        225,
+        72
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "title": "EXPRESSION DECODE",
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 236
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 237
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            239
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 120,
+      "type": "ImageCompositeMasked",
+      "pos": [
+        7180,
+        1040
+      ],
+      "size": [
+        320,
+        170
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "title": "APPLY EXPRESSION",
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "IMAGE",
+          "link": 238
+        },
+        {
+          "name": "source",
+          "type": "IMAGE",
+          "link": 239
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 240
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            241,
+            242,
+            243,
+            244
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageCompositeMasked"
+      },
+      "widgets_values": [
+        0,
+        0,
+        false
+      ]
+    }
+  ],
+  "links": [
+    [
+      5,
+      6,
+      0,
+      7,
+      3,
+      "LATENT"
+    ],
+    [
+      7,
+      7,
+      0,
+      8,
+      0,
+      "LATENT"
+    ],
+    [
+      8,
+      1,
+      0,
+      8,
+      1,
+      "VAE"
+    ],
+    [
+      9,
+      8,
+      0,
+      9,
+      0,
+      "IMAGE"
+    ],
+    [
+      36,
+      21,
+      0,
+      7,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      37,
+      24,
+      0,
+      7,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      60,
+      32,
+      0,
+      7,
+      0,
+      "MODEL"
+    ],
+    [
+      61,
+      3,
+      0,
+      34,
+      0,
+      "CLIP"
+    ],
+    [
+      62,
+      1,
+      0,
+      34,
+      1,
+      "VAE"
+    ],
+    [
+      63,
+      45,
+      0,
+      34,
+      2,
+      "IMAGE"
+    ],
+    [
+      64,
+      34,
+      0,
+      21,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      65,
+      3,
+      0,
+      35,
+      0,
+      "CLIP"
+    ],
+    [
+      66,
+      1,
+      0,
+      35,
+      1,
+      "VAE"
+    ],
+    [
+      67,
+      45,
+      0,
+      35,
+      2,
+      "IMAGE"
+    ],
+    [
+      68,
+      35,
+      0,
+      24,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      69,
+      2,
+      0,
+      41,
+      0,
+      "MODEL"
+    ],
+    [
+      70,
+      33,
+      0,
+      32,
+      0,
+      "MODEL"
+    ],
+    [
+      71,
+      28,
+      0,
+      36,
+      0,
+      "IMAGE"
+    ],
+    [
+      72,
+      36,
+      0,
+      45,
+      1,
+      "INT"
+    ],
+    [
+      73,
+      36,
+      1,
+      45,
+      2,
+      "INT"
+    ],
+    [
+      79,
+      25,
+      0,
+      38,
+      0,
+      "IMAGE"
+    ],
+    [
+      80,
+      38,
+      0,
+      45,
+      0,
+      "IMAGE"
+    ],
+    [
+      81,
+      38,
+      0,
+      40,
+      0,
+      "IMAGE"
+    ],
+    [
+      82,
+      41,
+      0,
+      33,
+      0,
+      "MODEL"
+    ],
+    [
+      84,
+      25,
+      0,
+      28,
+      0,
+      "IMAGE"
+    ],
+    [
+      88,
+      47,
+      1,
+      48,
+      0,
+      "CLIP"
+    ],
+    [
+      96,
+      36,
+      0,
+      6,
+      0,
+      "INT"
+    ],
+    [
+      97,
+      36,
+      1,
+      6,
+      1,
+      "INT"
+    ],
+    [
+      108,
+      47,
+      0,
+      57,
+      0,
+      "MODEL"
+    ],
+    [
+      109,
+      8,
+      0,
+      57,
+      1,
+      "IMAGE"
+    ],
+    [
+      110,
+      48,
+      0,
+      57,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      111,
+      57,
+      0,
+      58,
+      0,
+      "MASK"
+    ],
+    [
+      112,
+      58,
+      0,
+      59,
+      2,
+      "MASK"
+    ],
+    [
+      113,
+      58,
+      0,
+      63,
+      0,
+      "MASK"
+    ],
+    [
+      114,
+      63,
+      0,
+      64,
+      0,
+      "IMAGE"
+    ],
+    [
+      115,
+      8,
+      0,
+      59,
+      1,
+      "IMAGE"
+    ],
+    [
+      150,
+      75,
+      0,
+      76,
+      0,
+      "IMAGE"
+    ],
+    [
+      151,
+      36,
+      0,
+      76,
+      1,
+      "INT"
+    ],
+    [
+      152,
+      36,
+      1,
+      76,
+      2,
+      "INT"
+    ],
+    [
+      153,
+      76,
+      0,
+      59,
+      0,
+      "IMAGE"
+    ],
+    [
+      154,
+      76,
+      0,
+      60,
+      0,
+      "IMAGE"
+    ],
+    [
+      155,
+      47,
+      1,
+      77,
+      0,
+      "CLIP"
+    ],
+    [
+      166,
+      3,
+      0,
+      83,
+      0,
+      "CLIP"
+    ],
+    [
+      167,
+      28,
+      0,
+      83,
+      1,
+      "IMAGE"
+    ],
+    [
+      168,
+      83,
+      0,
+      84,
+      1,
+      "STRING"
+    ],
+    [
+      169,
+      84,
+      0,
+      34,
+      5,
+      "STRING"
+    ],
+    [
+      170,
+      84,
+      0,
+      85,
+      0,
+      "STRING"
+    ],
+    [
+      175,
+      58,
+      0,
+      87,
+      0,
+      "MASK"
+    ],
+    [
+      176,
+      58,
+      0,
+      88,
+      0,
+      "MASK"
+    ],
+    [
+      177,
+      87,
+      0,
+      89,
+      0,
+      "MASK"
+    ],
+    [
+      178,
+      88,
+      1,
+      89,
+      1,
+      "MASK"
+    ],
+    [
+      180,
+      89,
+      0,
+      90,
+      0,
+      "MASK"
+    ],
+    [
+      182,
+      90,
+      0,
+      101,
+      0,
+      "MASK"
+    ],
+    [
+      183,
+      101,
+      0,
+      102,
+      0,
+      "IMAGE"
+    ],
+    [
+      185,
+      1,
+      0,
+      91,
+      1,
+      "VAE"
+    ],
+    [
+      186,
+      91,
+      0,
+      92,
+      0,
+      "LATENT"
+    ],
+    [
+      187,
+      90,
+      0,
+      92,
+      1,
+      "MASK"
+    ],
+    [
+      188,
+      2,
+      0,
+      93,
+      0,
+      "MODEL"
+    ],
+    [
+      189,
+      93,
+      0,
+      98,
+      0,
+      "MODEL"
+    ],
+    [
+      190,
+      3,
+      0,
+      94,
+      0,
+      "CLIP"
+    ],
+    [
+      191,
+      1,
+      0,
+      94,
+      1,
+      "VAE"
+    ],
+    [
+      193,
+      94,
+      0,
+      95,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      194,
+      95,
+      0,
+      98,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      195,
+      3,
+      0,
+      96,
+      0,
+      "CLIP"
+    ],
+    [
+      196,
+      1,
+      0,
+      96,
+      1,
+      "VAE"
+    ],
+    [
+      198,
+      96,
+      0,
+      97,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      199,
+      97,
+      0,
+      98,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      200,
+      92,
+      0,
+      98,
+      3,
+      "LATENT"
+    ],
+    [
+      201,
+      98,
+      0,
+      99,
+      0,
+      "LATENT"
+    ],
+    [
+      202,
+      1,
+      0,
+      99,
+      1,
+      "VAE"
+    ],
+    [
+      204,
+      99,
+      0,
+      100,
+      1,
+      "IMAGE"
+    ],
+    [
+      205,
+      90,
+      0,
+      100,
+      2,
+      "MASK"
+    ],
+    [
+      206,
+      100,
+      0,
+      43,
+      0,
+      "IMAGE"
+    ],
+    [
+      207,
+      3,
+      0,
+      104,
+      0,
+      "CLIP"
+    ],
+    [
+      208,
+      28,
+      0,
+      104,
+      1,
+      "IMAGE"
+    ],
+    [
+      209,
+      104,
+      0,
+      105,
+      0,
+      "STRING"
+    ],
+    [
+      210,
+      105,
+      0,
+      84,
+      0,
+      "STRING"
+    ],
+    [
+      211,
+      104,
+      0,
+      106,
+      0,
+      "STRING"
+    ],
+    [
+      212,
+      106,
+      0,
+      114,
+      5,
+      "STRING"
+    ],
+    [
+      213,
+      47,
+      0,
+      107,
+      0,
+      "MODEL"
+    ],
+    [
+      214,
+      59,
+      0,
+      107,
+      1,
+      "IMAGE"
+    ],
+    [
+      215,
+      77,
+      0,
+      107,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      216,
+      107,
+      0,
+      108,
+      0,
+      "MASK"
+    ],
+    [
+      217,
+      108,
+      0,
+      109,
+      0,
+      "MASK"
+    ],
+    [
+      218,
+      109,
+      0,
+      110,
+      0,
+      "IMAGE"
+    ],
+    [
+      219,
+      41,
+      0,
+      113,
+      0,
+      "MODEL"
+    ],
+    [
+      220,
+      59,
+      0,
+      111,
+      0,
+      "IMAGE"
+    ],
+    [
+      221,
+      1,
+      0,
+      111,
+      1,
+      "VAE"
+    ],
+    [
+      222,
+      111,
+      0,
+      112,
+      0,
+      "LATENT"
+    ],
+    [
+      223,
+      108,
+      0,
+      112,
+      1,
+      "MASK"
+    ],
+    [
+      224,
+      3,
+      0,
+      114,
+      0,
+      "CLIP"
+    ],
+    [
+      225,
+      1,
+      0,
+      114,
+      1,
+      "VAE"
+    ],
+    [
+      226,
+      28,
+      0,
+      114,
+      2,
+      "IMAGE"
+    ],
+    [
+      227,
+      3,
+      0,
+      115,
+      0,
+      "CLIP"
+    ],
+    [
+      228,
+      1,
+      0,
+      115,
+      1,
+      "VAE"
+    ],
+    [
+      229,
+      28,
+      0,
+      115,
+      2,
+      "IMAGE"
+    ],
+    [
+      230,
+      114,
+      0,
+      116,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      231,
+      115,
+      0,
+      117,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      232,
+      113,
+      0,
+      118,
+      0,
+      "MODEL"
+    ],
+    [
+      233,
+      116,
+      0,
+      118,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      234,
+      117,
+      0,
+      118,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      235,
+      112,
+      0,
+      118,
+      3,
+      "LATENT"
+    ],
+    [
+      236,
+      118,
+      0,
+      119,
+      0,
+      "LATENT"
+    ],
+    [
+      237,
+      1,
+      0,
+      119,
+      1,
+      "VAE"
+    ],
+    [
+      238,
+      59,
+      0,
+      120,
+      0,
+      "IMAGE"
+    ],
+    [
+      239,
+      119,
+      0,
+      120,
+      1,
+      "IMAGE"
+    ],
+    [
+      240,
+      108,
+      0,
+      120,
+      2,
+      "MASK"
+    ],
+    [
+      241,
+      120,
+      0,
+      91,
+      0,
+      "IMAGE"
+    ],
+    [
+      242,
+      120,
+      0,
+      94,
+      2,
+      "IMAGE"
+    ],
+    [
+      243,
+      120,
+      0,
+      96,
+      2,
+      "IMAGE"
+    ],
+    [
+      244,
+      120,
+      0,
+      100,
+      0,
+      "IMAGE"
+    ],
+    [
+      245,
+      108,
+      1,
+      90,
+      1,
+      "MASK"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "Read me",
+      "bounding": [
+        -24,
+        -54,
+        768,
+        578
+      ],
+      "color": "#2a2a2a",
+      "font_size": 22,
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "1. Models",
+      "bounding": [
+        -24,
+        546,
+        2208,
+        218
+      ],
+      "color": "#3f789e",
+      "font_size": 22,
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "2. Photos",
+      "bounding": [
+        -24,
+        866,
+        468,
+        1138
+      ],
+      "color": "#8A5A44",
+      "font_size": 22,
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "3. Pose and plates",
+      "bounding": [
+        456,
+        866,
+        658,
+        1238
+      ],
+      "color": "#355c3b",
+      "font_size": 22,
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "4. Prompt",
+      "bounding": [
+        1136,
+        866,
+        1858,
+        778
+      ],
+      "color": "#59385a",
+      "font_size": 22,
+      "flags": {}
+    },
+    {
+      "id": 6,
+      "title": "5. New character",
+      "bounding": [
+        3016,
+        866,
+        788,
+        678
+      ],
+      "color": "#3f4a2a",
+      "font_size": 22,
+      "flags": {}
+    },
+    {
+      "id": 7,
+      "title": "6. Cut out and stitch",
+      "bounding": [
+        3816,
+        866,
+        1028,
+        738
+      ],
+      "color": "#6b3a3a",
+      "font_size": 22,
+      "flags": {}
+    },
+    {
+      "id": 8,
+      "title": "7. Expression",
+      "bounding": [
+        4876,
+        866,
+        2648,
+        818
+      ],
+      "color": "#3a4a6b",
+      "font_size": 22,
+      "flags": {}
+    },
+    {
+      "id": 9,
+      "title": "8. Contact and save",
+      "bounding": [
+        7556,
+        866,
+        2988,
+        798
+      ],
+      "color": "#6b5a32",
+      "font_size": 22,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.32,
+      "offset": [
+        30,
+        20
+      ]
+    },
+    "frontendVersion": "1.45.21"
+  },
+  "version": 0.4
+}
