@@ -1,8 +1,8 @@
 {
   "id": "krea2-pose-new-character",
   "revision": 0,
-  "last_node_id": 53,
-  "last_link_id": 95,
+  "last_node_id": 64,
+  "last_link_id": 115,
   "nodes": [
     {
       "id": 1,
@@ -27,7 +27,8 @@
             8,
             62,
             66,
-            86
+            86,
+            105
           ]
         }
       ],
@@ -110,7 +111,7 @@
         "simple",
         1
       ],
-      "title": "REPLACE PERSON, KEEP BACKGROUND"
+      "title": "NEW CHARACTER"
     },
     {
       "id": 8,
@@ -144,7 +145,8 @@
           "type": "IMAGE",
           "links": [
             9,
-            83
+            109,
+            115
           ]
         }
       ],
@@ -198,7 +200,8 @@
           "version": "7.5.2"
         }
       },
-      "widgets_values": []
+      "widgets_values": [],
+      "title": "NEW CHARACTER PREVIEW"
     },
     {
       "id": 24,
@@ -396,14 +399,16 @@
           "name": "width",
           "type": "INT",
           "links": [
-            72
+            72,
+            96
           ]
         },
         {
           "name": "height",
           "type": "INT",
           "links": [
-            73
+            73,
+            97
           ]
         },
         {
@@ -444,7 +449,8 @@
           "name": "MODEL",
           "type": "MODEL",
           "links": [
-            69
+            69,
+            102
           ]
         }
       ],
@@ -486,7 +492,9 @@
           "type": "CLIP",
           "links": [
             61,
-            65
+            65,
+            98,
+            99
           ]
         }
       ],
@@ -917,7 +925,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "## Pose a new character, keep the background\n\nThe reference photo is the canvas. DWPose reads its skeleton, and Krea 2 regenerates only the masked person in that pose. Pixels outside the mask stay the original photo.\n\n1. WHO TO REPLACE defaults to `person`. Change it if SAM grabs the wrong thing.\n2. Check MASK PREVIEW. The white area is what gets replaced. It should cover the whole body and hair, and not the background.\n3. If a hand or foot is cut off, raise the first number on GROW MASK (expand).\n4. Character, clothes, and hair come from CHARACTER PROMPT and KreAlpha2640.\n\nSampler stays at denoise 1. The noise mask is what protects the background."
+        "## Background plate, then the new character\n\n1. SAM masks the reference person. FILL BACKGROUND repaints only that hole, so the photo becomes an empty scene.\n2. NEW CHARACTER is a separate generation in the reference pose. The pose skeleton is the only thing taken from the photo.\n3. SAM masks that new character.\n4. STITCH places the new character on the cleaned background.\n\nMASK OUT REFERENCE should cover the whole old person. FOREGROUND EDGE should cover only the new person. If the old body still peeks out, raise the first number on MASK OUT REFERENCE."
       ]
     },
     {
@@ -942,7 +950,7 @@
         }
       ],
       "outputs": [],
-      "title": "SAVE",
+      "title": "SAVE COMPOSITE",
       "properties": {
         "Node name for S&R": "SaveImage"
       },
@@ -1070,7 +1078,8 @@
           "name": "MODEL",
           "type": "MODEL",
           "links": [
-            87
+            87,
+            108
           ]
         },
         {
@@ -1120,7 +1129,8 @@
           "name": "CONDITIONING",
           "type": "CONDITIONING",
           "links": [
-            89
+            89,
+            110
           ]
         }
       ],
@@ -1215,7 +1225,7 @@
       "flags": {},
       "order": 10,
       "mode": 0,
-      "title": "GROW MASK",
+      "title": "MASK OUT REFERENCE",
       "inputs": [
         {
           "name": "mask",
@@ -1242,7 +1252,7 @@
         "Node name for S&R": "GrowMaskWithBlur"
       },
       "widgets_values": [
-        48,
+        32,
         0,
         true,
         false,
@@ -1266,7 +1276,7 @@
       "flags": {},
       "order": 13,
       "mode": 0,
-      "title": "KEEP BACKGROUND",
+      "title": "HOLE TO FILL",
       "inputs": [
         {
           "name": "samples",
@@ -1284,7 +1294,7 @@
           "name": "LATENT",
           "type": "LATENT",
           "links": [
-            5
+            103
           ]
         }
       ],
@@ -1361,12 +1371,514 @@
         "Node name for S&R": "PreviewImage"
       },
       "widgets_values": []
+    },
+    {
+      "id": 55,
+      "type": "CLIPTextEncode",
+      "pos": [
+        520,
+        980
+      ],
+      "size": [
+        380,
+        140
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "title": "BACKGROUND FILL",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 98
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            100
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "seamless continuation of the surrounding background, empty scene, natural lighting, no people"
+      ]
+    },
+    {
+      "id": 56,
+      "type": "CLIPTextEncode",
+      "pos": [
+        520,
+        1160
+      ],
+      "size": [
+        380,
+        110
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "title": "BACKGROUND NEGATIVE",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 99
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            101
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "person, people, human, man, woman, face, body, hair, hands"
+      ]
+    },
+    {
+      "id": 54,
+      "type": "KSampler",
+      "pos": [
+        940,
+        900
+      ],
+      "size": [
+        270,
+        526
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "title": "FILL BACKGROUND",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 102
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 100
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 101
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 103
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            104
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        42,
+        "fixed",
+        10,
+        1,
+        "euler",
+        "simple",
+        1
+      ]
+    },
+    {
+      "id": 62,
+      "type": "VAEDecode",
+      "pos": [
+        1240,
+        900
+      ],
+      "size": [
+        210,
+        60
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "title": "CLEAN BACKGROUND",
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 104
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 105
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            106,
+            107
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 60,
+      "type": "PreviewImage",
+      "pos": [
+        1480,
+        860
+      ],
+      "size": [
+        280,
+        280
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "title": "BACKGROUND PREVIEW",
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 106
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 57,
+      "type": "SAM3_Detect",
+      "pos": [
+        620,
+        1460
+      ],
+      "size": [
+        280,
+        160
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "title": "MASK NEW CHARACTER",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 108
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 109
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 110
+        },
+        {
+          "name": "bboxes",
+          "type": "BOUNDING_BOX",
+          "link": null
+        },
+        {
+          "name": "positive_coords",
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "negative_coords",
+          "type": "STRING",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "masks",
+          "type": "MASK",
+          "links": [
+            111
+          ]
+        },
+        {
+          "name": "bboxes",
+          "type": "BOUNDING_BOX",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SAM3_Detect"
+      },
+      "widgets_values": [
+        0.7,
+        5,
+        false
+      ]
+    },
+    {
+      "id": 58,
+      "type": "GrowMaskWithBlur",
+      "pos": [
+        940,
+        1460
+      ],
+      "size": [
+        280,
+        220
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "title": "FOREGROUND EDGE",
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 111
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": [
+            112,
+            113
+          ]
+        },
+        {
+          "name": "mask_inverted",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GrowMaskWithBlur"
+      },
+      "widgets_values": [
+        8,
+        0,
+        true,
+        false,
+        12,
+        1,
+        1,
+        true
+      ]
+    },
+    {
+      "id": 63,
+      "type": "MaskToImage",
+      "pos": [
+        1240,
+        1460
+      ],
+      "size": [
+        210,
+        50
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 113
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            114
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MaskToImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 64,
+      "type": "PreviewImage",
+      "pos": [
+        1480,
+        1400
+      ],
+      "size": [
+        280,
+        280
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "title": "NEW CHARACTER MASK",
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 114
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 59,
+      "type": "ImageCompositeMasked",
+      "pos": [
+        1240,
+        1180
+      ],
+      "size": [
+        280,
+        170
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "title": "STITCH FOREGROUND ON BACKGROUND",
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "IMAGE",
+          "link": 107
+        },
+        {
+          "name": "source",
+          "type": "IMAGE",
+          "link": 115
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 112
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            83
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageCompositeMasked"
+      },
+      "widgets_values": [
+        0,
+        0,
+        false
+      ]
+    },
+    {
+      "id": 6,
+      "type": "EmptyLatentImage",
+      "pos": [
+        -20,
+        760
+      ],
+      "size": [
+        270,
+        144
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "title": "NEW CHARACTER CANVAS",
+      "inputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": 96
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": 97
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        1024,
+        1024,
+        1
+      ]
     }
   ],
   "links": [
     [
       5,
-      51,
+      6,
       0,
       7,
       3,
@@ -1558,7 +2070,7 @@
     ],
     [
       83,
-      8,
+      59,
       0,
       43,
       0,
@@ -1658,6 +2170,166 @@
       0,
       53,
       0,
+      "IMAGE"
+    ],
+    [
+      96,
+      36,
+      0,
+      6,
+      0,
+      "INT"
+    ],
+    [
+      97,
+      36,
+      1,
+      6,
+      1,
+      "INT"
+    ],
+    [
+      98,
+      3,
+      0,
+      55,
+      0,
+      "CLIP"
+    ],
+    [
+      99,
+      3,
+      0,
+      56,
+      0,
+      "CLIP"
+    ],
+    [
+      100,
+      55,
+      0,
+      54,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      101,
+      56,
+      0,
+      54,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      102,
+      2,
+      0,
+      54,
+      0,
+      "MODEL"
+    ],
+    [
+      103,
+      51,
+      0,
+      54,
+      3,
+      "LATENT"
+    ],
+    [
+      104,
+      54,
+      0,
+      62,
+      0,
+      "LATENT"
+    ],
+    [
+      105,
+      1,
+      0,
+      62,
+      1,
+      "VAE"
+    ],
+    [
+      106,
+      62,
+      0,
+      60,
+      0,
+      "IMAGE"
+    ],
+    [
+      107,
+      62,
+      0,
+      59,
+      0,
+      "IMAGE"
+    ],
+    [
+      108,
+      47,
+      0,
+      57,
+      0,
+      "MODEL"
+    ],
+    [
+      109,
+      8,
+      0,
+      57,
+      1,
+      "IMAGE"
+    ],
+    [
+      110,
+      48,
+      0,
+      57,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      111,
+      57,
+      0,
+      58,
+      0,
+      "MASK"
+    ],
+    [
+      112,
+      58,
+      0,
+      59,
+      2,
+      "MASK"
+    ],
+    [
+      113,
+      58,
+      0,
+      63,
+      0,
+      "MASK"
+    ],
+    [
+      114,
+      63,
+      0,
+      64,
+      0,
+      "IMAGE"
+    ],
+    [
+      115,
+      8,
+      0,
+      59,
+      1,
       "IMAGE"
     ]
   ],
