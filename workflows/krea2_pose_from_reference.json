@@ -1,8 +1,8 @@
 {
-  "id": "krea2-pose-on-empty-background",
+  "id": "krea2-pose-marry-contact",
   "revision": 0,
-  "last_node_id": 86,
-  "last_link_id": 174,
+  "last_node_id": 103,
+  "last_link_id": 206,
   "nodes": [
     {
       "id": 1,
@@ -26,7 +26,11 @@
           "links": [
             8,
             62,
-            66
+            66,
+            185,
+            191,
+            196,
+            202
           ]
         }
       ],
@@ -58,7 +62,8 @@
           "name": "MODEL",
           "type": "MODEL",
           "links": [
-            69
+            69,
+            188
           ]
         }
       ],
@@ -93,7 +98,9 @@
           "links": [
             61,
             65,
-            166
+            166,
+            190,
+            195
           ]
         }
       ],
@@ -1211,7 +1218,9 @@
           "links": [
             112,
             113,
-            172
+            172,
+            175,
+            176
           ]
         },
         {
@@ -1357,8 +1366,8 @@
       "id": 43,
       "type": "SaveImage",
       "pos": [
-        1720,
-        960
+        3600,
+        2140
       ],
       "size": [
         320,
@@ -1372,7 +1381,7 @@
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 165
+          "link": 206
         }
       ],
       "outputs": [],
@@ -1391,8 +1400,8 @@
         -280
       ],
       "size": [
-        580,
-        400
+        620,
+        520
       ],
       "flags": {},
       "order": 0,
@@ -1401,7 +1410,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "## Pose onto a cleaned photo, then copy the face\n\n1. Ask Gemini to remove the person and keep the background. Load that in EMPTY BACKGROUND and the original in REFERENCE PHOTO.\n2. SCENE FROM REFERENCE describes that photo's place and lighting. BUILD PROMPT puts that after the character line. SCENE PROMPT shows the text that is actually used.\n3. NEW CHARACTER is generated in the reference pose, then stitched onto the empty background.\n4. COPY REFERENCE FACE pastes only the reference face, and only where it sits inside the new character. FACE INSIDE CHARACTER is the face mask cut by the new character mask, so a turned head cannot leave a hole of the old background.\n\nIf hair is still copied, make the first number on TIGHT FACE more negative. If the face gets eaten, move that number toward 0."
+        "## Pose onto a cleaned photo, then ground the cutout\n\n1. Ask Gemini to remove the person and keep the background. Load that in EMPTY BACKGROUND and the original in REFERENCE PHOTO.\n2. SCENE FROM REFERENCE describes that photo's place and lighting. BUILD PROMPT puts that after the character line. SCENE PROMPT shows the text that is actually used.\n3. NEW CHARACTER is generated in the reference pose, then stitched onto the empty background.\n4. COPY REFERENCE FACE pastes only the reference face, and only where it sits inside the new character.\n5. MARRY PASS redraws only the contact ring (CONTACT MASK): feet on the ground, contact shadow, and a soft edge. KEEP CHARACTER, KEEP FACE puts that ring back and leaves the face and the body interior untouched.\n\nIf the person still floats, raise the first number on CONTACT HALO. If the face or clothes change, lower the denoise on MARRY PASS."
       ]
     },
     {
@@ -1668,7 +1677,10 @@
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
-            165
+            184,
+            192,
+            197,
+            203
           ]
         }
       ],
@@ -1840,7 +1852,8 @@
           "type": "MASK",
           "links": [
             173,
-            174
+            174,
+            179
           ]
         }
       ],
@@ -1851,6 +1864,795 @@
         0,
         0,
         "multiply"
+      ]
+    },
+    {
+      "id": 87,
+      "type": "GrowMaskWithBlur",
+      "pos": [
+        1720,
+        1280
+      ],
+      "size": [
+        280,
+        220
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "title": "CONTACT HALO",
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 175
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": [
+            177
+          ]
+        },
+        {
+          "name": "mask_inverted",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GrowMaskWithBlur"
+      },
+      "widgets_values": [
+        48,
+        0,
+        true,
+        false,
+        20,
+        1,
+        1,
+        true
+      ]
+    },
+    {
+      "id": 88,
+      "type": "GrowMaskWithBlur",
+      "pos": [
+        1720,
+        1540
+      ],
+      "size": [
+        280,
+        220
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "title": "PROTECT BODY",
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 176
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": []
+        },
+        {
+          "name": "mask_inverted",
+          "type": "MASK",
+          "links": [
+            178
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GrowMaskWithBlur"
+      },
+      "widgets_values": [
+        -28,
+        0,
+        true,
+        false,
+        4,
+        1,
+        1,
+        true
+      ]
+    },
+    {
+      "id": 103,
+      "type": "GrowMaskWithBlur",
+      "pos": [
+        1720,
+        1800
+      ],
+      "size": [
+        280,
+        220
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "title": "INVERT FACE",
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 179
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": []
+        },
+        {
+          "name": "mask_inverted",
+          "type": "MASK",
+          "links": [
+            181
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GrowMaskWithBlur"
+      },
+      "widgets_values": [
+        0,
+        0,
+        true,
+        false,
+        0,
+        1,
+        1,
+        true
+      ]
+    },
+    {
+      "id": 89,
+      "type": "MaskComposite",
+      "pos": [
+        2040,
+        1280
+      ],
+      "size": [
+        270,
+        150
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "title": "CONTACT BAND",
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "MASK",
+          "link": 177
+        },
+        {
+          "name": "source",
+          "type": "MASK",
+          "link": 178
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            180
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MaskComposite"
+      },
+      "widgets_values": [
+        0,
+        0,
+        "multiply"
+      ]
+    },
+    {
+      "id": 90,
+      "type": "MaskComposite",
+      "pos": [
+        2340,
+        1280
+      ],
+      "size": [
+        270,
+        150
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "title": "SPARE THE FACE",
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "MASK",
+          "link": 180
+        },
+        {
+          "name": "source",
+          "type": "MASK",
+          "link": 181
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            182,
+            187,
+            205
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MaskComposite"
+      },
+      "widgets_values": [
+        0,
+        0,
+        "multiply"
+      ]
+    },
+    {
+      "id": 101,
+      "type": "MaskToImage",
+      "pos": [
+        2340,
+        1480
+      ],
+      "size": [
+        210,
+        50
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 182
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            183
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MaskToImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 102,
+      "type": "PreviewImage",
+      "pos": [
+        2580,
+        1420
+      ],
+      "size": [
+        280,
+        280
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "title": "CONTACT MASK",
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 183
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 91,
+      "type": "VAEEncode",
+      "pos": [
+        2040,
+        1680
+      ],
+      "size": [
+        210,
+        70
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "title": "ENCODE COMPOSITE",
+      "inputs": [
+        {
+          "name": "pixels",
+          "type": "IMAGE",
+          "link": 184
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 185
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            186
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEEncode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 92,
+      "type": "SetLatentNoiseMask",
+      "pos": [
+        2280,
+        1680
+      ],
+      "size": [
+        240,
+        70
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "title": "ONLY THE SEAM",
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 186
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 187
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            200
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SetLatentNoiseMask"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 93,
+      "type": "Krea2OstrisEditModelPatch",
+      "pos": [
+        1720,
+        2080
+      ],
+      "size": [
+        241,
+        72
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "title": "MARRY PATCH",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 188
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            189
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Krea2OstrisEditModelPatch"
+      },
+      "widgets_values": [
+        true
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 94,
+      "type": "TextEncodeKrea2OstrisEdit",
+      "pos": [
+        2040,
+        2080
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "title": "MARRY PROMPT",
+      "color": "#232",
+      "bgcolor": "#353",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 190
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 191
+        },
+        {
+          "name": "image1",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 192
+        },
+        {
+          "name": "image2",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "image3",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            193
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
+      },
+      "widgets_values": [
+        "the same photograph, person standing in the scene, feet planted on the ground, contact shadow and ambient occlusion where the body meets the surface, edges blended into the background, lighting and color matched to the surroundings, realistic photograph"
+      ]
+    },
+    {
+      "id": 96,
+      "type": "TextEncodeKrea2OstrisEdit",
+      "pos": [
+        2040,
+        2320
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "title": "MARRY NEGATIVE",
+      "color": "#322",
+      "bgcolor": "#533",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 195
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 196
+        },
+        {
+          "name": "image1",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 197
+        },
+        {
+          "name": "image2",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "image3",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            198
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
+      },
+      "widgets_values": [
+        "floating, cutout, sticker, hard edge, halo, missing shadow, extra person, changed face, blur, new background"
+      ]
+    },
+    {
+      "id": 95,
+      "type": "FluxKontextMultiReferenceLatentMethod",
+      "pos": [
+        2480,
+        2080
+      ],
+      "size": [
+        390,
+        132
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 193
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            194
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
+      },
+      "widgets_values": [
+        "index_timestep_zero"
+      ],
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 97,
+      "type": "FluxKontextMultiReferenceLatentMethod",
+      "pos": [
+        2480,
+        2320
+      ],
+      "size": [
+        390,
+        132
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 198
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            199
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
+      },
+      "widgets_values": [
+        "index_timestep_zero"
+      ],
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 98,
+      "type": "KSampler",
+      "pos": [
+        2920,
+        2080
+      ],
+      "size": [
+        270,
+        526
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "title": "MARRY PASS",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 189
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 194
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 199
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 200
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            201
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        42,
+        "fixed",
+        8,
+        1,
+        "euler",
+        "simple",
+        0.55
+      ]
+    },
+    {
+      "id": 99,
+      "type": "VAEDecode",
+      "pos": [
+        3240,
+        2080
+      ],
+      "size": [
+        225,
+        72
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "title": "MARRY DECODE",
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 201
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 202
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            204
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 100,
+      "type": "ImageCompositeMasked",
+      "pos": [
+        3240,
+        2200
+      ],
+      "size": [
+        320,
+        170
+      ],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "title": "KEEP CHARACTER, KEEP FACE",
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "IMAGE",
+          "link": 203
+        },
+        {
+          "name": "source",
+          "type": "IMAGE",
+          "link": 204
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 205
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            206
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageCompositeMasked"
+      },
+      "widgets_values": [
+        0,
+        0,
+        false
       ]
     }
   ],
@@ -2248,14 +3050,6 @@
       "IMAGE"
     ],
     [
-      165,
-      82,
-      0,
-      43,
-      0,
-      "IMAGE"
-    ],
-    [
       166,
       3,
       0,
@@ -2326,6 +3120,262 @@
       80,
       0,
       "MASK"
+    ],
+    [
+      175,
+      58,
+      0,
+      87,
+      0,
+      "MASK"
+    ],
+    [
+      176,
+      58,
+      0,
+      88,
+      0,
+      "MASK"
+    ],
+    [
+      177,
+      87,
+      0,
+      89,
+      0,
+      "MASK"
+    ],
+    [
+      178,
+      88,
+      1,
+      89,
+      1,
+      "MASK"
+    ],
+    [
+      179,
+      86,
+      0,
+      103,
+      0,
+      "MASK"
+    ],
+    [
+      180,
+      89,
+      0,
+      90,
+      0,
+      "MASK"
+    ],
+    [
+      181,
+      103,
+      1,
+      90,
+      1,
+      "MASK"
+    ],
+    [
+      182,
+      90,
+      0,
+      101,
+      0,
+      "MASK"
+    ],
+    [
+      183,
+      101,
+      0,
+      102,
+      0,
+      "IMAGE"
+    ],
+    [
+      184,
+      82,
+      0,
+      91,
+      0,
+      "IMAGE"
+    ],
+    [
+      185,
+      1,
+      0,
+      91,
+      1,
+      "VAE"
+    ],
+    [
+      186,
+      91,
+      0,
+      92,
+      0,
+      "LATENT"
+    ],
+    [
+      187,
+      90,
+      0,
+      92,
+      1,
+      "MASK"
+    ],
+    [
+      188,
+      2,
+      0,
+      93,
+      0,
+      "MODEL"
+    ],
+    [
+      189,
+      93,
+      0,
+      98,
+      0,
+      "MODEL"
+    ],
+    [
+      190,
+      3,
+      0,
+      94,
+      0,
+      "CLIP"
+    ],
+    [
+      191,
+      1,
+      0,
+      94,
+      1,
+      "VAE"
+    ],
+    [
+      192,
+      82,
+      0,
+      94,
+      2,
+      "IMAGE"
+    ],
+    [
+      193,
+      94,
+      0,
+      95,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      194,
+      95,
+      0,
+      98,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      195,
+      3,
+      0,
+      96,
+      0,
+      "CLIP"
+    ],
+    [
+      196,
+      1,
+      0,
+      96,
+      1,
+      "VAE"
+    ],
+    [
+      197,
+      82,
+      0,
+      96,
+      2,
+      "IMAGE"
+    ],
+    [
+      198,
+      96,
+      0,
+      97,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      199,
+      97,
+      0,
+      98,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      200,
+      92,
+      0,
+      98,
+      3,
+      "LATENT"
+    ],
+    [
+      201,
+      98,
+      0,
+      99,
+      0,
+      "LATENT"
+    ],
+    [
+      202,
+      1,
+      0,
+      99,
+      1,
+      "VAE"
+    ],
+    [
+      203,
+      82,
+      0,
+      100,
+      0,
+      "IMAGE"
+    ],
+    [
+      204,
+      99,
+      0,
+      100,
+      1,
+      "IMAGE"
+    ],
+    [
+      205,
+      90,
+      0,
+      100,
+      2,
+      "MASK"
+    ],
+    [
+      206,
+      100,
+      0,
+      43,
+      0,
+      "IMAGE"
     ]
   ],
   "groups": [],
