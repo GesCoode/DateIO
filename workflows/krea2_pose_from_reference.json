@@ -1,8 +1,8 @@
 {
   "id": "krea2-pose-new-character",
   "revision": 0,
-  "last_node_id": 43,
-  "last_link_id": 83,
+  "last_node_id": 53,
+  "last_link_id": 95,
   "nodes": [
     {
       "id": 1,
@@ -26,7 +26,8 @@
           "links": [
             8,
             62,
-            66
+            66,
+            86
           ]
         }
       ],
@@ -44,63 +45,6 @@
         "Wan2_1_VAE_bf16.safetensors"
       ],
       "title": "VAE"
-    },
-    {
-      "id": 6,
-      "type": "EmptyLatentImage",
-      "pos": [
-        -374.04707147939484,
-        929.6609145378804
-      ],
-      "size": [
-        270,
-        144
-      ],
-      "flags": {},
-      "order": 14,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "width",
-          "type": "INT",
-          "widget": {
-            "name": "width"
-          },
-          "link": 72
-        },
-        {
-          "name": "height",
-          "type": "INT",
-          "widget": {
-            "name": "height"
-          },
-          "link": 73
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            5
-          ]
-        }
-      ],
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.25.0",
-        "Node name for S&R": "EmptyLatentImage",
-        "ue_properties": {
-          "widget_ue_connectable": {},
-          "input_ue_unconnectable": {},
-          "version": "7.5.2"
-        }
-      },
-      "widgets_values": [
-        1024,
-        1024,
-        1
-      ]
     },
     {
       "id": 7,
@@ -166,7 +110,7 @@
         "simple",
         1
       ],
-      "title": "SAMPLE NEW CHARACTER"
+      "title": "REPLACE PERSON, KEEP BACKGROUND"
     },
     {
       "id": 8,
@@ -328,7 +272,7 @@
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 80
+          "link": 84
         }
       ],
       "outputs": [
@@ -336,9 +280,9 @@
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
-            63,
-            67,
-            71
+            71,
+            85,
+            90
           ]
         }
       ],
@@ -352,7 +296,8 @@
           "version": "7.5.2"
         }
       },
-      "widgets_values": []
+      "widgets_values": [],
+      "title": "SCALE REFERENCE"
     },
     {
       "id": 35,
@@ -729,7 +674,8 @@
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
-            79
+            79,
+            84
           ]
         },
         {
@@ -971,7 +917,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "## Pose a new character like the reference\n\nThe reference photo is used only for its skeleton. Krea 2 Turbo generates a new person in that pose. Identity and clothes come from the character prompt and KreAlpha2640.\n\n1. Put `krea2_turbo_openpose_controlnet.safetensors` in `models/loras`.\n2. Install `comfyui_controlnet_aux` and `comfyui-krea2-ostris-edit`, then restart.\n3. Load the reference on REFERENCE PHOTO.\n4. Check the pose preview. If a limb is missing, the result will miss it too.\n5. Edit CHARACTER PROMPT. Keep `vsgly_id` if you use that LoRA.\n\nPose LoRA weight 1.0. Drop it toward 0.7 if the body looks stiff. Character LoRA stays at 1.0. Sampler is 10 steps, CFG 1, euler, simple, denoise 1, because this is a new image, not an edit of the photo."
+        "## Pose a new character, keep the background\n\nThe reference photo is the canvas. DWPose reads its skeleton, and Krea 2 regenerates only the masked person in that pose. Pixels outside the mask stay the original photo.\n\n1. WHO TO REPLACE defaults to `person`. Change it if SAM grabs the wrong thing.\n2. Check MASK PREVIEW. The white area is what gets replaced. It should cover the whole body and hair, and not the background.\n3. If a hand or foot is cut off, raise the first number on GROW MASK (expand).\n4. Character, clothes, and hair come from CHARACTER PROMPT and KreAlpha2640.\n\nSampler stays at denoise 1. The noise mask is what protects the background."
       ]
     },
     {
@@ -1003,12 +949,424 @@
       "widgets_values": [
         "krea2_pose"
       ]
+    },
+    {
+      "id": 45,
+      "type": "ImageScale",
+      "pos": [
+        -640,
+        1020
+      ],
+      "size": [
+        270,
+        170
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "title": "MATCH POSE TO FRAME",
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 80
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": 72
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": 73
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            63,
+            67
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageScale"
+      },
+      "widgets_values": [
+        "nearest-exact",
+        1024,
+        1024,
+        "disabled"
+      ]
+    },
+    {
+      "id": 46,
+      "type": "VAEEncode",
+      "pos": [
+        -20,
+        980
+      ],
+      "size": [
+        210,
+        70
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "title": "ENCODE REFERENCE",
+      "inputs": [
+        {
+          "name": "pixels",
+          "type": "IMAGE",
+          "link": 85
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 86
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            92
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEEncode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 47,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        -1400,
+        1120
+      ],
+      "size": [
+        320,
+        100
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "title": "SAM (PERSON MASK)",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            87
+          ]
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            88
+          ]
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        "sam3.1_multiplex_fp16.safetensors"
+      ]
+    },
+    {
+      "id": 48,
+      "type": "CLIPTextEncode",
+      "pos": [
+        -1040,
+        1120
+      ],
+      "size": [
+        320,
+        90
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "title": "WHO TO REPLACE",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 88
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            89
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "person"
+      ]
+    },
+    {
+      "id": 49,
+      "type": "SAM3_Detect",
+      "pos": [
+        -680,
+        1240
+      ],
+      "size": [
+        280,
+        160
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "title": "MASK PERSON",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 87
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 90
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 89
+        },
+        {
+          "name": "bboxes",
+          "type": "BOUNDING_BOX",
+          "link": null
+        },
+        {
+          "name": "positive_coords",
+          "type": "STRING",
+          "link": null
+        },
+        {
+          "name": "negative_coords",
+          "type": "STRING",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "masks",
+          "type": "MASK",
+          "links": [
+            91
+          ]
+        },
+        {
+          "name": "bboxes",
+          "type": "BOUNDING_BOX",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SAM3_Detect"
+      },
+      "widgets_values": [
+        0.7,
+        5,
+        false
+      ]
+    },
+    {
+      "id": 50,
+      "type": "GrowMaskWithBlur",
+      "pos": [
+        -360,
+        1240
+      ],
+      "size": [
+        280,
+        220
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "title": "GROW MASK",
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 91
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": [
+            93,
+            94
+          ]
+        },
+        {
+          "name": "mask_inverted",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GrowMaskWithBlur"
+      },
+      "widgets_values": [
+        48,
+        0,
+        true,
+        false,
+        16,
+        1,
+        1,
+        true
+      ]
+    },
+    {
+      "id": 51,
+      "type": "SetLatentNoiseMask",
+      "pos": [
+        220,
+        980
+      ],
+      "size": [
+        230,
+        70
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "title": "KEEP BACKGROUND",
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 92
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 93
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SetLatentNoiseMask"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 52,
+      "type": "MaskToImage",
+      "pos": [
+        -40,
+        1280
+      ],
+      "size": [
+        210,
+        50
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 94
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            95
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MaskToImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 53,
+      "type": "PreviewImage",
+      "pos": [
+        200,
+        1240
+      ],
+      "size": [
+        280,
+        280
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "title": "MASK PREVIEW",
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 95
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
     }
   ],
   "links": [
     [
       5,
-      6,
+      51,
       0,
       7,
       3,
@@ -1080,7 +1438,7 @@
     ],
     [
       63,
-      28,
+      45,
       0,
       34,
       2,
@@ -1112,7 +1470,7 @@
     ],
     [
       67,
-      28,
+      45,
       0,
       35,
       2,
@@ -1154,16 +1512,16 @@
       72,
       36,
       0,
-      6,
-      0,
+      45,
+      1,
       "INT"
     ],
     [
       73,
       36,
       1,
-      6,
-      1,
+      45,
+      2,
       "INT"
     ],
     [
@@ -1178,7 +1536,7 @@
       80,
       38,
       0,
-      28,
+      45,
       0,
       "IMAGE"
     ],
@@ -1203,6 +1561,102 @@
       8,
       0,
       43,
+      0,
+      "IMAGE"
+    ],
+    [
+      84,
+      25,
+      0,
+      28,
+      0,
+      "IMAGE"
+    ],
+    [
+      85,
+      28,
+      0,
+      46,
+      0,
+      "IMAGE"
+    ],
+    [
+      86,
+      1,
+      0,
+      46,
+      1,
+      "VAE"
+    ],
+    [
+      87,
+      47,
+      0,
+      49,
+      0,
+      "MODEL"
+    ],
+    [
+      88,
+      47,
+      1,
+      48,
+      0,
+      "CLIP"
+    ],
+    [
+      89,
+      48,
+      0,
+      49,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      90,
+      28,
+      0,
+      49,
+      1,
+      "IMAGE"
+    ],
+    [
+      91,
+      49,
+      0,
+      50,
+      0,
+      "MASK"
+    ],
+    [
+      92,
+      46,
+      0,
+      51,
+      0,
+      "LATENT"
+    ],
+    [
+      93,
+      50,
+      0,
+      51,
+      1,
+      "MASK"
+    ],
+    [
+      94,
+      50,
+      0,
+      52,
+      0,
+      "MASK"
+    ],
+    [
+      95,
+      52,
+      0,
+      53,
       0,
       "IMAGE"
     ]
