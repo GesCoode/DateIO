@@ -1,8 +1,8 @@
 {
   "id": "krea2-pose-new-character",
   "revision": 0,
-  "last_node_id": 64,
-  "last_link_id": 115,
+  "last_node_id": 74,
+  "last_link_id": 141,
   "nodes": [
     {
       "id": 1,
@@ -28,7 +28,9 @@
             62,
             66,
             86,
-            105
+            105,
+            135,
+            137
           ]
         }
       ],
@@ -284,8 +286,10 @@
           "type": "IMAGE",
           "links": [
             71,
-            85,
-            90
+            90,
+            116,
+            122,
+            139
           ]
         }
       ],
@@ -400,7 +404,8 @@
           "type": "INT",
           "links": [
             72,
-            96
+            96,
+            118
           ]
         },
         {
@@ -408,7 +413,8 @@
           "type": "INT",
           "links": [
             73,
-            97
+            97,
+            119
           ]
         },
         {
@@ -450,7 +456,7 @@
           "type": "MODEL",
           "links": [
             69,
-            102
+            133
           ]
         }
       ],
@@ -493,8 +499,8 @@
           "links": [
             61,
             65,
-            98,
-            99
+            134,
+            136
           ]
         }
       ],
@@ -925,7 +931,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "## Background plate, then the new character\n\n1. SAM masks the reference person. FILL BACKGROUND repaints only that hole, so the photo becomes an empty scene.\n2. NEW CHARACTER is a separate generation in the reference pose. The pose skeleton is the only thing taken from the photo.\n3. SAM masks that new character.\n4. STITCH places the new character on the cleaned background.\n\nMASK OUT REFERENCE should cover the whole old person. FOREGROUND EDGE should cover only the new person. If the old body still peeks out, raise the first number on MASK OUT REFERENCE."
+        "## Background plate, then the new character\n\n1. SAM masks the reference person. The hole is covered with a strong blur, then FILL BACKGROUND repaints only that hole. The original photo is pasted back everywhere outside the mask, so the lawn stays sharp.\n2. NEW CHARACTER is a separate generation in the reference pose. The pose skeleton is the only thing taken from the photo.\n3. SAM masks that new character.\n4. STITCH places the new character on the cleaned background.\n\nIf the old body still peeks out, raise the first number on MASK OUT REFERENCE. If the filled patch does not match, edit FILL PROMPT so it describes this photo's background."
       ]
     },
     {
@@ -1030,12 +1036,12 @@
       "flags": {},
       "order": 12,
       "mode": 0,
-      "title": "ENCODE REFERENCE",
+      "title": "ENCODE PREFILL",
       "inputs": [
         {
           "name": "pixels",
           "type": "IMAGE",
-          "link": 85
+          "link": 121
         },
         {
           "name": "vae",
@@ -1239,24 +1245,27 @@
           "type": "MASK",
           "links": [
             93,
-            94
+            94,
+            141
           ]
         },
         {
           "name": "mask_inverted",
           "type": "MASK",
-          "links": []
+          "links": [
+            123
+          ]
         }
       ],
       "properties": {
         "Node name for S&R": "GrowMaskWithBlur"
       },
       "widgets_values": [
-        32,
+        48,
         0,
         true,
         false,
-        16,
+        24,
         1,
         1,
         true
@@ -1373,82 +1382,6 @@
       "widgets_values": []
     },
     {
-      "id": 55,
-      "type": "CLIPTextEncode",
-      "pos": [
-        520,
-        980
-      ],
-      "size": [
-        380,
-        140
-      ],
-      "flags": {},
-      "order": 6,
-      "mode": 0,
-      "title": "BACKGROUND FILL",
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 98
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "links": [
-            100
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "CLIPTextEncode"
-      },
-      "widgets_values": [
-        "seamless continuation of the surrounding background, empty scene, natural lighting, no people"
-      ]
-    },
-    {
-      "id": 56,
-      "type": "CLIPTextEncode",
-      "pos": [
-        520,
-        1160
-      ],
-      "size": [
-        380,
-        110
-      ],
-      "flags": {},
-      "order": 6,
-      "mode": 0,
-      "title": "BACKGROUND NEGATIVE",
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 99
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "links": [
-            101
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "CLIPTextEncode"
-      },
-      "widgets_values": [
-        "person, people, human, man, woman, face, body, hair, hands"
-      ]
-    },
-    {
       "id": 54,
       "type": "KSampler",
       "pos": [
@@ -1467,17 +1400,17 @@
         {
           "name": "model",
           "type": "MODEL",
-          "link": 102
+          "link": 125
         },
         {
           "name": "positive",
           "type": "CONDITIONING",
-          "link": 100
+          "link": 128
         },
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "link": 101
+          "link": 131
         },
         {
           "name": "latent_image",
@@ -1504,7 +1437,7 @@
         1,
         "euler",
         "simple",
-        1
+        0.85
       ]
     },
     {
@@ -1539,8 +1472,7 @@
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
-            106,
-            107
+            140
           ]
         }
       ],
@@ -1553,7 +1485,7 @@
       "id": 60,
       "type": "PreviewImage",
       "pos": [
-        1480,
+        1900,
         860
       ],
       "size": [
@@ -1563,12 +1495,12 @@
       "flags": {},
       "order": 17,
       "mode": 0,
-      "title": "BACKGROUND PREVIEW",
+      "title": "BACKGROUND PLATE PREVIEW",
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 106
+          "link": 132
         }
       ],
       "outputs": [
@@ -1792,7 +1724,7 @@
         {
           "name": "destination",
           "type": "IMAGE",
-          "link": 107
+          "link": 124
         },
         {
           "name": "source",
@@ -1872,6 +1804,451 @@
         1024,
         1024,
         1
+      ]
+    },
+    {
+      "id": 65,
+      "type": "ImageScaleBy",
+      "pos": [
+        -20,
+        1180
+      ],
+      "size": [
+        240,
+        90
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "title": "BLUR DOWN",
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 116
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            117
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageScaleBy"
+      },
+      "widgets_values": [
+        "bicubic",
+        0.125
+      ]
+    },
+    {
+      "id": 66,
+      "type": "ImageScale",
+      "pos": [
+        250,
+        1180
+      ],
+      "size": [
+        270,
+        170
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "title": "BLUR UP",
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 117
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": 118
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": 119
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            120
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageScale"
+      },
+      "widgets_values": [
+        "bicubic",
+        1024,
+        1024,
+        "disabled"
+      ]
+    },
+    {
+      "id": 68,
+      "type": "ImageCompositeMasked",
+      "pos": [
+        560,
+        1180
+      ],
+      "size": [
+        280,
+        170
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "title": "COVER THE PERSON",
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "IMAGE",
+          "link": 120
+        },
+        {
+          "name": "source",
+          "type": "IMAGE",
+          "link": 122
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 123
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            121,
+            126,
+            138
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageCompositeMasked"
+      },
+      "widgets_values": [
+        0,
+        0,
+        false
+      ]
+    },
+    {
+      "id": 70,
+      "type": "Krea2OstrisEditModelPatch",
+      "pos": [
+        560,
+        860
+      ],
+      "size": [
+        241,
+        72
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "title": "FILL PATCH",
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 133
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            125
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Krea2OstrisEditModelPatch"
+      },
+      "widgets_values": [
+        true
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 71,
+      "type": "TextEncodeKrea2OstrisEdit",
+      "pos": [
+        840,
+        1280
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "title": "FILL PROMPT",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 134
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 135
+        },
+        {
+          "name": "image1",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 126
+        },
+        {
+          "name": "image2",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "image3",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            127
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
+      },
+      "widgets_values": [
+        "seamless continuation of the surrounding background, same texture, same lighting, same focus, sharp natural photograph, no people"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 72,
+      "type": "FluxKontextMultiReferenceLatentMethod",
+      "pos": [
+        1280,
+        1280
+      ],
+      "size": [
+        390,
+        132
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 127
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            128
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
+      },
+      "widgets_values": [
+        "index_timestep_zero"
+      ],
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 73,
+      "type": "TextEncodeKrea2OstrisEdit",
+      "pos": [
+        840,
+        1520
+      ],
+      "size": [
+        400,
+        180
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "title": "FILL NEGATIVE",
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 136
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 137
+        },
+        {
+          "name": "image1",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 138
+        },
+        {
+          "name": "image2",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "image3",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            129
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
+      },
+      "widgets_values": [
+        "person, people, human, man, woman, face, body, hair, hands, blur, bokeh, out of focus"
+      ],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 74,
+      "type": "FluxKontextMultiReferenceLatentMethod",
+      "pos": [
+        1280,
+        1520
+      ],
+      "size": [
+        390,
+        132
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 129
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            131
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
+      },
+      "widgets_values": [
+        "index_timestep_zero"
+      ],
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 69,
+      "type": "ImageCompositeMasked",
+      "pos": [
+        1560,
+        900
+      ],
+      "size": [
+        300,
+        170
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "title": "KEEP ORIGINAL OUTSIDE THE MASK",
+      "inputs": [
+        {
+          "name": "destination",
+          "type": "IMAGE",
+          "link": 139
+        },
+        {
+          "name": "source",
+          "type": "IMAGE",
+          "link": 140
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 141
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            124,
+            132
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageCompositeMasked"
+      },
+      "widgets_values": [
+        0,
+        0,
+        false
       ]
     }
   ],
@@ -2085,14 +2462,6 @@
       "IMAGE"
     ],
     [
-      85,
-      28,
-      0,
-      46,
-      0,
-      "IMAGE"
-    ],
-    [
       86,
       1,
       0,
@@ -2189,46 +2558,6 @@
       "INT"
     ],
     [
-      98,
-      3,
-      0,
-      55,
-      0,
-      "CLIP"
-    ],
-    [
-      99,
-      3,
-      0,
-      56,
-      0,
-      "CLIP"
-    ],
-    [
-      100,
-      55,
-      0,
-      54,
-      1,
-      "CONDITIONING"
-    ],
-    [
-      101,
-      56,
-      0,
-      54,
-      2,
-      "CONDITIONING"
-    ],
-    [
-      102,
-      2,
-      0,
-      54,
-      0,
-      "MODEL"
-    ],
-    [
       103,
       51,
       0,
@@ -2251,22 +2580,6 @@
       62,
       1,
       "VAE"
-    ],
-    [
-      106,
-      62,
-      0,
-      60,
-      0,
-      "IMAGE"
-    ],
-    [
-      107,
-      62,
-      0,
-      59,
-      0,
-      "IMAGE"
     ],
     [
       108,
@@ -2331,6 +2644,206 @@
       59,
       1,
       "IMAGE"
+    ],
+    [
+      116,
+      28,
+      0,
+      65,
+      0,
+      "IMAGE"
+    ],
+    [
+      117,
+      65,
+      0,
+      66,
+      0,
+      "IMAGE"
+    ],
+    [
+      118,
+      36,
+      0,
+      66,
+      1,
+      "INT"
+    ],
+    [
+      119,
+      36,
+      1,
+      66,
+      2,
+      "INT"
+    ],
+    [
+      120,
+      66,
+      0,
+      68,
+      0,
+      "IMAGE"
+    ],
+    [
+      121,
+      68,
+      0,
+      46,
+      0,
+      "IMAGE"
+    ],
+    [
+      122,
+      28,
+      0,
+      68,
+      1,
+      "IMAGE"
+    ],
+    [
+      123,
+      50,
+      1,
+      68,
+      2,
+      "MASK"
+    ],
+    [
+      124,
+      69,
+      0,
+      59,
+      0,
+      "IMAGE"
+    ],
+    [
+      125,
+      70,
+      0,
+      54,
+      0,
+      "MODEL"
+    ],
+    [
+      126,
+      68,
+      0,
+      71,
+      2,
+      "IMAGE"
+    ],
+    [
+      127,
+      71,
+      0,
+      72,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      128,
+      72,
+      0,
+      54,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      129,
+      73,
+      0,
+      74,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      131,
+      74,
+      0,
+      54,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      132,
+      69,
+      0,
+      60,
+      0,
+      "IMAGE"
+    ],
+    [
+      133,
+      2,
+      0,
+      70,
+      0,
+      "MODEL"
+    ],
+    [
+      134,
+      3,
+      0,
+      71,
+      0,
+      "CLIP"
+    ],
+    [
+      135,
+      1,
+      0,
+      71,
+      1,
+      "VAE"
+    ],
+    [
+      136,
+      3,
+      0,
+      73,
+      0,
+      "CLIP"
+    ],
+    [
+      137,
+      1,
+      0,
+      73,
+      1,
+      "VAE"
+    ],
+    [
+      138,
+      68,
+      0,
+      73,
+      2,
+      "IMAGE"
+    ],
+    [
+      139,
+      28,
+      0,
+      69,
+      0,
+      "IMAGE"
+    ],
+    [
+      140,
+      62,
+      0,
+      69,
+      1,
+      "IMAGE"
+    ],
+    [
+      141,
+      50,
+      0,
+      69,
+      2,
+      "MASK"
     ]
   ],
   "groups": [],
