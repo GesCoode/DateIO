@@ -1,5 +1,5 @@
 {
-  "id": "nkd-face-crop-rig-stitch-v2",
+  "id": "nkd-face-crop-rig-stitch-v3",
   "revision": 0,
   "last_node_id": 10,
   "last_link_id": 9,
@@ -26,10 +26,10 @@
         "Node name for S&R": "MarkdownNote"
       },
       "widgets_values": [
-        "## The old face stays hidden\n\nLoad the generated character in CHARACTER. Pick a real file before you queue. An empty name makes Comfy treat the input folder as the picture and the run dies.\n\nFACE CROP finds the head even when it is small in the frame and cuts a 512 square. Upright is off, so the crop keeps the photo's angle. Padding is 1.7.\n\nPress the button on FACE RIG and drag the handles. The eye gizmo is the gaze. The ball in the corner is the head turn. This pose starts with the eyes looking left and the head yawed 10 degrees toward screen-left. Stitching on the rig blends that face back onto the crop only.\n\nFACE STITCH pastes that crop back. Edge hardness is 0.85 so the original face does not ghost through the new one. Feather is 6. Color match is 0.4 so the skin stays in the photo's light. If you see a hard cut line, lower edge hardness. Past about 12 degrees the warp starts to chew the edges.\n\nThe first run downloads LivePortrait into models/liveportrait."
+        "## The tilt comes back\n\nLoad the generated character in CHARACTER. Pick a real file before you queue. An empty name makes Comfy treat the input folder as the picture and the run dies.\n\nFACE CROP straightens the head into a 512 square. Padding is 2.2. Upright is on only inside that square.\n\nFACE RIG poses that level square. Crop factor is 1.5 so the rig does not slide the face up inside the square. The eye gizmo is the gaze. The ball in the corner is the head turn. This pose starts with the eyes looking left and the head yawed 10 degrees toward screen-left.\n\nFACE STITCH rotates the square back to the photo's tilt, so the new face covers the chin. Edge hardness is 0.85. Feather is 6. Color match is 0.4. If a hard line shows, lower edge hardness. Past about 12 degrees the warp starts to chew the edges.\n\nThe first run downloads LivePortrait into models/liveportrait."
       ],
       "widgets_values_named": {
-        "text": "## The old face stays hidden\n\nLoad the generated character in CHARACTER. Pick a real file before you queue. An empty name makes Comfy treat the input folder as the picture and the run dies.\n\nFACE CROP finds the head even when it is small in the frame and cuts a 512 square. Upright is off, so the crop keeps the photo's angle. Padding is 1.7.\n\nPress the button on FACE RIG and drag the handles. The eye gizmo is the gaze. The ball in the corner is the head turn. This pose starts with the eyes looking left and the head yawed 10 degrees toward screen-left. Stitching on the rig blends that face back onto the crop only.\n\nFACE STITCH pastes that crop back. Edge hardness is 0.85 so the original face does not ghost through the new one. Feather is 6. Color match is 0.4 so the skin stays in the photo's light. If you see a hard cut line, lower edge hardness. Past about 12 degrees the warp starts to chew the edges.\n\nThe first run downloads LivePortrait into models/liveportrait."
+        "text": "## The tilt comes back\n\nLoad the generated character in CHARACTER. Pick a real file before you queue. An empty name makes Comfy treat the input folder as the picture and the run dies.\n\nFACE CROP straightens the head into a 512 square. Padding is 2.2. Upright is on only inside that square.\n\nFACE RIG poses that level square. Crop factor is 1.5 so the rig does not slide the face up inside the square. The eye gizmo is the gaze. The ball in the corner is the head turn. This pose starts with the eyes looking left and the head yawed 10 degrees toward screen-left.\n\nFACE STITCH rotates the square back to the photo's tilt, so the new face covers the chin. Edge hardness is 0.85. Feather is 6. Color match is 0.4. If a hard line shows, lower edge hardness. Past about 12 degrees the warp starts to chew the edges.\n\nThe first run downloads LivePortrait into models/liveportrait."
       }
     },
     {
@@ -132,8 +132,8 @@
       },
       "widgets_values": [
         512,
-        1.7,
-        false,
+        2.2,
+        true,
         -0.125,
         0,
         "face",
@@ -142,8 +142,8 @@
       ],
       "widgets_values_named": {
         "size": 512,
-        "padding": 1.7,
-        "upright": false,
+        "padding": 2.2,
+        "upright": true,
         "offset": -0.125,
         "face_index": 0,
         "mask_region": "face",
@@ -243,13 +243,13 @@
       },
       "widgets_values": [
         "{\"v\":1,\"w\":{\"au62\":0.4},\"rot\":[0.0,-10.0,0.0]}",
-        1.8,
+        1.5,
         1.0,
         true
       ],
       "widgets_values_named": {
         "rig": "{\"v\":1,\"w\":{\"au62\":0.4},\"rot\":[0.0,-10.0,0.0]}",
-        "crop_factor": 1.8,
+        "crop_factor": 1.5,
         "src_ratio": 1.0,
         "stitching": true
       }
