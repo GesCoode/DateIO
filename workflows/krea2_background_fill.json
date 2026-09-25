@@ -1,15 +1,15 @@
 {
-  "id": "krea2-background-fill",
+  "id": "krea2-lama-background",
   "revision": 0,
-  "last_node_id": 35,
-  "last_link_id": 57,
+  "last_node_id": 12,
+  "last_link_id": 12,
   "nodes": [
     {
       "id": 1,
       "type": "LoadImage",
       "pos": [
         0,
-        160
+        200
       ],
       "size": [
         420,
@@ -26,10 +26,7 @@
           "type": "IMAGE",
           "links": [
             3,
-            15,
-            25,
-            39,
-            53
+            9
           ]
         },
         {
@@ -50,8 +47,8 @@
       "id": 2,
       "type": "CheckpointLoaderSimple",
       "pos": [
-        0,
-        700
+        480,
+        200
       ],
       "size": [
         320,
@@ -94,8 +91,8 @@
       "id": 3,
       "type": "CLIPTextEncode",
       "pos": [
-        480,
-        160
+        860,
+        200
       ],
       "size": [
         280,
@@ -132,8 +129,8 @@
       "id": 4,
       "type": "SAM3_Detect",
       "pos": [
-        480,
-        300
+        860,
+        340
       ],
       "size": [
         280,
@@ -200,19 +197,19 @@
     },
     {
       "id": 5,
-      "type": "GrowMaskWithBlur",
+      "type": "INPAINT_ExpandMask",
       "pos": [
-        820,
-        300
+        1200,
+        340
       ],
       "size": [
-        280,
-        220
+        270,
+        130
       ],
       "flags": {},
       "order": 4,
       "mode": 0,
-      "title": "FILL MASK",
+      "title": "GROW PERSON MASK",
       "inputs": [
         {
           "name": "mask",
@@ -226,40 +223,25 @@
           "type": "MASK",
           "links": [
             6,
-            18,
-            27,
-            32,
-            41,
-            46,
-            55
+            10
           ]
-        },
-        {
-          "name": "mask_inverted",
-          "type": "MASK",
-          "links": []
         }
       ],
       "properties": {
-        "Node name for S&R": "GrowMaskWithBlur"
+        "Node name for S&R": "INPAINT_ExpandMask"
       },
       "widgets_values": [
-        24,
+        32,
         0,
-        true,
-        false,
-        16,
-        1,
-        1,
-        true
+        "gaussian"
       ]
     },
     {
       "id": 6,
       "type": "MaskToImage",
       "pos": [
-        1160,
-        300
+        1520,
+        340
       ],
       "size": [
         210,
@@ -293,8 +275,8 @@
       "id": 7,
       "type": "PreviewImage",
       "pos": [
-        1160,
-        400
+        1520,
+        430
       ],
       "size": [
         280,
@@ -325,1169 +307,130 @@
     },
     {
       "id": 8,
-      "type": "VAELoader",
+      "type": "INPAINT_LoadInpaintModel",
       "pos": [
-        0,
-        980
+        1860,
+        200
       ],
       "size": [
-        270,
-        80
-      ],
-      "flags": {},
-      "order": 0,
-      "mode": 0,
-      "title": "VAE",
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "VAE",
-          "type": "VAE",
-          "links": [
-            10,
-            12,
-            16,
-            24,
-            30,
-            38,
-            44,
-            52
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "VAELoader"
-      },
-      "widgets_values": [
-        "Wan2_1_VAE_bf16.safetensors"
-      ]
-    },
-    {
-      "id": 9,
-      "type": "UNETLoader",
-      "pos": [
         320,
-        980
-      ],
-      "size": [
-        270,
-        108
+        80
       ],
       "flags": {},
       "order": 1,
       "mode": 0,
-      "title": "KREA 2 TURBO UNET",
+      "title": "LAMA MODEL",
       "inputs": [],
       "outputs": [
         {
-          "name": "MODEL",
-          "type": "MODEL",
+          "name": "inpaint model",
+          "type": "INPAINT_MODEL",
           "links": [
             8
           ]
         }
       ],
       "properties": {
-        "Node name for S&R": "UNETLoader"
+        "Node name for S&R": "INPAINT_LoadInpaintModel"
       },
       "widgets_values": [
-        "krea2_turbo_fp8_scaled.safetensors",
-        "default"
+        "big-lama.pt"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "INPAINT_InpaintWithModel",
+      "pos": [
+        2240,
+        200
+      ],
+      "size": [
+        300,
+        150
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "title": "LAMA FILL",
+      "inputs": [
+        {
+          "name": "inpaint_model",
+          "type": "INPAINT_MODEL",
+          "link": 8
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 9
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 10
+        },
+        {
+          "name": "optional_upscale_model",
+          "shape": 7,
+          "type": "UPSCALE_MODEL",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "inpainted image",
+          "type": "IMAGE",
+          "links": [
+            11,
+            12
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "INPAINT_InpaintWithModel"
+      },
+      "widgets_values": [
+        0
       ]
     },
     {
       "id": 10,
-      "type": "Krea2OstrisEditModelPatch",
+      "type": "PreviewImage",
       "pos": [
-        640,
-        980
+        2600,
+        200
       ],
       "size": [
-        241,
-        72
+        420,
+        480
       ],
       "flags": {},
-      "order": 2,
+      "order": 8,
       "mode": 0,
-      "title": "FILL PATCH",
+      "title": "FILLED BACKGROUND",
       "inputs": [
         {
-          "name": "model",
-          "type": "MODEL",
-          "link": 8
+          "name": "images",
+          "type": "IMAGE",
+          "link": 11
         }
       ],
       "outputs": [
         {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": [
-            19,
-            33,
-            47
-          ]
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
         }
       ],
       "properties": {
-        "Node name for S&R": "Krea2OstrisEditModelPatch"
+        "Node name for S&R": "PreviewImage"
       },
-      "widgets_values": [
-        true
-      ],
-      "color": "#223",
-      "bgcolor": "#335"
+      "widgets_values": []
     },
     {
       "id": 11,
-      "type": "CLIPLoader",
-      "pos": [
-        940,
-        960
-      ],
-      "size": [
-        270,
-        140
-      ],
-      "flags": {},
-      "order": 1,
-      "mode": 0,
-      "title": "KREA CLIP",
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "CLIP",
-          "type": "CLIP",
-          "links": [
-            9,
-            11
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "CLIPLoader"
-      },
-      "widgets_values": [
-        "qwen3vl_4b_fp8_scaled.safetensors",
-        "krea2",
-        "default"
-      ]
-    },
-    {
-      "id": 12,
-      "type": "TextEncodeKrea2OstrisEdit",
-      "pos": [
-        1560,
-        160
-      ],
-      "size": [
-        400,
-        200
-      ],
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "title": "FILL PROMPT",
-      "color": "#232",
-      "bgcolor": "#353",
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 9
-        },
-        {
-          "name": "vae",
-          "shape": 7,
-          "type": "VAE",
-          "link": 10
-        },
-        {
-          "name": "image1",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "image2",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "image3",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": null
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "links": [
-            13
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
-      },
-      "widgets_values": [
-        "the same photograph with the person removed, reconstruct only the background that was hidden behind them, matching the surrounding scene, surfaces, lighting, focus, and texture, no person"
-      ]
-    },
-    {
-      "id": 13,
-      "type": "TextEncodeKrea2OstrisEdit",
-      "pos": [
-        1560,
-        420
-      ],
-      "size": [
-        400,
-        200
-      ],
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "title": "FILL NEGATIVE",
-      "color": "#322",
-      "bgcolor": "#533",
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 11
-        },
-        {
-          "name": "vae",
-          "shape": 7,
-          "type": "VAE",
-          "link": 12
-        },
-        {
-          "name": "image1",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "image2",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "image3",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": null
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "links": [
-            14
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "TextEncodeKrea2OstrisEdit"
-      },
-      "widgets_values": [
-        "person, human, face, body, hair, clothes, hands, silhouette, mannequin, blur, smear, text"
-      ]
-    },
-    {
-      "id": 14,
-      "type": "FluxKontextMultiReferenceLatentMethod",
-      "pos": [
-        2020,
-        160
-      ],
-      "size": [
-        390,
-        110
-      ],
-      "flags": {},
-      "order": 4,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "conditioning",
-          "type": "CONDITIONING",
-          "link": 13
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "links": [
-            20,
-            34,
-            48
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
-      },
-      "widgets_values": [
-        "index_timestep_zero"
-      ],
-      "color": "#222",
-      "bgcolor": "#000"
-    },
-    {
-      "id": 15,
-      "type": "FluxKontextMultiReferenceLatentMethod",
-      "pos": [
-        2020,
-        420
-      ],
-      "size": [
-        390,
-        110
-      ],
-      "flags": {},
-      "order": 4,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "conditioning",
-          "type": "CONDITIONING",
-          "link": 14
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "links": [
-            21,
-            35,
-            49
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
-      },
-      "widgets_values": [
-        "index_timestep_zero"
-      ],
-      "color": "#222",
-      "bgcolor": "#000"
-    },
-    {
-      "id": 16,
-      "type": "VAEEncode",
-      "pos": [
-        2480,
-        160
-      ],
-      "size": [
-        210,
-        70
-      ],
-      "flags": {},
-      "order": 8,
-      "mode": 0,
-      "title": "ENCODE PASS 1",
-      "inputs": [
-        {
-          "name": "pixels",
-          "type": "IMAGE",
-          "link": 15
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 16
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            17
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "VAEEncode"
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 17,
-      "type": "SetLatentNoiseMask",
-      "pos": [
-        2730,
-        160
-      ],
-      "size": [
-        240,
-        70
-      ],
-      "flags": {},
-      "order": 9,
-      "mode": 0,
-      "title": "ONLY THE PERSON 1",
-      "inputs": [
-        {
-          "name": "samples",
-          "type": "LATENT",
-          "link": 17
-        },
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 18
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            22
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "SetLatentNoiseMask"
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 18,
-      "type": "KSampler",
-      "pos": [
-        3010,
-        80
-      ],
-      "size": [
-        270,
-        526
-      ],
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "title": "FILL PASS 1",
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 19
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 20
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "link": 21
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 22
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            23
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "KSampler"
-      },
-      "widgets_values": [
-        42,
-        "fixed",
-        8,
-        1,
-        "euler",
-        "simple",
-        1.0
-      ]
-    },
-    {
-      "id": 19,
-      "type": "VAEDecode",
-      "pos": [
-        3320,
-        80
-      ],
-      "size": [
-        225,
-        72
-      ],
-      "flags": {},
-      "order": 13,
-      "mode": 0,
-      "title": "DECODE PASS 1",
-      "inputs": [
-        {
-          "name": "samples",
-          "type": "LATENT",
-          "link": 23
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 24
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            26
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "VAEDecode"
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 20,
-      "type": "ImageCompositeMasked",
-      "pos": [
-        3320,
-        200
-      ],
-      "size": [
-        320,
-        170
-      ],
-      "flags": {},
-      "order": 14,
-      "mode": 0,
-      "title": "KEEP OUTSIDE 1",
-      "inputs": [
-        {
-          "name": "destination",
-          "type": "IMAGE",
-          "link": 25
-        },
-        {
-          "name": "source",
-          "type": "IMAGE",
-          "link": 26
-        },
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 27
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            28,
-            29
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "ImageCompositeMasked"
-      },
-      "widgets_values": [
-        0,
-        0,
-        false
-      ]
-    },
-    {
-      "id": 21,
-      "type": "PreviewImage",
-      "pos": [
-        3320,
-        420
-      ],
-      "size": [
-        320,
-        320
-      ],
-      "flags": {},
-      "order": 15,
-      "mode": 0,
-      "title": "PASS 1",
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 28
-        }
-      ],
-      "outputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "links": null
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "PreviewImage"
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 22,
-      "type": "VAEEncode",
-      "pos": [
-        3920,
-        160
-      ],
-      "size": [
-        210,
-        70
-      ],
-      "flags": {},
-      "order": 8,
-      "mode": 0,
-      "title": "ENCODE PASS 2",
-      "inputs": [
-        {
-          "name": "pixels",
-          "type": "IMAGE",
-          "link": 29
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 30
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            31
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "VAEEncode"
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 23,
-      "type": "SetLatentNoiseMask",
-      "pos": [
-        4170,
-        160
-      ],
-      "size": [
-        240,
-        70
-      ],
-      "flags": {},
-      "order": 9,
-      "mode": 0,
-      "title": "ONLY THE PERSON 2",
-      "inputs": [
-        {
-          "name": "samples",
-          "type": "LATENT",
-          "link": 31
-        },
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 32
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            36
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "SetLatentNoiseMask"
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 24,
-      "type": "KSampler",
-      "pos": [
-        4450,
-        80
-      ],
-      "size": [
-        270,
-        526
-      ],
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "title": "FILL PASS 2",
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 33
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 34
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "link": 35
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 36
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            37
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "KSampler"
-      },
-      "widgets_values": [
-        43,
-        "fixed",
-        8,
-        1,
-        "euler",
-        "simple",
-        0.75
-      ]
-    },
-    {
-      "id": 25,
-      "type": "VAEDecode",
-      "pos": [
-        4760,
-        80
-      ],
-      "size": [
-        225,
-        72
-      ],
-      "flags": {},
-      "order": 13,
-      "mode": 0,
-      "title": "DECODE PASS 2",
-      "inputs": [
-        {
-          "name": "samples",
-          "type": "LATENT",
-          "link": 37
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 38
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            40
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "VAEDecode"
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 26,
-      "type": "ImageCompositeMasked",
-      "pos": [
-        4760,
-        200
-      ],
-      "size": [
-        320,
-        170
-      ],
-      "flags": {},
-      "order": 14,
-      "mode": 0,
-      "title": "KEEP OUTSIDE 2",
-      "inputs": [
-        {
-          "name": "destination",
-          "type": "IMAGE",
-          "link": 39
-        },
-        {
-          "name": "source",
-          "type": "IMAGE",
-          "link": 40
-        },
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 41
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            42,
-            43
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "ImageCompositeMasked"
-      },
-      "widgets_values": [
-        0,
-        0,
-        false
-      ]
-    },
-    {
-      "id": 27,
-      "type": "PreviewImage",
-      "pos": [
-        4760,
-        420
-      ],
-      "size": [
-        320,
-        320
-      ],
-      "flags": {},
-      "order": 15,
-      "mode": 0,
-      "title": "PASS 2",
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 42
-        }
-      ],
-      "outputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "links": null
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "PreviewImage"
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 28,
-      "type": "VAEEncode",
-      "pos": [
-        5360,
-        160
-      ],
-      "size": [
-        210,
-        70
-      ],
-      "flags": {},
-      "order": 8,
-      "mode": 0,
-      "title": "ENCODE PASS 3",
-      "inputs": [
-        {
-          "name": "pixels",
-          "type": "IMAGE",
-          "link": 43
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 44
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            45
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "VAEEncode"
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 29,
-      "type": "SetLatentNoiseMask",
-      "pos": [
-        5610,
-        160
-      ],
-      "size": [
-        240,
-        70
-      ],
-      "flags": {},
-      "order": 9,
-      "mode": 0,
-      "title": "ONLY THE PERSON 3",
-      "inputs": [
-        {
-          "name": "samples",
-          "type": "LATENT",
-          "link": 45
-        },
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 46
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            50
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "SetLatentNoiseMask"
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 30,
-      "type": "KSampler",
-      "pos": [
-        5890,
-        80
-      ],
-      "size": [
-        270,
-        526
-      ],
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "title": "FILL PASS 3",
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 47
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 48
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "link": 49
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 50
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            51
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "KSampler"
-      },
-      "widgets_values": [
-        44,
-        "fixed",
-        8,
-        1,
-        "euler",
-        "simple",
-        0.45
-      ]
-    },
-    {
-      "id": 31,
-      "type": "VAEDecode",
-      "pos": [
-        6200,
-        80
-      ],
-      "size": [
-        225,
-        72
-      ],
-      "flags": {},
-      "order": 13,
-      "mode": 0,
-      "title": "DECODE PASS 3",
-      "inputs": [
-        {
-          "name": "samples",
-          "type": "LATENT",
-          "link": 51
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 52
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            54
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "VAEDecode"
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 32,
-      "type": "ImageCompositeMasked",
-      "pos": [
-        6200,
-        200
-      ],
-      "size": [
-        320,
-        170
-      ],
-      "flags": {},
-      "order": 14,
-      "mode": 0,
-      "title": "KEEP OUTSIDE 3",
-      "inputs": [
-        {
-          "name": "destination",
-          "type": "IMAGE",
-          "link": 53
-        },
-        {
-          "name": "source",
-          "type": "IMAGE",
-          "link": 54
-        },
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 55
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            56,
-            57
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "ImageCompositeMasked"
-      },
-      "widgets_values": [
-        0,
-        0,
-        false
-      ]
-    },
-    {
-      "id": 33,
-      "type": "PreviewImage",
-      "pos": [
-        6200,
-        420
-      ],
-      "size": [
-        320,
-        320
-      ],
-      "flags": {},
-      "order": 15,
-      "mode": 0,
-      "title": "PASS 3",
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 56
-        }
-      ],
-      "outputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "links": null
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "PreviewImage"
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 34,
       "type": "SaveImage",
       "pos": [
-        6800,
+        3080,
         200
       ],
       "size": [
@@ -1495,14 +438,14 @@
         270
       ],
       "flags": {},
-      "order": 16,
+      "order": 9,
       "mode": 0,
       "title": "SAVE FILLED BACKGROUND",
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 57
+          "link": 12
         }
       ],
       "outputs": [],
@@ -1510,19 +453,19 @@
         "Node name for S&R": "SaveImage"
       },
       "widgets_values": [
-        "krea2_background"
+        "lama_background"
       ]
     },
     {
-      "id": 35,
+      "id": 12,
       "type": "MarkdownNote",
       "pos": [
         0,
-        -20
+        0
       ],
       "size": [
-        760,
-        150
+        900,
+        160
       ],
       "flags": {},
       "order": 0,
@@ -1531,7 +474,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "## Fill only the person, three times\n\nSAM marks the person. Each FILL PASS repaints that area, then KEEP OUTSIDE pastes the original photo back everywhere outside the mask, so the rest of the frame never drifts. Pass 1 clears the person. Pass 2 and pass 3 settle the texture. If a rim of the person remains, raise the first number on FILL MASK. If the fill looks invented, lower the denoise on FILL PASS 3."
+        "## LaMa fills only the person\n\nSAM marks the person. GROW PERSON MASK adds a margin so the edge goes too. LAMA FILL reconstructs that area and leaves every pixel outside the mask untouched. If a rim of the person remains, raise grow on GROW PERSON MASK.\n\nNeeds the ComfyUI Inpaint Nodes pack and big-lama.pt in models/inpaint."
       ]
     }
   ],
@@ -1594,401 +537,41 @@
     ],
     [
       8,
+      8,
+      0,
+      9,
+      0,
+      "INPAINT_MODEL"
+    ],
+    [
+      9,
+      1,
+      0,
+      9,
+      1,
+      "IMAGE"
+    ],
+    [
+      10,
+      5,
+      0,
+      9,
+      2,
+      "MASK"
+    ],
+    [
+      11,
       9,
       0,
       10,
       0,
-      "MODEL"
+      "IMAGE"
     ],
     [
+      12,
       9,
+      0,
       11,
-      0,
-      12,
-      0,
-      "CLIP"
-    ],
-    [
-      10,
-      8,
-      0,
-      12,
-      1,
-      "VAE"
-    ],
-    [
-      11,
-      11,
-      0,
-      13,
-      0,
-      "CLIP"
-    ],
-    [
-      12,
-      8,
-      0,
-      13,
-      1,
-      "VAE"
-    ],
-    [
-      13,
-      12,
-      0,
-      14,
-      0,
-      "CONDITIONING"
-    ],
-    [
-      14,
-      13,
-      0,
-      15,
-      0,
-      "CONDITIONING"
-    ],
-    [
-      15,
-      1,
-      0,
-      16,
-      0,
-      "IMAGE"
-    ],
-    [
-      16,
-      8,
-      0,
-      16,
-      1,
-      "VAE"
-    ],
-    [
-      17,
-      16,
-      0,
-      17,
-      0,
-      "LATENT"
-    ],
-    [
-      18,
-      5,
-      0,
-      17,
-      1,
-      "MASK"
-    ],
-    [
-      19,
-      10,
-      0,
-      18,
-      0,
-      "MODEL"
-    ],
-    [
-      20,
-      14,
-      0,
-      18,
-      1,
-      "CONDITIONING"
-    ],
-    [
-      21,
-      15,
-      0,
-      18,
-      2,
-      "CONDITIONING"
-    ],
-    [
-      22,
-      17,
-      0,
-      18,
-      3,
-      "LATENT"
-    ],
-    [
-      23,
-      18,
-      0,
-      19,
-      0,
-      "LATENT"
-    ],
-    [
-      24,
-      8,
-      0,
-      19,
-      1,
-      "VAE"
-    ],
-    [
-      25,
-      1,
-      0,
-      20,
-      0,
-      "IMAGE"
-    ],
-    [
-      26,
-      19,
-      0,
-      20,
-      1,
-      "IMAGE"
-    ],
-    [
-      27,
-      5,
-      0,
-      20,
-      2,
-      "MASK"
-    ],
-    [
-      28,
-      20,
-      0,
-      21,
-      0,
-      "IMAGE"
-    ],
-    [
-      29,
-      20,
-      0,
-      22,
-      0,
-      "IMAGE"
-    ],
-    [
-      30,
-      8,
-      0,
-      22,
-      1,
-      "VAE"
-    ],
-    [
-      31,
-      22,
-      0,
-      23,
-      0,
-      "LATENT"
-    ],
-    [
-      32,
-      5,
-      0,
-      23,
-      1,
-      "MASK"
-    ],
-    [
-      33,
-      10,
-      0,
-      24,
-      0,
-      "MODEL"
-    ],
-    [
-      34,
-      14,
-      0,
-      24,
-      1,
-      "CONDITIONING"
-    ],
-    [
-      35,
-      15,
-      0,
-      24,
-      2,
-      "CONDITIONING"
-    ],
-    [
-      36,
-      23,
-      0,
-      24,
-      3,
-      "LATENT"
-    ],
-    [
-      37,
-      24,
-      0,
-      25,
-      0,
-      "LATENT"
-    ],
-    [
-      38,
-      8,
-      0,
-      25,
-      1,
-      "VAE"
-    ],
-    [
-      39,
-      1,
-      0,
-      26,
-      0,
-      "IMAGE"
-    ],
-    [
-      40,
-      25,
-      0,
-      26,
-      1,
-      "IMAGE"
-    ],
-    [
-      41,
-      5,
-      0,
-      26,
-      2,
-      "MASK"
-    ],
-    [
-      42,
-      26,
-      0,
-      27,
-      0,
-      "IMAGE"
-    ],
-    [
-      43,
-      26,
-      0,
-      28,
-      0,
-      "IMAGE"
-    ],
-    [
-      44,
-      8,
-      0,
-      28,
-      1,
-      "VAE"
-    ],
-    [
-      45,
-      28,
-      0,
-      29,
-      0,
-      "LATENT"
-    ],
-    [
-      46,
-      5,
-      0,
-      29,
-      1,
-      "MASK"
-    ],
-    [
-      47,
-      10,
-      0,
-      30,
-      0,
-      "MODEL"
-    ],
-    [
-      48,
-      14,
-      0,
-      30,
-      1,
-      "CONDITIONING"
-    ],
-    [
-      49,
-      15,
-      0,
-      30,
-      2,
-      "CONDITIONING"
-    ],
-    [
-      50,
-      29,
-      0,
-      30,
-      3,
-      "LATENT"
-    ],
-    [
-      51,
-      30,
-      0,
-      31,
-      0,
-      "LATENT"
-    ],
-    [
-      52,
-      8,
-      0,
-      31,
-      1,
-      "VAE"
-    ],
-    [
-      53,
-      1,
-      0,
-      32,
-      0,
-      "IMAGE"
-    ],
-    [
-      54,
-      31,
-      0,
-      32,
-      1,
-      "IMAGE"
-    ],
-    [
-      55,
-      5,
-      0,
-      32,
-      2,
-      "MASK"
-    ],
-    [
-      56,
-      32,
-      0,
-      33,
-      0,
-      "IMAGE"
-    ],
-    [
-      57,
-      32,
-      0,
-      34,
       0,
       "IMAGE"
     ]
@@ -1999,9 +582,9 @@
       "title": "Read me",
       "bounding": [
         -24,
-        -74,
-        808,
-        228
+        -54,
+        948,
+        238
       ],
       "color": "#2a2a2a",
       "font_size": 22,
@@ -2012,9 +595,9 @@
       "title": "1. Person mask",
       "bounding": [
         -24,
-        106,
-        1488,
-        718
+        146,
+        1868,
+        588
       ],
       "color": "#6b3a3a",
       "font_size": 22,
@@ -2022,66 +605,14 @@
     },
     {
       "id": 3,
-      "title": "2. Fill model",
+      "title": "2. LaMa fill",
       "bounding": [
-        -24,
-        906,
-        1258,
-        218
+        1836,
+        146,
+        1608,
+        558
       ],
       "color": "#3f789e",
-      "font_size": 22,
-      "flags": {}
-    },
-    {
-      "id": 4,
-      "title": "3. Prompt",
-      "bounding": [
-        1536,
-        106,
-        898,
-        538
-      ],
-      "color": "#59385a",
-      "font_size": 22,
-      "flags": {}
-    },
-    {
-      "id": 5,
-      "title": "4. Pass 1",
-      "bounding": [
-        2456,
-        26,
-        1208,
-        738
-      ],
-      "color": "#355c3b",
-      "font_size": 22,
-      "flags": {}
-    },
-    {
-      "id": 6,
-      "title": "5. Pass 2",
-      "bounding": [
-        3896,
-        26,
-        1208,
-        738
-      ],
-      "color": "#3f4a2a",
-      "font_size": 22,
-      "flags": {}
-    },
-    {
-      "id": 7,
-      "title": "6. Pass 3 and save",
-      "bounding": [
-        5336,
-        26,
-        1808,
-        738
-      ],
-      "color": "#6b5a32",
       "font_size": 22,
       "flags": {}
     }
@@ -2089,10 +620,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.45,
+      "scale": 0.7,
       "offset": [
         40,
-        80
+        40
       ]
     },
     "frontendVersion": "1.52.7"
