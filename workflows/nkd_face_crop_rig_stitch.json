@@ -1,5 +1,5 @@
 {
-  "id": "nkd-face-crop-rig-stitch",
+  "id": "nkd-face-crop-rig-stitch-v2",
   "revision": 0,
   "last_node_id": 10,
   "last_link_id": 9,
@@ -26,10 +26,10 @@
         "Node name for S&R": "MarkdownNote"
       },
       "widgets_values": [
-        "## Crop, then rig, then stitch\n\nLoad the generated character in CHARACTER. Pick a real file before you queue. An empty name makes Comfy treat the input folder as the picture and the run dies.\n\nFACE CROP finds the head even when it is small in the frame and cuts a 512 square. Upright is off, so the crop keeps the photo's angle. Padding is 1.7.\n\nPress the button on FACE RIG and drag the handles. The eye gizmo is the gaze. The ball in the corner is the head turn. This pose starts with the eyes looking left and the head yawed 10 degrees toward screen-left. Stitching on the rig blends that face back onto the crop only.\n\nFACE STITCH pastes the rigged crop onto the original body. Feather is 12. Everything outside the face stays. Past about 12 degrees the warp starts to chew the edges.\n\nThe first run downloads LivePortrait into models/liveportrait."
+        "## The old face stays hidden\n\nLoad the generated character in CHARACTER. Pick a real file before you queue. An empty name makes Comfy treat the input folder as the picture and the run dies.\n\nFACE CROP finds the head even when it is small in the frame and cuts a 512 square. Upright is off, so the crop keeps the photo's angle. Padding is 1.7.\n\nPress the button on FACE RIG and drag the handles. The eye gizmo is the gaze. The ball in the corner is the head turn. This pose starts with the eyes looking left and the head yawed 10 degrees toward screen-left. Stitching on the rig blends that face back onto the crop only.\n\nFACE STITCH pastes that crop back. Edge hardness is 0.85 so the original face does not ghost through the new one. Feather is 6. Color match is 0.4 so the skin stays in the photo's light. If you see a hard cut line, lower edge hardness. Past about 12 degrees the warp starts to chew the edges.\n\nThe first run downloads LivePortrait into models/liveportrait."
       ],
       "widgets_values_named": {
-        "text": "## Crop, then rig, then stitch\n\nLoad the generated character in CHARACTER. Pick a real file before you queue. An empty name makes Comfy treat the input folder as the picture and the run dies.\n\nFACE CROP finds the head even when it is small in the frame and cuts a 512 square. Upright is off, so the crop keeps the photo's angle. Padding is 1.7.\n\nPress the button on FACE RIG and drag the handles. The eye gizmo is the gaze. The ball in the corner is the head turn. This pose starts with the eyes looking left and the head yawed 10 degrees toward screen-left. Stitching on the rig blends that face back onto the crop only.\n\nFACE STITCH pastes the rigged crop onto the original body. Feather is 12. Everything outside the face stays. Past about 12 degrees the warp starts to chew the edges.\n\nThe first run downloads LivePortrait into models/liveportrait."
+        "text": "## The old face stays hidden\n\nLoad the generated character in CHARACTER. Pick a real file before you queue. An empty name makes Comfy treat the input folder as the picture and the run dies.\n\nFACE CROP finds the head even when it is small in the frame and cuts a 512 square. Upright is off, so the crop keeps the photo's angle. Padding is 1.7.\n\nPress the button on FACE RIG and drag the handles. The eye gizmo is the gaze. The ball in the corner is the head turn. This pose starts with the eyes looking left and the head yawed 10 degrees toward screen-left. Stitching on the rig blends that face back onto the crop only.\n\nFACE STITCH pastes that crop back. Edge hardness is 0.85 so the original face does not ghost through the new one. Feather is 6. Color match is 0.4 so the skin stays in the photo's light. If you see a hard cut line, lower edge hardness. Past about 12 degrees the warp starts to chew the edges.\n\nThe first run downloads LivePortrait into models/liveportrait."
       }
     },
     {
@@ -371,15 +371,15 @@
         "Node name for S&R": "NKDFaceStitch"
       },
       "widgets_values": [
-        12,
-        0.0,
-        0.0,
+        6,
+        0.85,
+        0.4,
         false
       ],
       "widgets_values_named": {
-        "feather": 12,
-        "edge_hardness": 0.0,
-        "match_colors": 0.0,
+        "feather": 6,
+        "edge_hardness": 0.85,
+        "match_colors": 0.4,
         "seamless_edges": false
       }
     },
